@@ -64,6 +64,16 @@ class GameSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(url), callback=self.parse)
 
 
+class TeamSpider(scrapy.Spider):
+    name = 'team_spider'
+    allowed_domains = [base_url]
+    start_urls = [base_url + '/pageLoader/pageLoader.aspx?page=/data/nba/teams/teams.html']
+
+    def parse(self, response):
+        for row in response.xpath('//td[@class="datacell"]/a'):
+            yield {row.xpath('text()').extract(): row.xpath('@href').extract()}
+
+
 class Game(scrapy.Item):
     date = scrapy.Field()
     location = scrapy.Field()
