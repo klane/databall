@@ -4,5 +4,9 @@
 # PyCharm
 .idea/
 
-# TeX output files
+# TeX output
 docs/out/
+
+# Databases
+*.db
+*.sqlite
