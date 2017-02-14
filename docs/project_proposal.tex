@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage{hyperref}
+\usepackage[colorlinks,urlcolor=blue]{hyperref}
 
 \begin{document}
 I chose basketball as a testbed for two main reasons. The first reason is that a wealth of NBA stats are readily available on the website \url{stats.nba.com}. The site exposes a wide variety of information in JSON format through various endpoints and parameters that take the form stats.nba.com/stats/{endpoint}/?{params}, making it easy to obtain the data programmatically. For example, individual player stats from every game so far this season can be found \href{http://stats.nba.com/stats/leaguegamelog/?LeagueID=00&Season=2016-17&SeasonType=Regular\%20Season&PlayerOrTeam=P&Sorter=PTS&Direction=DESC}{here}. I plan to pull the necessary  stats by utilizing an existing \href{https://github.com/seemethere/nba_py}{GitHub project} that provides a simple API and returns queries as Pandas DataFrames.
