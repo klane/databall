@@ -90,6 +90,6 @@ class Game(scrapy.Item):
 
 def _get_next_season(history):
     try:
-        return history.popleft()
+        return history.pop()
     except IndexError:
         return None
