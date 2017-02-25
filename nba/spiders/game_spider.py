@@ -1,17 +1,18 @@
 import scrapy
 from collections import deque
+from nba.items import Game
 
 base_url = 'http://www.covers.com'
-results_url = '/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/%s/%s.html'
 
 
 class GameSpider(scrapy.Spider):
-    name = 'game_spider'
+    name = 'games'
     allowed_domains = ['covers.com']
 
     def __init__(self, teams='', season='2016-2017', *args, **kwargs):
         super(GameSpider, self).__init__(*args, **kwargs)
-        self.start_urls = [base_url + results_url % (season, team) for team in teams.split(',')]
+        self.start_urls = [base_url + '/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/%s/%s.html' %
+                           (season, team) for team in teams.split(',')]
 
     def parse(self, response):
         for row in response.xpath('//tr[@class="datarow"]'):
@@ -63,30 +64,6 @@ class GameSpider(scrapy.Spider):
         if season:
             url = base_url + season.xpath('@value').extract_first()
             yield scrapy.Request(response.urljoin(url), callback=self.parse)
-
-
-class TeamSpider(scrapy.Spider):
-    name = 'team_spider'
-    allowed_domains = [base_url]
-    start_urls = [base_url + '/pageLoader/pageLoader.aspx?page=/data/nba/teams/teams.html']
-
-    def parse(self, response):
-        for row in response.xpath('//td[@class="datacell"]/a'):
-            yield {row.xpath('text()').extract(): row.xpath('@href').extract()}
-
-
-class Game(scrapy.Item):
-    date = scrapy.Field()
-    location = scrapy.Field()
-    opponent = scrapy.Field()
-    score = scrapy.Field()
-    opponent_score = scrapy.Field()
-    result = scrapy.Field()
-    season_type = scrapy.Field()
-    spread = scrapy.Field()
-    spread_result = scrapy.Field()
-    over_under = scrapy.Field()
-    over_under_result = scrapy.Field()
 
 
 def _get_next_season(history):
