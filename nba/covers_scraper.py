@@ -1,4 +1,5 @@
 import scrapy
+from collections import deque
 
 base_url = 'http://www.covers.com'
 results_url = '/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/%s/%s.html'
@@ -6,11 +7,11 @@ results_url = '/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/%s/%
 
 class GameSpider(scrapy.Spider):
     name = 'game_spider'
-    allowed_domains = [base_url]
+    allowed_domains = ['covers.com']
 
     def __init__(self, teams='', season='2016-2017', *args, **kwargs):
         super(GameSpider, self).__init__(*args, **kwargs)
-        self.start_urls = [self.allowed_domains[0] + results_url % (season, team) for team in teams.split(',')]
+        self.start_urls = [base_url + results_url % (season, team) for team in teams.split(',')]
 
     def parse(self, response):
         for row in response.xpath('//tr[@class="datarow"]'):
@@ -38,7 +39,7 @@ class GameSpider(scrapy.Spider):
             try:
                 game['spread'] = float(spread[2:])
             except ValueError:
-                game['spread'] = spread[2:]
+                game['spread'] = 0
 
             over_under = row.xpath('td[6]/text()').extract_first().strip()
 
@@ -51,7 +52,7 @@ class GameSpider(scrapy.Spider):
 
             yield game
 
-        history = list(response.xpath('//option')).reverse()
+        history = deque(response.xpath('//option'))
         season = _get_next_season(history)
 
         while season and season.xpath('@selected').extract_first() is None:
@@ -90,6 +91,6 @@ class Game(scrapy.Item):
 
 def _get_next_season(history):
     try:
-        return history.pop()
+        return history.popleft()
     except IndexError:
         return None
