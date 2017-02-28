@@ -10,7 +10,7 @@ class GameSpider(Spider):
     name = 'games'
     allowed_domains = ['covers.com']
 
-    def __init__(self, teams='', season='1997-1998', *args, **kwargs):
+    def __init__(self, teams='', season='2016-2017', *args, **kwargs):
         super(GameSpider, self).__init__(*args, **kwargs)
         self.start_urls = [base_url + '/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/%s/%s.html' %
                            (season, team) for team in teams.split(',')]
