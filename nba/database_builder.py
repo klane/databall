@@ -78,8 +78,8 @@ def add_team_season_stats(conn, start_season, end_season, if_exists='append', sl
         time.sleep(sleep)
 
 
-def build_database(start_season, end_season, if_exists='replace', sleep=1):
-    conn = sqlite3.connect('nba.db')
+def build_database(database, start_season, end_season, if_exists='replace', sleep=1):
+    conn = sqlite3.connect(database)
     add_teams(conn, sleep)
     add_player_game_stats(conn, start_season, end_season, if_exists, sleep)
     add_player_season_stats(conn, start_season, end_season, if_exists, sleep)
