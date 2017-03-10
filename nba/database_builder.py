@@ -9,6 +9,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' player game stats'
         table = GameLog(season=season_str(season), player_or_team='P').overall()
+        table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
 
@@ -19,12 +20,15 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
 
         time.sleep(sleep)
 
+    query = 'SELECT DISTINCT PLAYER_ID, PLAYER_NAME FROM temp'
+    pd.read_sql(query, conn).to_sql('players', conn, if_exists=if_exists, index=False)
+    conn.execute('DROP TABLE temp')
+
 
 def add_player_season_stats(conn, start_season, end_season, if_exists='append', sleep=1):
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' player season stats'
         table = PlayerStats(season=season_str(season)).overall()
-        table.to_sql('temp', conn, if_exists='append', index=False)
         table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table['SEASON'] = season
 
@@ -35,12 +39,9 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
 
         time.sleep(sleep)
 
-    query = 'SELECT DISTINCT PLAYER_ID, PLAYER_NAME FROM temp'
-    pd.read_sql(query, conn).to_sql('players', conn, if_exists=if_exists, index=False)
-    conn.execute('DROP TABLE temp')
-
 
 def add_teams(conn, sleep=1):
+    print 'Reading team information'
     teams = TeamList().info()[0:30]
     teams['CITY'] = 'TEMP'
     teams['NICKNAME'] = 'TEMP'
