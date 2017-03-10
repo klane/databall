@@ -1,4 +1,5 @@
 from nba_py.league import GameLog, PlayerStats, TeamStats
+from nba_py.team import TeamDetails, TeamList
 import sqlite3
 import time
 
@@ -15,6 +16,20 @@ def add_player_stats(conn, season, if_exists='append'):
     table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK']), axis=1, inplace=True)
     table['SEASON'] = season
     table.to_sql('player_stats', conn, if_exists=if_exists, index=False)
+
+
+def add_teams(conn):
+    teams = TeamList().info()[0:30]
+    teams['CITY'] = 'TEMP'
+    teams['NICKNAME'] = 'TEMP'
+    columns = ['CITY', 'NICKNAME']
+
+    for ID in teams.TEAM_ID:
+        teams.loc[teams.TEAM_ID == ID, columns] = TeamDetails(ID).background()[columns].values
+        time.sleep(0.5)
+
+    teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
+    teams.to_sql('teams', conn, if_exists='replace')
 
 
 def add_team_games(conn, season, if_exists='append'):
