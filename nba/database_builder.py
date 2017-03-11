@@ -17,7 +17,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
         FT_PCT REAL, OREB INTEGER, DREB INTEGER, REB INTEGER, AST INTEGER, STL INTEGER, BLK INTEGER, TOV INTEGER,
         PF INTEGER, PTS INTEGER, PLUS_MINUS INTEGER)'''.format(table_name))
 
-    conn.execute('CREATE TABLE IF NOT EXISTS players (PLAYER_ID INTEGER, PLAYER_NAME TEXT)')
+    conn.execute('CREATE TABLE IF NOT EXISTS players (ID INTEGER, NAME TEXT)')
 
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' player game stats'
@@ -29,7 +29,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
         table.to_sql(table_name, conn, if_exists='append', index=False)
         time.sleep(sleep)
 
-    query = 'SELECT DISTINCT PLAYER_ID, PLAYER_NAME FROM temp'
+    query = 'SELECT DISTINCT PLAYER_ID AS ID, PLAYER_NAME AS NAME FROM temp ORDER BY ID'
     pd.read_sql(query, conn).to_sql('players', conn, if_exists='append', index=False)
     conn.execute('DROP TABLE temp')
     conn.execute('VACUUM')
@@ -62,18 +62,18 @@ def add_teams(conn, sleep=1):
     print 'Reading team information'
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
-    conn.execute('CREATE TABLE teams (TEAM_ID INTEGER, ABBREVIATION TEXT, CITY TEXT, NICKNAME TEXT)')
+    conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT)')
     teams = TeamList().info()[0:30]
+    teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
+    teams.rename(columns={'TEAM_ID': 'ID'}, inplace=True)
     teams['CITY'] = 'TEMP'
-    teams['NICKNAME'] = 'TEMP'
-    columns = ['CITY', 'NICKNAME']
+    teams['MASCOT'] = 'TEMP'
 
     for ID in teams.TEAM_ID:
-        teams.loc[teams.TEAM_ID == ID, columns] = TeamDetails(ID).background()[columns].values
+        teams.loc[teams.TEAM_ID == ID, ['CITY', 'MASCOT']] = TeamDetails(ID).background()[['CITY', 'NICKNAME']].values
         time.sleep(sleep)
 
-    teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
-    teams.to_sql('teams', conn, if_exists='replace', index=False)
+    teams.to_sql('teams', conn, if_exists='append', index=False)
 
 
 def add_team_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):
@@ -88,7 +88,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
         DREB INTEGER, REB INTEGER, AST INTEGER, STL INTEGER, BLK INTEGER, TOV INTEGER, PF INTEGER, PTS INTEGER,
         PLUS_MINUS INTEGER)'''.format(table_name))
 
-    conn.execute('''CREATE TABLE IF NOT EXISTS games (SEASON INTEGER, GAME_ID TEXT, HOME_TEAM_ID INTEGER,
+    conn.execute('''CREATE TABLE IF NOT EXISTS games (SEASON INTEGER, ID TEXT, HOME_TEAM_ID INTEGER,
         AWAY_TEAM_ID INTEGER, GAME_DATE TEXT, MATCHUP TEXT, HOME_WL TEXT)''')
 
     for season in range(start_season, end_season + 1):
@@ -104,7 +104,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
 
     query = '''
     SELECT SEASON,
-           HOME_GAME_ID AS GAME_ID,
+           ID,
            HOME_TEAM_ID,
            AWAY_TEAM_ID,
            GAME_DATE,
@@ -112,7 +112,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
            HOME_WL
     FROM
         (SELECT TEAM_ID AS HOME_TEAM_ID,
-                GAME_ID AS HOME_GAME_ID,
+                GAME_ID AS ID,
                 SEASON,
                 GAME_DATE,
                 MATCHUP,
@@ -120,10 +120,10 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
             FROM temp
             WHERE MATCHUP LIKE '%vs%') AS home,
         (SELECT TEAM_ID AS AWAY_TEAM_ID,
-                GAME_ID AS AWAY_GAME_ID
+                GAME_ID
             FROM temp
             WHERE MATCHUP LIKE '%@%') AS away
-    WHERE home.HOME_GAME_ID = away.AWAY_GAME_ID
+    WHERE home.ID = away.GAME_ID
     '''
     pd.read_sql(query, conn).to_sql('games', conn, if_exists='append', index=False)
     conn.execute('DROP TABLE temp')
