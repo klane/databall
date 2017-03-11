@@ -6,37 +6,53 @@ import time
 
 
 def add_player_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):
+    table_name = 'player_game_stats'
+
+    if if_exists == 'replace':
+        conn.execute('DROP TABLE IF EXISTS ' + table_name)
+        conn.execute('DROP TABLE IF EXISTS players')
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS {} (PLAYER_ID INTEGER, TEAM_ID INTEGER, GAME_ID TEXT, MIN INTEGER,
+        FGM INTEGER, FGA INTEGER, FG_PCT REAL, FG3M INTEGER, FG3A INTEGER, FG3_PCT REAL, FTM INTEGER, FTA INTEGER,
+        FT_PCT REAL, OREB INTEGER, DREB INTEGER, REB INTEGER, AST INTEGER, STL INTEGER, BLK INTEGER, TOV INTEGER,
+        PF INTEGER, PTS INTEGER, PLUS_MINUS INTEGER)'''.format(table_name))
+
+    conn.execute('CREATE TABLE IF NOT EXISTS players (PLAYER_ID INTEGER, PLAYER_NAME TEXT)')
+
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' player game stats'
         table = GameLog(season=season_str(season), player_or_team='P').overall()
+        table.dropna(axis=0, how='any', inplace=True)
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
-
-        if season == start_season:
-            table.to_sql('player_game_stats', conn, if_exists=if_exists, index=False)
-        else:
-            table.to_sql('player_game_stats', conn, if_exists='append', index=False)
-
+        table.to_sql(table_name, conn, if_exists='append', index=False)
         time.sleep(sleep)
 
     query = 'SELECT DISTINCT PLAYER_ID, PLAYER_NAME FROM temp'
-    pd.read_sql(query, conn).to_sql('players', conn, if_exists=if_exists, index=False)
+    pd.read_sql(query, conn).to_sql('players', conn, if_exists='append', index=False)
     conn.execute('DROP TABLE temp')
 
 
 def add_player_season_stats(conn, start_season, end_season, if_exists='append', sleep=1):
+    table_name = 'player_season_stats'
+
+    if if_exists == 'replace':
+        conn.execute('DROP TABLE IF EXISTS ' + table_name)
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS {} (SEASON INTEGER, PLAYER_ID INTEGER, TEAM_ID INTEGER, AGE REAL,
+        GP INTEGER, W INTEGER, L INTEGER, W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL,
+        FG3_PCT REAL, FTM REAL, FTA REAL, FT_PCT REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL,
+        BLK REAL, BLKA REAL, PF REAL, PFD REAL, PTS REAL, PLUS_MINUS REAL, DD2 INTEGER, TD3 INTEGER)'''
+                 .format(table_name))
+
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' player season stats'
         table = PlayerStats(season=season_str(season)).overall()
+        table.dropna(axis=0, how='any', inplace=True)
         table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table['SEASON'] = season
-
-        if season == start_season:
-            table.to_sql('player_season_stats', conn, if_exists=if_exists, index=False)
-        else:
-            table.to_sql('player_season_stats', conn, if_exists='append', index=False)
-
+        table.to_sql(table_name, conn, if_exists='append', index=False)
         time.sleep(sleep)
 
 
@@ -56,19 +72,29 @@ def add_teams(conn, sleep=1):
 
 
 def add_team_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):
+    table_name = 'team_game_stats'
+
+    if if_exists == 'replace':
+        conn.execute('DROP TABLE IF EXISTS ' + table_name)
+        conn.execute('DROP TABLE IF EXISTS games')
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS {} (TEAM_ID INTEGER, GAME_ID TEXT, MIN INTEGER, FGM INTEGER, FGA INTEGER,
+        FG_PCT REAL, FG3M INTEGER, FG3A INTEGER, FG3_PCT REAL, FTM INTEGER, FTA INTEGER, FT_PCT REAL, OREB INTEGER,
+        DREB INTEGER, REB INTEGER, AST INTEGER, STL INTEGER, BLK INTEGER, TOV INTEGER, PF INTEGER, PTS INTEGER,
+        PLUS_MINUS INTEGER)'''.format(table_name))
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS games (SEASON INTEGER, GAME_ID TEXT, HOME_TEAM_ID INTEGER,
+        AWAY_TEAM_ID INTEGER, GAME_DATE TEXT, MATCHUP TEXT, HOME_WL TEXT)''')
+
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' team game stats'
         table = GameLog(season=season_str(season), player_or_team='T').overall()
+        table.dropna(axis=0, how='any', inplace=True)
         table['SEASON'] = season
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
-
-        if season == start_season:
-            table.to_sql('team_game_stats', conn, if_exists=if_exists, index=False)
-        else:
-            table.to_sql('team_game_stats', conn, if_exists='append', index=False)
-
+        table.to_sql(table_name, conn, if_exists='append', index=False)
         time.sleep(sleep)
 
     query = '''
@@ -94,22 +120,28 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
             WHERE MATCHUP LIKE '%@%') AS away
     WHERE home.HOME_GAME_ID = away.AWAY_GAME_ID
     '''
-    pd.read_sql(query, conn).to_sql('games', conn, if_exists=if_exists, index=False)
+    pd.read_sql(query, conn).to_sql('games', conn, if_exists='append', index=False)
     conn.execute('DROP TABLE temp')
 
 
 def add_team_season_stats(conn, start_season, end_season, if_exists='append', sleep=1):
+    table_name = 'team_season_stats'
+
+    if if_exists == 'replace':
+        conn.execute('DROP TABLE IF EXISTS ' + table_name)
+
+    conn.execute('''CREATE TABLE IF NOT EXISTS {} (TEAM_ID INTEGER, GP INTEGER, W INTEGER, L INTEGER, W_PCT REAL,
+        MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL, FG3_PCT REAL, FTM REAL, FTA REAL, FT_PCT REAL,
+        OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL, PFD REAL, PTS REAL,
+        PLUS_MINUS REAL, SEASON INTEGER)'''.format(table_name))
+
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' team season stats'
         table = TeamStats(season=season_str(season)).overall()
+        table.dropna(axis=0, how='any', inplace=True)
         table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table['SEASON'] = season
-
-        if season == start_season:
-            table.to_sql('team_season_stats', conn, if_exists=if_exists, index=False)
-        else:
-            table.to_sql('team_season_stats', conn, if_exists='append', index=False)
-
+        table.to_sql(table_name, conn, if_exists='append', index=False)
         time.sleep(sleep)
 
 
