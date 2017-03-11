@@ -32,6 +32,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
     query = 'SELECT DISTINCT PLAYER_ID, PLAYER_NAME FROM temp'
     pd.read_sql(query, conn).to_sql('players', conn, if_exists='append', index=False)
     conn.execute('DROP TABLE temp')
+    conn.execute('VACUUM')
 
 
 def add_player_season_stats(conn, start_season, end_season, if_exists='append', sleep=1):
@@ -39,6 +40,7 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
 
     if if_exists == 'replace':
         conn.execute('DROP TABLE IF EXISTS ' + table_name)
+        conn.execute('VACUUM')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (SEASON INTEGER, PLAYER_ID INTEGER, TEAM_ID INTEGER, AGE REAL,
         GP INTEGER, W INTEGER, L INTEGER, W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL,
@@ -59,6 +61,7 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
 def add_teams(conn, sleep=1):
     print 'Reading team information'
     conn.execute('DROP TABLE IF EXISTS teams')
+    conn.execute('VACUUM')
     conn.execute('CREATE TABLE teams (TEAM_ID INTEGER, ABBREVIATION TEXT, CITY TEXT, NICKNAME TEXT)')
     teams = TeamList().info()[0:30]
     teams['CITY'] = 'TEMP'
@@ -124,6 +127,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
     '''
     pd.read_sql(query, conn).to_sql('games', conn, if_exists='append', index=False)
     conn.execute('DROP TABLE temp')
+    conn.execute('VACUUM')
 
 
 def add_team_season_stats(conn, start_season, end_season, if_exists='append', sleep=1):
@@ -131,6 +135,7 @@ def add_team_season_stats(conn, start_season, end_season, if_exists='append', sl
 
     if if_exists == 'replace':
         conn.execute('DROP TABLE IF EXISTS ' + table_name)
+        conn.execute('VACUUM')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (SEASON INTEGER, TEAM_ID INTEGER, GP INTEGER, W INTEGER, L INTEGER,
         W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL, FG3_PCT REAL, FTM REAL, FTA REAL,
