@@ -43,14 +43,15 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
         conn.execute('VACUUM')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (SEASON INTEGER, PLAYER_ID INTEGER, TEAM_ID INTEGER, AGE REAL,
-        GP INTEGER, W INTEGER, L INTEGER, W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG3M REAL, FG3A REAL, FTM REAL,
-        FTA REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL, PFD REAL,
-        PTS REAL, PLUS_MINUS REAL, DD2 INTEGER, TD3 INTEGER)'''.format(table_name))
+        GP INTEGER, W INTEGER, L INTEGER, W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL,
+        FG3_PCT REAL, FTM REAL, FTA REAL, FT_PCT REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL,
+        BLK REAL, BLKA REAL, PF REAL, PFD REAL, PTS REAL, PLUS_MINUS REAL, DD2 INTEGER, TD3 INTEGER)'''
+                 .format(table_name))
 
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' player season stats'
         table = PlayerStats(season=season_str(season)).overall()
-        table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'PCT', 'RANK']), axis=1, inplace=True)
+        table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['PLAYER_ID', 'TEAM_ID'], inplace=True)
         table['SEASON'] = season
         table.to_sql(table_name, conn, if_exists='append', index=False)
@@ -136,14 +137,14 @@ def add_team_season_stats(conn, start_season, end_season, if_exists='append', sl
         conn.execute('VACUUM')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (SEASON INTEGER, TEAM_ID INTEGER, GP INTEGER, W INTEGER, L INTEGER,
-        W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG3M REAL, FG3A REAL, FTM REAL, FTA REAL, OREB REAL, DREB REAL,
-        REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL, PFD REAL, PTS REAL, PLUS_MINUS REAL)'''
-                 .format(table_name))
+        W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL, FG3_PCT REAL, FTM REAL, FTA REAL,
+        FT_PCT REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL,
+        PFD REAL, PTS REAL, PLUS_MINUS REAL)'''.format(table_name))
 
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' team season stats'
         table = TeamStats(season=season_str(season)).overall()
-        table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'PCT', 'RANK']), axis=1, inplace=True)
+        table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['TEAM_ID'], inplace=True)
         table['SEASON'] = season
         table.to_sql(table_name, conn, if_exists='append', index=False)
