@@ -13,9 +13,9 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
         conn.execute('DROP TABLE IF EXISTS players')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (PLAYER_ID INTEGER, TEAM_ID INTEGER, GAME_ID TEXT, MIN INTEGER,
-        FGM INTEGER, FGA INTEGER, FG_PCT REAL, FG3M INTEGER, FG3A INTEGER, FG3_PCT REAL, FTM INTEGER, FTA INTEGER,
-        FT_PCT REAL, OREB INTEGER, DREB INTEGER, REB INTEGER, AST INTEGER, STL INTEGER, BLK INTEGER, TOV INTEGER,
-        PF INTEGER, PTS INTEGER, PLUS_MINUS INTEGER)'''.format(table_name))
+        FGM INTEGER, FGA INTEGER, FG3M INTEGER, FG3A INTEGER, FTM INTEGER, FTA INTEGER, OREB INTEGER, DREB INTEGER,
+        REB INTEGER, AST INTEGER, STL INTEGER, BLK INTEGER, TOV INTEGER, PF INTEGER, PTS INTEGER, PLUS_MINUS INTEGER)'''
+                 .format(table_name))
 
     conn.execute('CREATE TABLE IF NOT EXISTS players (ID INTEGER, NAME TEXT)')
 
@@ -23,7 +23,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
         print 'Reading ' + season_str(season) + ' player game stats'
         table = GameLog(season=season_str(season), player_or_team='P').overall()
         table.to_sql('temp', conn, if_exists='append', index=False)
-        labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'SEASON', 'VIDEO', 'WL']
+        labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['GAME_ID', 'PLAYER_ID', 'TEAM_ID'], inplace=True)
         table.to_sql(table_name, conn, if_exists='append', index=False)
@@ -43,15 +43,14 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
         conn.execute('VACUUM')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (SEASON INTEGER, PLAYER_ID INTEGER, TEAM_ID INTEGER, AGE REAL,
-        GP INTEGER, W INTEGER, L INTEGER, W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL,
-        FG3_PCT REAL, FTM REAL, FTA REAL, FT_PCT REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL,
-        BLK REAL, BLKA REAL, PF REAL, PFD REAL, PTS REAL, PLUS_MINUS REAL, DD2 INTEGER, TD3 INTEGER)'''
-                 .format(table_name))
+        GP INTEGER, W INTEGER, L INTEGER, W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG3M REAL, FG3A REAL, FTM REAL,
+        FTA REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL, PFD REAL,
+        PTS REAL, PLUS_MINUS REAL, DD2 INTEGER, TD3 INTEGER)'''.format(table_name))
 
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' player season stats'
         table = PlayerStats(season=season_str(season)).overall()
-        table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK']), axis=1, inplace=True)
+        table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'PCT', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['PLAYER_ID', 'TEAM_ID'], inplace=True)
         table['SEASON'] = season
         table.to_sql(table_name, conn, if_exists='append', index=False)
@@ -84,9 +83,8 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
         conn.execute('DROP TABLE IF EXISTS games')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (TEAM_ID INTEGER, GAME_ID TEXT, MIN INTEGER, FGM INTEGER, FGA INTEGER,
-        FG_PCT REAL, FG3M INTEGER, FG3A INTEGER, FG3_PCT REAL, FTM INTEGER, FTA INTEGER, FT_PCT REAL, OREB INTEGER,
-        DREB INTEGER, REB INTEGER, AST INTEGER, STL INTEGER, BLK INTEGER, TOV INTEGER, PF INTEGER, PTS INTEGER,
-        PLUS_MINUS INTEGER)'''.format(table_name))
+        FG3M INTEGER, FG3A INTEGER, FTM INTEGER, FTA INTEGER, OREB INTEGER, DREB INTEGER, REB INTEGER, AST INTEGER,
+        STL INTEGER, BLK INTEGER, TOV INTEGER, PF INTEGER, PTS INTEGER, PLUS_MINUS INTEGER)'''.format(table_name))
 
     conn.execute('''CREATE TABLE IF NOT EXISTS games (SEASON INTEGER, ID TEXT, HOME_TEAM_ID INTEGER,
         AWAY_TEAM_ID INTEGER, GAME_DATE TEXT, MATCHUP TEXT, HOME_WL TEXT)''')
@@ -96,7 +94,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
         table = GameLog(season=season_str(season), player_or_team='T').overall()
         table['SEASON'] = season
         table.to_sql('temp', conn, if_exists='append', index=False)
-        labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'SEASON', 'VIDEO', 'WL']
+        labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['GAME_ID', 'TEAM_ID'], inplace=True)
         table.to_sql(table_name, conn, if_exists='append', index=False)
@@ -138,14 +136,14 @@ def add_team_season_stats(conn, start_season, end_season, if_exists='append', sl
         conn.execute('VACUUM')
 
     conn.execute('''CREATE TABLE IF NOT EXISTS {} (SEASON INTEGER, TEAM_ID INTEGER, GP INTEGER, W INTEGER, L INTEGER,
-        W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG_PCT REAL, FG3M REAL, FG3A REAL, FG3_PCT REAL, FTM REAL, FTA REAL,
-        FT_PCT REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL,
-        PFD REAL, PTS REAL, PLUS_MINUS REAL)'''.format(table_name))
+        W_PCT REAL, MIN REAL, FGM REAL, FGA REAL, FG3M REAL, FG3A REAL, FTM REAL, FTA REAL, OREB REAL, DREB REAL,
+        REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL, PFD REAL, PTS REAL, PLUS_MINUS REAL)'''
+                 .format(table_name))
 
     for season in range(start_season, end_season + 1):
         print 'Reading ' + season_str(season) + ' team season stats'
         table = TeamStats(season=season_str(season)).overall()
-        table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'RANK']), axis=1, inplace=True)
+        table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'PCT', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['TEAM_ID'], inplace=True)
         table['SEASON'] = season
         table.to_sql(table_name, conn, if_exists='append', index=False)
