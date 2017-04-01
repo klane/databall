@@ -8,9 +8,11 @@ pandas = "*"
 requests = "*"
 requests-cache = "*"
 jupyter = "*"
-scrapy = "*"
-"https://github.com/seemethere/nba_py/tarball/master" = "*"
 scipy = "*"
 scikit-learn = "*"
 matplotlib = "*"
 seaborn = "*"
+Scrapy = "*"
+
+[packages.nba_py]
+git = "https://github.com/seemethere/nba_py.git"
