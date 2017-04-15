@@ -1,4 +1,4 @@
-BOT_NAME = 'nba'
+BOT_NAME = 'covers'
 
-SPIDER_MODULES = ['nba.spiders']
-NEWSPIDER_MODULE = 'nba.spiders'
+SPIDER_MODULES = ['covers.spiders']
+NEWSPIDER_MODULE = 'covers.spiders'

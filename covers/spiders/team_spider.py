@@ -1,6 +1,6 @@
 from scrapy import Spider
-from nba.items import Team
-from nba.loaders import TeamLoader
+from covers.items import Team
+from covers.loaders import TeamLoader
 
 
 class TeamSpider(Spider):

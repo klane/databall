@@ -1,7 +1,7 @@
 from collections import deque
 from scrapy import Spider, Request
-from nba.items import Game
-from nba.loaders import GameLoader
+from covers.items import Game
+from covers.loaders import GameLoader
 
 base_url = 'http://www.covers.com'
 
