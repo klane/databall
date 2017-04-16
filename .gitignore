@@ -5,7 +5,7 @@
 .idea/
 
 # TeX output
-docs/*
+docs/project_proposal.*
 !docs/project_proposal.bib
 !docs/project_proposal.pdf
 !docs/project_proposal.tex
