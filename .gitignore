@@ -4,6 +4,9 @@
 # PyCharm
 .idea/
 
+# Jekyll output
+_site/
+
 # TeX output
 docs/project_proposal.*
 !docs/project_proposal.bib
