@@ -1,5 +1,7 @@
 markdown: kramdown
 
+baseurl: /nba/
+
 exclude:
   - Gemfile*
   - project_proposal.*
