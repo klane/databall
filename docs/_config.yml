@@ -1,1 +1,5 @@
-theme: jekyll-theme-leap-day
+markdown: kramdown
+
+exclude:
+  - Gemfile*
+  - project_proposal.*
