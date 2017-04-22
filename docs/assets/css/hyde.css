@@ -87,6 +87,11 @@ html {
 .sidebar-nav {
   margin-bottom: 1rem;
 }
+.sidebar-nav h1, h2, h3, h4, h5, h6 {
+  color: rgba(255,255,255,.5);
+  margin-top: 0;
+  margin-bottom: 0;
+}
 .sidebar-nav-item {
   display: block;
   line-height: 1.75;
