@@ -1,6 +1,6 @@
 markdown: kramdown
 
-baseurl: /nba/
+baseurl: /nba
 
 exclude:
   - README.md
