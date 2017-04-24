@@ -8,10 +8,10 @@
 _site/
 
 # TeX output
-docs/project_proposal.*
-!docs/project_proposal.bib
-!docs/project_proposal.pdf
-!docs/project_proposal.tex
+report/project_proposal.*
+!report/project_proposal.bib
+!report/project_proposal.pdf
+!report/project_proposal.tex
 
 # Databases
 *.db
