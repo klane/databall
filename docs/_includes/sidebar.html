@@ -1,10 +1,12 @@
 <div class="sidebar">
-  <div class="container sidebar-sticky">
+  <div class="container">
     <div class="sidebar-about">
       <h1><a href="{{ site.baseurl }}/">{{ site.title | default: site.github.project_title }}</a></h1>
       <p class="lead">{{ site.description | default: site.github.project_tagline }}</p>
     </div>
+  </div>
 
+  <div class="container sidebar-sticky">
     {% include footer.html %}
   </div>
 </div>
