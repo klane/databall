@@ -1,0 +1,14 @@
+- title: Introduction
+  pages:
+  - title: Motivation
+    url: /introduction/motivation/
+
+- title: Data
+  pages:
+  - title: Stats
+    url: /data/stats/
+
+- title: Results
+  pages:
+  - title: Season
+    url: /results/season/
