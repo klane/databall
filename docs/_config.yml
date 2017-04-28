@@ -3,6 +3,8 @@ permalink: pretty
 
 baseurl: /nba
 
+include:
+ - _pages
 exclude:
   - README.md
   - Gemfile*
