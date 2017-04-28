@@ -1,7 +1,7 @@
 baseurl: /nba
 
 include:
- - _pages
+  - _pages
 exclude:
   - README.md
   - Gemfile*
