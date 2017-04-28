@@ -1,6 +1,3 @@
-markdown: kramdown
-permalink: pretty
-
 baseurl: /nba
 
 include:
