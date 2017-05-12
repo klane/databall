@@ -87,7 +87,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/data-exploration_10_0.png)
+![png]({{ site.baseurl }}/assets/images/data-exploration_10_0.png){: .center-image }
 
 
 Now let's calculate some advanced stats from the basic box score data. The code below returns a Pandas DataFrame with team offensive and defensive ratings (points scored/allowed per 100 possessions) averaged across each season, as well as SRS.
@@ -116,7 +116,7 @@ sns.plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/data-exploration_14_0.png)
+![png]({{ site.baseurl }}/assets/images/data-exploration_14_0.png){: .center-image }
 
 
 The next step is to look at games in terms of home and away team stats.
@@ -141,7 +141,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/data-exploration_18_0.png)
+![png]({{ site.baseurl }}/assets/images/data-exploration_18_0.png){: .center-image }
 
 
 A better view of this data is to separate games into home team wins and losses. The plots below show KDE plots of SRS for home team wins and losses with a red point added to easily identify the origin. The high-density area towards the lower right of the orgin for home team wins (left plot) indicates there are many games in the dataset where above-average home teams beat below-average away teams, which is not a surprising revelation. We draw the opposite conclusion for home team losses. The highest density occurs towards the upper left of the orgin, meaning games where a below-average home team plays an above-average visiting teams typically does not go well for the home team. There is also a small cluster of games in the left plot where above-average home teams beat above-average visitors of roughly equal quality. This may be caused by home court advantage, but was not investigated further.
@@ -169,7 +169,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/data-exploration_20_0.png)
+![png]({{ site.baseurl }}/assets/images/data-exploration_20_0.png){: .center-image }
 
 
 The plots below repeat those above for team net ratings (offensive rating - defensive rating). They illustrate that the same trends hold true for net ratings as did for SRS above.
@@ -199,4 +199,4 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/data-exploration_22_0.png)
+![png]({{ site.baseurl }}/assets/images/data-exploration_22_0.png){: .center-image }
