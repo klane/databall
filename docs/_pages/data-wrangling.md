@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Stats
-permalink: /data/stats/
+permalink: /data/wrangling/
 ---
 
 # Collecting the Data

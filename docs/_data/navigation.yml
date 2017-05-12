@@ -7,8 +7,10 @@
 
 - title: Data
   pages:
-  - title: Stats
-    url: /data/stats/
+  - title: Wrangling
+    url: /data/wrangling/
+  - title: Explore
+    url: /data/explore/
 
 - title: Results
   pages:
