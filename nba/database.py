@@ -139,6 +139,7 @@ class Database(object):
         data['POSSESSIONS'] = team_stats.possessions(data)
         data['TEAM_OFF_RTG'] = team_stats.off_rating(data)
         data['TEAM_DEF_RTG'] = team_stats.def_rating(data)
+        data['TEAM_NET_RTG'] = data['TEAM_OFF_RTG'] - data['TEAM_DEF_RTG']
 
         query = '''
             SELECT SEASON, TEAM_ID, OPP_ID, COUNT(OPP_ID) AS GAMES_PLAYED
