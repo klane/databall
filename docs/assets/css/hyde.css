@@ -65,7 +65,7 @@ html {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 18rem;
+    width: 20rem;
     text-align: left;
   }
 }
@@ -87,10 +87,11 @@ html {
 .sidebar-nav {
   margin-bottom: 1rem;
 }
-.sidebar-nav h1, h2, h3, h4, h5, h6 {
+.sidebar-nav h1 {
   color: rgba(255,255,255,.5);
   margin-top: 0;
   margin-bottom: 0;
+  font-size: 1.1rem;
 }
 .sidebar-nav-item {
   display: block;
@@ -148,7 +149,7 @@ a.sidebar-nav-item:focus {
 
 @media (min-width: 64em) {
   .content {
-    margin-left: 22rem;
+    margin-left: 24rem;
     margin-right: 4rem;
   }
 }
