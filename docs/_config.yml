@@ -1,4 +1,6 @@
 baseurl: /databall
+title: DataBall
+description: Using team and player stats to predict game winners
 
 include:
   - _pages
