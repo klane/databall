@@ -1,6 +1,9 @@
 # Jupyter Notebook
 .ipynb_checkpoints/
 
+# Python
+*.pyc
+
 # PyCharm
 .idea/
 
