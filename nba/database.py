@@ -1,7 +1,7 @@
 import sqlite3
 import numpy as np
 import pandas as pd
-import team_stats
+import stats, team_stats
 
 
 class Database(object):
@@ -140,6 +140,20 @@ class Database(object):
         data['TEAM_OFF_RTG'] = team_stats.off_rating(data)
         data['TEAM_DEF_RTG'] = team_stats.def_rating(data)
         data['TEAM_NET_RTG'] = data['TEAM_OFF_RTG'] - data['TEAM_DEF_RTG']
+        data['TEAM_EFG'] = stats.eff_fg_pct(data, 'TEAM_')
+        data['TEAM_TOV_PCT'] = stats.tov_pct(data, 'TEAM_')
+        data['TEAM_OREB_PCT'] = team_stats.oreb_pct(data)
+        data['TEAM_DREB_PCT'] = team_stats.dreb_pct(data)
+        data['TEAM_FT_PER_FGA'] = stats.ft_per_fga(data, 'TEAM_')
+
+        efg = data.TEAM_EFG
+        oreb = data.TEAM_OREB_PCT
+        dreb = data.TEAM_DREB_PCT
+        ftr = data.TEAM_FT_PER_FGA
+        tov = data.TEAM_TOV_PCT
+
+        data['TEAM_FOUR_FACTORS'] = 0.4 * efg + 0.2 * oreb + 0.15 * ftr - 0.25 * tov
+        data['TEAM_FOUR_FACTORS_REB'] = 0.4 * efg + 0.1 * oreb + 0.1 * dreb + 0.15 * ftr - 0.25 * tov
 
         query = '''
             SELECT SEASON, TEAM_ID, OPP_ID, COUNT(OPP_ID) AS GAMES_PLAYED
