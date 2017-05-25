@@ -7,6 +7,9 @@
 # PyCharm
 .idea/
 
+# Sublime Text
+*.sublime*
+
 # Jekyll output
 _site/
 
