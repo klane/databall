@@ -13,6 +13,9 @@
 # Jekyll output
 _site/
 
+# Pickled variable files
+*.pkl
+
 # TeX output
 report/project_proposal.*
 !report/project_proposal.bib
