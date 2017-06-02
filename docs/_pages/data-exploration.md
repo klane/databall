@@ -83,8 +83,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/home-win-pct.png){: .center-image }
-
+![png]({{ site.baseurl }}/assets/images/data-exploration/home-win-pct.png){: .center-image }
 
 Now let's calculate some advanced stats from the basic box score data. The code below returns a Pandas DataFrame with season-averaged team offensive and defensive ratings (points scored/allowed per 100 possessions), as well as SRS defined during [data wrangling](data-wrangling.md).
 
@@ -1050,8 +1049,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/ratings-scatter.png){: .center-image }
-
+![png]({{ site.baseurl }}/assets/images/data-exploration/ratings-scatter.png){: .center-image }
 
 The histogram and KDE of team SRS below show that teams are fairly normally distributed. The best fit normal distribution has a mean of essentially zero with a standard deviation of about 4.6 points. A zero-mean distribution makes sense here because an SRS of zero indicates a perfectly average team.
 
@@ -1075,8 +1073,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/srs-distribution.png){: .center-image }
-
+![png]({{ site.baseurl }}/assets/images/data-exploration/srs-distribution.png){: .center-image }
 
 The next step is to look at games in terms of home and away team stats. The code below joins the games table with the stats table initially by home team stats and followed by away team stats.
 
@@ -1100,8 +1097,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/srs-kde.png){: .center-image }
-
+![png]({{ site.baseurl }}/assets/images/data-exploration/srs-kde.png){: .center-image }
 
 The function below makes and customizes KDE plots of home and away team stats.
 
@@ -1134,8 +1130,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/srs-win-loss-kde.png){: .center-image }
-
+![png]({{ site.baseurl }}/assets/images/data-exploration/srs-win-loss-kde.png){: .center-image }
 
 The KDE plots below repeat those above for team net ratings (offensive rating - defensive rating). They illustrate that the same trends hold true for net ratings as did for SRS above.
 
@@ -1153,5 +1148,4 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}/assets/images/net-rating-win-loss-kde.png){: .center-image }
-
+![png]({{ site.baseurl }}/assets/images/data-exploration/net-rating-win-loss-kde.png){: .center-image }
