@@ -1,0 +1,7 @@
+---
+layout: page
+title: Outline
+permalink: /introduction/outline/
+---
+
+The first step is to build a classification model to predict NBA game winners given the strengths of the two teams in question. The model will be trained with games from previous seasons and tested against games already played this season. The second step involves building models to predict winners against the spread and over/unders. I am interested in repeating the first two steps using player stats instead of team stats to build the models and comparing the performance of the models. The absence of a team's best player generally affects an NBA team more than teams in other sports, which would be reflected in the betting lines. Models built using team stats would not pick up on this, but building a model using player stats from the players in each game's lineup would better account for this. I will also experiment with how much data to use to predict a given game. Using an entire season's worth of stats to predict games is not a realistic scenario. Bettors will only have stats available from games up to a given date to aid decisions. The window size (number of games to use) will be a model parameter that must be tuned for maximum performance. I will track the model's accuracy throughout the season. It will likely be inaccurate at the beginning of the season, but will better predict games as the season goes on and more data becomes available.
