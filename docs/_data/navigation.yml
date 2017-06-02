@@ -12,6 +12,11 @@
   - title: Data Exploration
     url: /data/explore/
 
+- title: Model Selection
+  pages:
+  - title: Feature Selection
+    url: /model/features/
+
 - title: Results
   pages:
   - title: Model Performance

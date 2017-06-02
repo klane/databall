@@ -5,3 +5,10 @@ data-exploration:
   - srs-kde
   - srs-win-loss-kde
   - net-rating-win-loss-kde
+
+feature-selection:
+  - srs-cross-validation
+  - four-factors-cross-validation
+  - weighted-four-factors-cross-validation
+  - k-best-cross-validation
+  - cross-validation-comparison
