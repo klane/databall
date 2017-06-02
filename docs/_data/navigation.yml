@@ -16,5 +16,5 @@
 
 - title: Results
   pages:
-  - title: Season
-    url: /results/season/
+  - title: Model Performance
+    url: /results/performance/
