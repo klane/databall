@@ -1,0 +1,7 @@
+data-exploration:
+  - home-win-pct
+  - ratings-scatter
+  - srs-distribution
+  - srs-kde
+  - srs-win-loss-kde
+  - net-rating-win-loss-kde

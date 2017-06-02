@@ -16,6 +16,9 @@ _site/
 # Pickled variable files
 *.pkl
 
+# setuptools directory from local package installation
+*.egg-info
+
 # TeX output
 report/project_proposal.*
 !report/project_proposal.bib
