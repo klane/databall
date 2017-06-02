@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Stats
+title: Data Wrangling
 permalink: /data/wrangling/
 ---
 
