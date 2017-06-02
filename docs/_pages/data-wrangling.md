@@ -88,7 +88,7 @@ where $$\vec{SRS}_i$$ is a vector of all team's SRS values at iteration $$i$$, $
 
 ## Four Factors
 
-Another set of stats that can be easily calculated were originally identified by Dean Oliver[^1b5d139a], which he coined the four factors. They aim to identify four key areas---including their relative weights---that winning teams excel at, namely efficient shooting (40%), minimizing turnovers (25%), rebounding (20%), and getting to the free throw line (15%). The percentages in parentheses are the weights Oliver assigned to each factor. [Basketball-Reference.com's](http://www.basketball-reference.com/about/factors.html) definition of the four factors are:
+Another set of stats that can be easily calculated were originally identified by Dean Oliver[^1], which he coined the four factors. They aim to identify four key areas---including their relative weights---that winning teams excel at, namely efficient shooting (40%), minimizing turnovers (25%), rebounding (20%), and getting to the free throw line (15%). The percentages in parentheses are the weights Oliver assigned to each factor. [Basketball-Reference.com's](http://www.basketball-reference.com/about/factors.html) definition of the four factors are:
 
 $$\begin{align}
 eFG\% & =\frac{FG+0.5*3FG}{FGA} \\
@@ -104,4 +104,4 @@ $$TOV\%=\frac{TOV}{FGA+0.44*FTA+AST+TOV}$$
 
 The NBA also uses free throw attempt rate ($$FTA/FGA$$) instead of free throw rate ($$FT/FGA$$) like Basketball-Reference.com. Basketball-Reference.com uses free throw rate to not only measure how often teams get to the free throw line, but also how often they convert those chances. A lousy free throw shooting team that gets fouled a lot will have a high free throw attempt rate even though their poor foul shooting cost them easy points. However, Basketball-Reference.com's free throw factor is not impressed by fruitless trips to the free throw line. I use Basketball-Reference.com's definition of the four factors for my analysis.
 
-[^1b5d139a]: *Basketball on Paper* by Dean Oliver
+[^1]: *Basketball on Paper* by Dean Oliver
