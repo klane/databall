@@ -9,7 +9,7 @@
   pages:
   - title: Data Wrangling
     url: /data/wrangling/
-  - title: Exploring the Data
+  - title: Data Exploration
     url: /data/explore/
 
 - title: Results
