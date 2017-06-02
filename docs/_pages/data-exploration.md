@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Explore
+title: Data Exploration
 permalink: /data/explore/
 ---
 
@@ -84,6 +84,8 @@ plt.show()
 
 
 ![png]({{ site.baseurl }}/assets/images/data-exploration/home-win-pct.png){: .center-image }
+
+# Historically Great Teams
 
 Now let's calculate some advanced stats from the basic box score data. The code below returns a Pandas DataFrame with season-averaged team offensive and defensive ratings (points scored/allowed per 100 possessions), as well as SRS defined during [data wrangling](data-wrangling.md).
 
@@ -1051,6 +1053,8 @@ plt.show()
 
 ![png]({{ site.baseurl }}/assets/images/data-exploration/ratings-scatter.png){: .center-image }
 
+# Team Strength Distribution
+
 The histogram and KDE of team SRS below show that teams are fairly normally distributed. The best fit normal distribution has a mean of essentially zero with a standard deviation of about 4.6 points. A zero-mean distribution makes sense here because an SRS of zero indicates a perfectly average team.
 
 
@@ -1075,6 +1079,8 @@ plt.show()
 
 ![png]({{ site.baseurl }}/assets/images/data-exploration/srs-distribution.png){: .center-image }
 
+# Home vs. Away Strength
+
 The next step is to look at games in terms of home and away team stats. The code below joins the games table with the stats table initially by home team stats and followed by away team stats.
 
 
@@ -1083,14 +1089,14 @@ seasons = season_stats.filter(regex='SEASON|TEAM')
 games = pd.read_sql('SELECT * FROM games', conn)
 games = games.merge(seasons, left_on=['SEASON', 'HOME_TEAM_ID'], right_on=['SEASON', 'TEAM_ID'])
 games = games.merge(seasons, left_on=['SEASON', 'AWAY_TEAM_ID'], right_on=['SEASON', 'TEAM_ID'], 
-                    suffixes=('', '_OPP'))
+                    suffixes=('', '_AWAY'))
 ```
 
 The plot below shows a 2D KDE that compares home and away team SRS. By inspection, the majority of games occur between teams with SRS values within 5 points of average. This makes intuitive sense given the standard deviation of 4.6 points calculated above. Assuming the Gaussian distribution above, more than 68% of all teams since 1990 have SRS values with a magnitude less than 5 based on the definition of a normal distribution. The distribution appears symmetric about a y=x line because under normal circumstances (each team plays a full season), teams have the same number of home and away games. 
 
 
 ```python
-ax = sns.jointplot(x='TEAM_SRS', y='TEAM_SRS_OPP', data=games, kind='kde',
+ax = sns.jointplot(x='TEAM_SRS', y='TEAM_SRS_AWAY', data=games, kind='kde',
                    shade_lowest=False, stat_func=None, xlim=(-15, 15), ylim=(-15, 15), size=8)
 ax.set_axis_labels(xlabel='Home Team SRS', ylabel='Away Team SRS')
 plt.show()
@@ -1105,7 +1111,7 @@ The function below makes and customizes KDE plots of home and away team stats.
 ```python
 def kde(data, stat, label, title, ax):
     stat = 'TEAM_' + stat
-    sns.kdeplot(data[stat], data[stat + '_OPP'], cmap='Blues', shade=True, shade_lowest=False, ax=ax)
+    sns.kdeplot(data[stat], data[stat + '_AWAY'], cmap='Blues', shade=True, shade_lowest=False, ax=ax)
     ax.plot(0, 0, 'or')
     ax.set_xlabel('Home Team ' + label)
     ax.set_ylabel('Away Team ' + label)
