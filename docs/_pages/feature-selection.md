@@ -228,15 +228,14 @@ The function below plots a cross-validated ROC curve. It also provides the optio
 ```python
 def cross_val_roc_curve(model, X, y, ax, k=10, label='Mean', show_folds=False):
     # Compute cross-validated ROC curve and area under the curve
-    proba = cross_val_predict(model, X, y, cv=StratifiedKFold(n_splits=k), method='predict_proba')
+    kfold = StratifiedKFold(n_splits=k)
+    proba = cross_val_predict(model, X, y, cv=kfold, method='predict_proba')
     mean_fpr, mean_tpr, thresholds = roc_curve(y, proba[:, 1])
     mean_auc = roc_auc_score(y, proba[:, 1])
     
     # Loop over k folds and get ROC curve for each fold
     if show_folds:
-        cv = StratifiedKFold(n_splits=k)
-
-        for i, (train, test) in enumerate(cv.split(X, y)):
+        for i, (train, test) in enumerate(kfold.split(X, y)):
             # Fit model for the ith fold
             proba = model.fit(X.iloc[train], y[train]).predict_proba(X.iloc[test])
             
@@ -259,15 +258,14 @@ The function below is similar to the ROC function above, but plots a cross-valid
 ```python
 def cross_val_precision_recall_curve(model, X, y, ax, k=10, label='Mean', show_folds=False):
     # Compute cross-validated precision/recall curve and area under the curve
-    proba = cross_val_predict(model, X, y, cv=StratifiedKFold(n_splits=k), method='predict_proba')
+    kfold = StratifiedKFold(n_splits=k)
+    proba = cross_val_predict(model, X, y, cv=kfold, method='predict_proba')
     mean_precision, mean_recall, thresholds = precision_recall_curve(y, proba[:, 1])
     mean_auc = average_precision_score(y, proba[:, 1])
     
     # Loop over k folds and get precision/recall curve for each fold
     if show_folds:
-        cv = StratifiedKFold(n_splits=k)
-
-        for i, (train, test) in enumerate(cv.split(X, y)):
+        for i, (train, test) in enumerate(kfold.split(X, y)):
             # Fit model for the ith fold
             proba = model.fit(X.iloc[train], y[train]).predict_proba(X.iloc[test])
             
