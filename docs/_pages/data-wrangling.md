@@ -12,14 +12,14 @@ The NBA provides a wealth of basic and advanced stats on their website [stats.nb
   stats.nba.com/stats/{endpoint}/?{params}
 ```
 
-This makes it easy to pull in the data programmatically without having to scrape the page HTML. For example, individual player stats from every game of the 2016-17 regular season can be found [here](http://stats.nba.com/stats/leaguegamelog/?LeagueID=00&Season=2016-17&SeasonType=Regular Season&PlayerOrTeam=P&Sorter=PTS&Direction=DESC). I leveraged the existing GitHub project [nba_py](https://github.com/seemethere/nba_py) that provides a simple Python API to pull data from the NBA stats website. If the user has [Pandas](http://pandas.pydata.org/) installed, the package will return a query as a [DataFrame](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html). For example, player stats from every game of the 2016-17 regular season can be extracted to a DataFrame with:
+This makes it easy to pull in the data programmatically without having to scrape the page HTML. For example, individual player stats from every game of the 2016-17 regular season can be found [here](http://stats.nba.com/stats/leaguegamelog/?LeagueID=00&Season=2016-17&SeasonType=Regular Season&PlayerOrTeam=P&Sorter=PTS&Direction=DESC). I leveraged the existing GitHub project [nba_py](https://github.com/seemethere/nba_py) that provides a simple Python API to pull data from the NBA stats website. If the user has [Pandas](http://pandas.pydata.org/) installed, the package will return a query as a [`DataFrame`](http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html). For example, player stats from every game of the 2016-17 regular season can be extracted to a `DataFrame` with:
 
 ```python
   from nba_py.league import GameLog
   stats = GameLog(season='2016-17', season_type='Regular Season', player_or_team='P').overall()
 ```
 
-The API also provides sensible defaults, such as the current season for the season parameter, which reduces the amount of code required. The code below produces the same output as that above given that this page was written during the 2016-17 season. These two code snippets will produce different results at the start of the 2017-18 campaign.
+A Jupyter Notebook detailing the available stats is located [here](https://github.com/klane/databall/blob/master/notebooks/nba-stats.ipynb). The API also provides sensible defaults, such as the current season for the season parameter, which reduces the amount of code required. The code below produces the same output as that above given that this page was written during the 2016-17 season. These two code snippets will produce different results at the start of the 2017-18 campaign.
 
 ```python
   from nba_py.league import GameLog
@@ -60,7 +60,7 @@ Steps 2 and 3 can be wrapped in a loop to store stats for different seasons. I u
 
 # Calculating Advanced Stats
 
-We now have a database containing box score stats, but the raw numbers are not all that useful by themselves. We can get more meaningful numbers by calculating a few advanced stats. These stats are included on a combination of sites such as [stats.nba.com](http://stats.nba.com), [Basketball-Reference.com](http://www.basketball-reference.com/), and [ESPN](http://www.espn.com/nba/statistics). In the case of the NBA stats website, the advanced stats JSON endpoint is only for individual games, meaning I must query the site with each game's unique ID. I would much rather use the GameLog class described above to obtain a full season's worth of box scores at once and calculate desired stats. I could also write a web scraper to read the stats, but many sites have game stats for a single season spread across multiple pages. I found it more flexible to save box scores from the GameLog class and leverage them to calculate additional stats.
+We now have a database containing box score stats, but the raw numbers are not all that useful by themselves. We can get more meaningful numbers by calculating a few advanced stats. These stats are included on a combination of sites such as [stats.nba.com](http://stats.nba.com), [Basketball-Reference.com](http://www.basketball-reference.com/), and [ESPN](http://www.espn.com/nba/statistics). In the case of the NBA stats website, the advanced stats JSON endpoint is only for individual games, meaning I must query the site with each game's unique ID. I would much rather use the `GameLog` class described above to obtain a full season's worth of box scores at once and calculate desired stats. I could also write a web scraper to read the stats, but many sites have game stats for a single season spread across multiple pages. I found it more flexible to save box scores from the `GameLog` class and leverage them to calculate additional stats.
 
 ## Offensive & Defensive Ratings
 
@@ -104,4 +104,4 @@ $$TOV\%=\frac{TOV}{FGA+0.44*FTA+AST+TOV}$$
 
 The NBA also uses free throw attempt rate ($$FTA/FGA$$) instead of free throw rate ($$FT/FGA$$) like Basketball-Reference.com. Basketball-Reference.com uses free throw rate to not only measure how often teams get to the free throw line, but also how often they convert those chances. A lousy free throw shooting team that gets fouled a lot will have a high free throw attempt rate even though their poor foul shooting cost them easy points. However, Basketball-Reference.com's free throw factor is not impressed by fruitless trips to the free throw line. I use Basketball-Reference.com's definition of the four factors for my analysis.
 
-[^1]: *Basketball on Paper* by Dean Oliver
+[^1]: Oliver, Dean. *Basketball on Paper: Rules and Tools for Performance Analysis*. Potomac Books, 2004.

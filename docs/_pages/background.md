@@ -34,8 +34,8 @@ The world of sports betting can be very lucrative for those that are skilled at 
 
 Betting on the spread involves picking winners of games where the favorite is handicapped. For example, if a given team is favored by 5 points and wins by more than 5, they are said to have "covered" and won against the spread. The betting line for this scenario will be set at -5 for the favorite. The opposite holds true for underdogs. They cover by either winning or losing by less than the line. An over/under bet requires comparing the total number of points scored by the two teams in a given game to a number set by the oddsmakers. Bettors must decide if they think the total points scored will be over or under this value. These provide more challenging problems than simply picking game winners.
 
-[^1]: *The Bill James Baseball Abstract* by Bill James
+[^1]: James, Bill. *The Bill James Historical Baseball Abstract*. Villard, 1985.
 
-[^2]: *Moneyball: The Art of Winning an Unfair Game* by Michael Lewis
+[^2]: Lewis, Michael. *Moneyball: The Art of Winning an Unfair Game*. W. W. Norton & Company, 2003.
 
-[^3]: *The Signal and the Noise: Why So Many Predictions Fail --- but Some Don't* by Nate Silver
+[^3]: Silver, Nate. *The Signal and the Noise: Why So Many Predictions Fail --- but Some Don't*. Penguin Books, 2012.
