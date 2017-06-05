@@ -52,7 +52,7 @@ plt.rc('legend', fontsize=12)  # legend fontsize
 
 # Preprocess the Data
 
-The next step is to bring in the data similar to what was done during the [data exploration](data-exploration.md) process.
+The next step is to bring in the data similar to what was done during [data exploration](data-exploration.md).
 
 
 ```python
@@ -136,7 +136,7 @@ labels = ['TEAM_' + s for s in stats]
 labels.extend(['TEAM_' + s + '_AWAY' for s in stats])
 ```
 
-The input data is selected from the labels above and the output data is the W/L values encoded to be either 0 or 1 using scikit-learn's [`LabelEncoder`](http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html#sklearn.preprocessing.LabelEncoder).
+The input data is selected from the labels above and the output data is the W/L values encoded to be either 0 or 1 using scikit-learn's [`LabelEncoder`](http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.LabelEncoder.html#sklearn.preprocessing.LabelEncoder) class.
 
 
 ```python
@@ -144,14 +144,14 @@ The input data is selected from the labels above and the output data is the W/L 
 X, y = games[labels], LabelEncoder().fit_transform(games.HOME_WL)
 ```
 
-The dataset is then split into training and test data by utilizing [`train_test_split`](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split) with 25% of the data reserved for testing. The split is stratified using the class attribute to ensure a similar distribution of the two classes between the training and test sets.
+The dataset is then split into training and test data by utilizing the [`train_test_split`](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html#sklearn.model_selection.train_test_split) function with 25% of the data reserved for testing. The split is stratified using the class attribute to ensure a similar distribution of the two classes between the training and test sets.
 
 
 ```python
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, stratify=y)
 ```
 
-We must verify that the percentage of games won by the home team is similar in the test set as in the dataset as a whole. The mean of the test labels in ```y_test``` below shows the percent of home team wins is about 60%, the same amout calculated during [data exploration](data-exploration.md).
+We should verify that the data was indeed stratified by ensuring the percentage of games won by the home team is similar in both the training and test sets. The mean of the labels in `y_train` and `y_test` show the home team win percentage is about 60%, the same amout that was calculated during [data exploration](data-exploration.md).
 
 
 ```python
@@ -174,7 +174,7 @@ f.close()
 
 # Select Features Automatically
 
-The code below uses [`SelectKBest`](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html#sklearn.feature_selection.SelectKBest) to select the 10 best attributes accoring to the [ANOVA F-value](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn.feature_selection.f_classif). The majority of the selected attributes deal with points (SRS, plus/minus, etc). The only attribute selected not directly related to points is the weighted sum of the four factors. The four factors are weighted according the Oliver's selected weights (discussed during [data wrangling](data-wrangling.md)) and combined into a single metric as:
+The code below uses [`SelectKBest`](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html#sklearn.feature_selection.SelectKBest) to select the 10 best attributes accoring to the [ANOVA F-value](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn.feature_selection.f_classif). The majority of the selected attributes deal with points (SRS, offensive rating, etc). The only attribute selected not directly related to points is the weighted sum of the four factors. The four factors are weighted according to Oliver's selected weights (discussed during [data wrangling](data-wrangling.md)) and combined into a single metric as:
 
 $$FF=0.4*EFG\% + 0.2*OREB\% + 0.15*FTR - 0.25*TOV\%$$
 
@@ -242,7 +242,7 @@ def cross_val_roc_curve(model, X, y, ax, k=10, label='Mean', show_folds=False):
             # Compute ROC curve and area under the curve
             fpr, tpr, thresholds = roc_curve(y[test], proba[:, 1])
             roc_auc = roc_auc_score(y[test], proba[:, 1])
-            ax.plot(fpr, tpr, lw=1, label='Fold %d (area = %0.2f)' % (i+1, roc_auc))
+            ax.plot(fpr, tpr, lw=1, label='Fold %d (Area = %0.2f)' % (i+1, roc_auc))
     
         ax.plot(mean_fpr, mean_tpr, 'k--', label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
     else:
@@ -313,7 +313,7 @@ def select_columns(df, names, columns=X_train.columns):
 
 # Compare Attribute Groupings
 
-The plots below show 10-fold cross-validated ROC and precision/recall curves using home and away SRS as the selected attributes.
+I trained logistic regression models (using scikit-learn's [`LogisticRegression`](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html#sklearn.linear_model.LogisticRegression) class) to compare the predictive capability of different groups of features since logistic regression is well-suited to this type of binary classification problem. The plots below show 10-fold cross-validated ROC and precision/recall curves using home and away SRS as the selected attributes. There is little spread among the different folds. The areas under the curves for the individual folds do not deviate more than 0.02 from the cross validated curves, which are much smoother than the individual fold curves.
 
 
 ```python
@@ -325,7 +325,7 @@ cross_val_curves(model, X_train[attributes], y_train)
 
 ![png]({{ site.baseurl }}/assets/images/feature-selection/srs-cross-validation.png){: .center-image }
 
-The plots below show 10-fold cross-validated ROC and precision/recall curves using home and away four factors as the selected attributes.
+The ROC and precision/recall curves below use the four factors defined during [data wrangling](data-wrangling.md). A [`FunctionTransformer`](http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.FunctionTransformer.html#sklearn.preprocessing.FunctionTransformer) that selects columns from the `DataFrame` is added to simplify the process of specifying all the attributes. The selector and classifier are combined into a `Pipeline` using the [`make_pipeline`](http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline) function. The spread among the individual folds are similar to those using SRS above. However, the areas under the cross-validated curves are lower, indicating SRS is a more predictive variable of home team performance than the four factors.
 
 
 ```python
@@ -341,7 +341,7 @@ cross_val_curves(model, X_train, y_train)
 
 ![png]({{ site.baseurl }}/assets/images/feature-selection/four-factors-cross-validation.png){: .center-image }
 
-The ROC and precision/recall curves below use the four factors defined during [data wrangling](data-wrangling.md). The precision/recall curve shows a wider spread than that using SRS above. The areas under both curves are also lower than those above, indicating SRS is a more predictive variable of home team performance than the weighted four factors.
+The plots below show 10-fold cross-validated ROC and precision/recall curves using the weighted four factors as the selected attributes. The curves show that the weighted four factors have less predictive capability than both SRS and the four factors, given that the areas under both curves below are lower than the previous curves.
 
 
 ```python
@@ -353,7 +353,7 @@ cross_val_curves(model, X_train[attributes], y_train)
 
 ![png]({{ site.baseurl }}/assets/images/feature-selection/weighted-four-factors-cross-validation.png){: .center-image }
 
-The ROC and precision/recall curves below use the 10 best attributes selected above. The curves are very similar to the SRS curves above. Home and away SRS is included among the selected attributes, but adding 8 extra features does not improve the model's performance as indicated by the areas under the curves.
+The ROC and precision/recall curves below use the 10 best attributes selected above. The curves are very similar to the SRS curves above. Home and away SRS are included among the selected attributes, but adding 8 extra features does not improve the model's performance as indicated by the areas under the curves.
 
 
 ```python
@@ -366,7 +366,7 @@ cross_val_curves(model, X_train, y_train)
 
 ![png]({{ site.baseurl }}/assets/images/feature-selection/k-best-cross-validation.png){: .center-image }
 
-The ROC and precision/recall curves below compare logistic regression using different attributes. The curves using SRS, net rating, and offensive/defensive ratings are nearly identical. This is not terribly surprising since SRS is average margin of victory (similar to net rating) adjusted for strength of schedule, and net rating is derived from the offensive and defensive ratings. All three outperform the curves based on the four factors.
+The ROC and precision/recall curves below compare logistic regression models using different attributes. The curves using SRS, net rating, offensive/defensive ratings, and plus/minus are nearly identical. This is not terribly surprising since SRS is average margin of victory (equal to plus/minus and similar to net rating) adjusted for strength of schedule, and net rating is derived from the offensive and defensive ratings. All four outperform the two models based on the four factors.
 
 
 ```python
