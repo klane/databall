@@ -18,3 +18,11 @@ parameter-tuning:
   - support-vector-machine-metrics
   - random-forest-metrics
   - neural-network-metrics
+
+model-performance:
+  - logistic-regression-confusion-matrix
+  - support-vector-machine-confusion-matrix
+  - random-forest-confusion-matrix
+  - neural-network-confusion-matrix
+  - naive-bayes-confusion-matrix
+  - model-performance-comparison
