@@ -12,3 +12,9 @@ feature-selection:
   - weighted-four-factors-cross-validation
   - k-best-cross-validation
   - cross-validation-comparison
+
+parameter-tuning:
+  - logistic-regression-metrics
+  - support-vector-machine-metrics
+  - random-forest-metrics
+  - neural-network-metrics

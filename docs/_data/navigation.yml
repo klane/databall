@@ -16,6 +16,8 @@
   pages:
   - title: Feature Selection
     url: /model/features/
+  - title: Parameter Tuning
+    url: /model/parameters/
 
 - title: Results
   pages:
