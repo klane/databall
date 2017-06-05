@@ -151,7 +151,7 @@ The dataset is then split into training and test data by utilizing the [`train_t
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, stratify=y)
 ```
 
-We should verify that the data was indeed stratified by ensuring the percentage of games won by the home team is similar in both the training and test sets. The mean of the labels in `y_train` and `y_test` show the home team win percentage is about 60%, the same amout that was calculated during [data exploration](data-exploration.md).
+We should verify that the data was indeed stratified by ensuring the percentage of games won by the home team is similar in both the training and test sets. The mean of the labels in `y_train` and `y_test` show the home team win percentage is about 60%, the same amount that was calculated during [data exploration](data-exploration.md).
 
 
 ```python
@@ -174,7 +174,7 @@ f.close()
 
 # Select Features Automatically
 
-The code below uses [`SelectKBest`](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html#sklearn.feature_selection.SelectKBest) to select the 10 best attributes accoring to the [ANOVA F-value](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn.feature_selection.f_classif). The majority of the selected attributes deal with points (SRS, offensive rating, etc). The only attribute selected not directly related to points is the weighted sum of the four factors. The four factors are weighted according to Oliver's selected weights (discussed during [data wrangling](data-wrangling.md)) and combined into a single metric as:
+The code below uses [`SelectKBest`](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html#sklearn.feature_selection.SelectKBest) to select the 10 best attributes according to the [ANOVA F-value](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn.feature_selection.f_classif). The majority of the selected attributes deal with points (SRS, offensive rating, etc). The only attribute selected not directly related to points is the weighted sum of the four factors. The four factors are weighted according to Oliver's selected weights (discussed during [data wrangling](data-wrangling.md)) and combined into a single metric as:
 
 $$FF=0.4*EFG\% + 0.2*OREB\% + 0.15*FTR - 0.25*TOV\%$$
 
