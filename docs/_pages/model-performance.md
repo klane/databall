@@ -204,9 +204,9 @@ print 'Correctly predicted %.2f%% of games' % (accuracy_score(y_test, pred) * 10
     Correctly predicted 69.34% of games
 
 
-# Naive Bayes
+# Na&iuml;ve Bayes
 
-A naive Bayes model (implemented with [`GaussianNB`](http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB) is included as a comparison to the four previous models. It performs the best with home wins by correctly predicting over 82% of those games, but actually performs the worst at predicting home losses where it is no better than a coin flip.
+A Na&iuml;ve Bayes model (implemented with [`GaussianNB`](http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB) is included as a comparison to the four previous models. It performs the best with home wins by correctly predicting over 82% of those games, but actually performs the worst at predicting home losses where it is no better than a coin flip.
 
 
 ```python
@@ -273,7 +273,7 @@ def plot_performance_curves(models, X, y):
     plt.show()
 ```
 
-The plots below compare ROC and precision/recall curves for the five models evaluated above. The logistic regression, support vector machine, neural network, and naive bayes curves are nearly identical, which is to be expected given how similar their performance metrics were. The random forest model certainly sticks out with dramatically lower areas under both curves. There is an interesting discontinuity in the precision/recall curve at a recall of around 0.25.
+The plots below compare ROC and precision/recall curves for the five models evaluated above. The logistic regression, support vector machine, neural network, and Na&iuml;ve Bayes curves are nearly identical, which is to be expected given how similar their performance metrics were. The random forest model certainly sticks out with dramatically lower areas under both curves. There is an interesting discontinuity in the precision/recall curve at a recall of around 0.25.
 
 
 ```python
