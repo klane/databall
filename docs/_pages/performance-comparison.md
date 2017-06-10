@@ -1,10 +1,8 @@
 ---
-layout: default
+layout: page
 title: Performance Comparison
 permalink: /results/comparison/
 ---
-
-# Comparison to Published Works
 
 The roughly 70% prediction accuracy achieved on the test set is in line with published results. Zimmermann[^1] used multi-layer perceptron, random forest, and Na&iuml;ve Bayes classifiers implemented in [Weka](http://www.cs.waikato.ac.nz/ml/weka/) to predict the winners of both NBA (2009-2015) and NCAA men's basketball (2009-2013) games. His setup introduced a temporal component, where only previous games were used to predict games. This is a more realistic approach to utilize in a betting scenario where bettors can only draw on past games to inform their decisions. Zimmermann correctly predicted about 57-68% of NBA games correctly depending on the season and method implemented, though the season with 68% accuracy was an outlier. For most seasons, he achieved accuracies below about 64% percent, meaning his models performed marginally better than selecting the home team as the winner. He was more successful in selecting winners in the NCAA, where the range in skill level is usually much larger than in the NBA.
 

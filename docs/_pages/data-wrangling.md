@@ -1,10 +1,10 @@
 ---
-layout: default
+layout: page
 title: Data Wrangling
 permalink: /data/wrangling/
 ---
 
-# Collecting the Data
+## Collecting the Data
 
 The NBA provides a wealth of basic and advanced stats on their website [stats.nba.com](http://stats.nba.com). The site exposes a wide variety of information in JSON format through various endpoints and parameters that take the form:
 
@@ -28,7 +28,7 @@ A Jupyter Notebook detailing the available stats is located [here](https://githu
 
 This package reduces the burden on the user by not requiring him or her to format the URL explicitly or know all the various options available. In addition to game stats, the package provides access to season stats, tracking stats, game/season splits, lineups, and several others .
 
-# Storing the Data
+## Storing the Data
 
 Now that I have easy access to NBA stats, I need to store them for later use to avoid grabbing the same data from the NBA stats website multiple times. I chose to store the data in a SQLite database. SQLite provides the functionality of a relational database in a local file and is [described](https://www.sqlite.org/about.html) as self-contained, serverless, and zero-configuration. This coupled with the fact that Python has built-in SQLite support made SQLite a natural fit for this project. A Python connection to a SQLite database named nba.db can be opened with:
 
@@ -58,11 +58,11 @@ The process for generating a database of NBA stats consists of four steps:
 
 Steps 2 and 3 can be wrapped in a loop to store stats for different seasons. I used this process to create a database with player and team stats for full seasons since the 1996-97 season and for individual games going back to the 1989-90 season. The season stats start later because the NBA stats website only includes [season stats](http://stats.nba.com/teams/traditional/) since the 1996-97 season, something I did not realize initially, but [box scores](http://stats.nba.com/teams/boxscores/) go back much further. All season stats moving forward are actually averaged from box scores to permit analysis of seasons prior to 1996. The code used to generate the database is located [here](https://github.com/klane/nba/blob/master/nba/database_builder.py).
 
-# Calculating Advanced Stats
+## Calculating Advanced Stats
 
 We now have a database containing box score stats, but the raw numbers are not all that useful by themselves. We can get more meaningful numbers by calculating a few advanced stats. These stats are included on a combination of sites such as [stats.nba.com](http://stats.nba.com), [Basketball-Reference.com](http://www.basketball-reference.com/), and [ESPN](http://www.espn.com/nba/statistics). In the case of the NBA stats website, the advanced stats JSON endpoint is only for individual games, meaning I must query the site with each game's unique ID. I would much rather use the `GameLog` class described above to obtain a full season's worth of box scores at once and calculate desired stats. I could also write a web scraper to read the stats, but many sites have game stats for a single season spread across multiple pages. I found it more flexible to save box scores from the `GameLog` class and leverage them to calculate additional stats.
 
-## Offensive & Defensive Ratings
+### Offensive & Defensive Ratings
 
 The analytics community typically looks at pace-adjusted numbers (see the [Hang Time Blog](http://hangtime.blogs.nba.com/2013/02/15/the-new-nba-comstats-advanced-stats-all-start-with-pace-and-efficiency/) and [Nylon Calculus](http://fansided.com/2015/12/21/nylon-calculus-101-possessions/) for some good discussions) instead of per-game stats to get a picture of team strength. A team scoring 100 points in a game where it had 100 possessions is obviously not as impressive as a team scoring the same number of points in only 90 possessions. The latter team was more efficient with their possessions. Since box scores do not include the number of possessions, we must estimate them. [Basketball-Reference.com](http://www.basketball-reference.com/about/glossary.html) calculates possessions as:
 
@@ -78,7 +78,7 @@ $$PACE=\frac{240*POSS}{MIN}$$
 
 where 240 is the number of team minutes in a regulation-length game and $$MIN$$ is the number of team minutes played. Therefore, pace equals possessions for a regulation-length game.
 
-## Simple Rating System
+### Simple Rating System
 
 Another stat that models team strength is Sports-Reference.com's [Simple Rating System](http://www.sports-reference.com/blog/2015/03/srs-calculation-details/) (SRS), which was first introduced by [Pro-Football-Reference.com](http://www.pro-football-reference.com/blog/index4837.html?p=37). It if a measure of team strength relative to an average opponent. A team with an SRS of 5 is considered 5 points better than an average team. It is calculated as average margin of victory adjusted for strength of schedule. It must be calculated iteratively because each team's rating depends on those of its opponents. The equation is:
 
@@ -86,7 +86,7 @@ $$\vec{SRS}_i=\vec{PD}+\mathbf{S}\times\vec{SRS}_{i-1}$$
 
 where $$\vec{SRS}_i$$ is a vector of all team's SRS values at iteration $$i$$, $$\vec{PD}$$ is a vector of average point differentials, and $$\mathbf{S}$$ denotes the schedule matrix. The schedule matrix is symmetric about the diagonal and $$\mathbf{S}_{i,j}$$ indicates what percentage of team $$i$$'s games were played against team $$j$$. The SRS vector is updated until it converges, which typically only takes a few iterations to reach an acceptable tolerance.
 
-## Four Factors
+### Four Factors
 
 Another set of stats that can be easily calculated were originally identified by Dean Oliver[^1], which he coined the four factors. They aim to identify four key areas---including their relative weights---that winning teams excel at, namely efficient shooting (40%), minimizing turnovers (25%), rebounding (20%), and getting to the free throw line (15%). The percentages in parentheses are the weights Oliver assigned to each factor. [Basketball-Reference.com's](http://www.basketball-reference.com/about/factors.html) definition of the four factors are:
 
