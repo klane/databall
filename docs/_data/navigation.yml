@@ -23,3 +23,5 @@
   pages:
   - title: Model Performance
     url: /results/performance/
+  - title: Performance Comparison
+    url: /results/comparison/
