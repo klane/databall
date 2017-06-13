@@ -20,10 +20,10 @@ _site/
 *.egg-info
 
 # TeX output
-report/project_proposal.*
-!report/project_proposal.bib
-!report/project_proposal.pdf
-!report/project_proposal.tex
+report/project-proposal.*
+!report/project-proposal.bib
+!report/project-proposal.pdf
+!report/project-proposal.tex
 
 # Databases
 *.db
