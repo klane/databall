@@ -12,8 +12,8 @@ scipy = "*"
 scikit-learn = "*"
 matplotlib = "*"
 seaborn = "*"
-Scrapy = "*"
+scrapy = "*"
 click = "*"
 
-[packages.nba_py]
-git = "https://github.com/seemethere/nba_py.git"
+[packages.nba-py]
+git = "https://github.com/seemethere/nba-py.git"
