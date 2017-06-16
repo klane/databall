@@ -1,6 +1,9 @@
 \documentclass{beamer}
-\usetheme{Boadilla}
-\usecolortheme{spruce}
+\usetheme{Madrid}
+% \usecolortheme{spruce}
+
+% Change base colour beamer@blendedblue (originally RGB: 0.2,0.2,0.7)
+\colorlet{beamer@blendedblue}{green!40!black}
 
 \usepackage[citestyle=authoryear, sorting=none]{biblatex}
 \addbibresource{databall.bib}
@@ -23,59 +26,135 @@
 \section{Introduction}
 
 \subsection{Background}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Background}
 \begin{itemize}
-    \item Sports analytics began in professional baseball most notably with the work of Bill James\footcite{james}
-    \item The impact of analytics in sports is evidenced by examples that include the following:
+    \item Sports analytics began in professional baseball, most notably with the work of Bill James\footcite{james}
+    \item Gained widespread adoption after Billy Beane implemented James' ideas and led the Oakland Athletics to a record winning streak\footcite{lewis}
+    \item The impact of analytics in sports is evidenced by several examples:
     \begin{itemize}
-        \item MLB's increased attention to on-base percentage beginning in the early 2000s
-        \item The rise of the three-point shot coinciding with the fall of the midrange jumper in the NBA
+        \item MLB's increased attention to on-base percentage beginning in the Moneyball era of the early 2000s
+        \item The rise of the three-point shot and subsequent fall of the midrange jumper in the NBA
         \item Increased use of short, high percentage passes in the NFL
     \end{itemize}
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Background}
+\begin{block}{What makes sports an attractive testbed for machine learning?}
+According to Nate Silver, ``sports nerds have it easy."\footnotemark
+\begin{enumerate}
+    \item ``Sports has awesome data."
+    \item ``In sports, we know the rules."
+    \item ``Sports offers fast feedback and clear marks of success."
+\end{enumerate}
+\end{block}
+\footcitetext{silver-online}
+\begin{block}{Why the NBA?}
+\begin{itemize}
+    \item Easily the most deterministic of the major American sports
+    \item The season is long enough at 82 games that sample size is not as much of a concern as in the NFL
+    \item The NBA provides a wealth of advanced stats and player tracking data on their website
+\end{itemize}
+\end{block}
+\end{frame}
+
 \subsection{Process}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Process}
+\begin{itemize}
+    \item
+\end{itemize}
 \end{frame}
 
 \section{Data}
 
 \subsection{Data Wrangling}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Data Wrangling}
+\begin{itemize}
+    \item
+\end{itemize}
 \end{frame}
 
 \subsection{Data Exploration}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Data Exploration}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+    \item The top figure shows that the home team winning percentage is remarkably consistent
+    \begin{itemize}
+        \item Simply predicting the home team wins will yield about 60\% accuracy
+        \item This provides a good baseline; any predictive model worth implementing should beat this
+    \end{itemize}
+    \item The bottom figure shows that team performance (according to SRS) very closely resembles a normal distribution
+    \begin{itemize}
+        \item An SRS of zero indicates an average team
+    \end{itemize}
+\end{itemize}
+\column{0.5\textwidth}
+\vspace{-0.5cm}
+\begin{figure}
+\includegraphics[width=60mm]{../docs/assets/images/data-exploration/home-win-pct.png}
+\end{figure}
+\vspace{-0.5cm}
+\begin{figure}
+\includegraphics[width=60mm]{../docs/assets/images/data-exploration/srs-distribution.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Data Exploration}
+\begin{itemize}
+    \item The plots below show kernel density estimations (KDE) of SRS split between home team wins and losses
+    \item The dark region to the bottom right of the origin for home team wins shows above-average home teams tend to beat below-average visitors
+    \item The opposite appears in the KDE of home team losses
+\end{itemize}
+\begin{figure}
+\includegraphics[scale=0.35]{../docs/assets/images/data-exploration/srs-win-loss-kde.png}
+\end{figure}
 \end{frame}
 
 \section{Model Selection}
 
 \subsection{Feature Selection}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Feature Selection}
+\begin{itemize}
+    \item
+\end{itemize}
 \end{frame}
 
 \subsection{Parameter Tuning}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Parameter Tuning}
+\begin{itemize}
+    \item
+\end{itemize}
 \end{frame}
 
 \section{Results}
 
 \subsection{Model Performance}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Model Performance}
+\begin{itemize}
+    \item
+\end{itemize}
 \end{frame}
 
 \subsection{Comparison to Published Results}
-\begin{frame}[t]
+\begin{frame}
 \frametitle{Comparison to Published Results}
+\begin{itemize}
+    \item
+\end{itemize}
 \end{frame}
+
+\section{References}
 
 \begin{frame}[t]
 \frametitle{References}
