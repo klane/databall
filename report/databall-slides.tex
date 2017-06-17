@@ -104,7 +104,19 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Data Wrangling}
 \begin{itemize}
-    \item Oliver's four factors\footcite{oliver}
+    \item I collected stats from the NBA's stats website \url{stats.nba.com}
+    \begin{itemize}
+        \item The site exposes a wealth of information in JSON format through various web API endpoints
+        \item I utilized the GitHub project nba\_py to format the URLs and collect stats into Pandas DataFrames
+    \end{itemize}
+    \item I stored all collected stats to a SQLite database using Python's built-in SQLite support
+    \item I used the basic box score stats to calculate more advanced stats
+    \begin{itemize}
+        \item Offensive/defensive ratings (points scored/allowed per 100 possessions), which requires an estimate for the number of possessions
+        \item Simple Rating System (SRS), which is a team's average margin of victory adjusted for its strength of schedule
+        \item Oliver's four factors\footcite{oliver}, which include effective FG\%, TOV\%, OREB\%, and free throw rate
+        \item Weighted four factors, which is just sum of the four factors weighted according to Oliver's assigned weights
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
