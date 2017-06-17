@@ -2,11 +2,22 @@
 \usetheme{Madrid}
 % \usecolortheme{spruce}
 
+% Number captions
+\setbeamertemplate{caption}[numbered]
+
+% Number bibliography entries
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+
 % Change base colour beamer@blendedblue (originally RGB: 0.2,0.2,0.7)
 \colorlet{beamer@blendedblue}{green!40!black}
 
+\usepackage{lmodern}
+\usepackage{caption}
+
 \usepackage[citestyle=authoryear, sorting=none]{biblatex}
 \addbibresource{databall.bib}
+\DeclareNameAlias{sortname}{last-first}
+\DeclareNameAlias{default}{last-first}
 
 \title{DataBall}
 \subtitle{Predicting NBA Winners with Data}
@@ -31,7 +42,7 @@
 \begin{itemize}
     \item Sports analytics began in professional baseball, most notably with the work of Bill James\footcite{james}
     \begin{itemize}
-        \item James coined the term sabermetrics as ``the search for objective knowledge about baseball"
+        \item James coined the term sabermetrics as ``the search for objective knowledge about baseball''
         \item James selected the name to honor the Society for American Baseball Research (SABR)
     \end{itemize}
     \item Gained widespread adoption after Billy Beane implemented James' ideas and led the Oakland Athletics to a record winning streak\footcite{lewis}
@@ -47,11 +58,11 @@
 \begin{frame}
 \frametitle{Background}
 \begin{block}{What makes sports an attractive testbed for machine learning?}
-According to Nate Silver, ``sports nerds have it easy."\footnotemark
+According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{enumerate}
-    \item ``Sports has awesome data."
-    \item ``In sports, we know the rules."
-    \item ``Sports offers fast feedback and clear marks of success."
+    \item ``Sports has awesome data.''
+    \item ``In sports, we know the rules.''
+    \item ``Sports offers fast feedback and clear marks of success.''
 \end{enumerate}
 \end{block}
 \footcitetext{silver-online}
@@ -69,7 +80,18 @@ According to Nate Silver, ``sports nerds have it easy."\footnotemark
 \begin{frame}
 \frametitle{Process}
 \begin{itemize}
-    \item
+    \item The predictions shown here use models trained with season-averaged team stats
+    \begin{itemize}
+        \item This does not provide a realistic scenario for making predictions in real time
+    \end{itemize}
+    \item I used several algorithms from the popular Python machine learning library scikit-learn\footcite{scikit-learn}
+    \begin{itemize}
+        \item Logistic Regression
+        \item Support Vector Machine
+        \item Random Forest
+        \item Multilayer Perceptron
+        \item Na{\"i}ve Bayes
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -79,7 +101,7 @@ According to Nate Silver, ``sports nerds have it easy."\footnotemark
 \begin{frame}
 \frametitle{Data Wrangling}
 \begin{itemize}
-    \item
+    \item Oliver's four factors\footcite{oliver}
 \end{itemize}
 \end{frame}
 
@@ -131,6 +153,9 @@ According to Nate Silver, ``sports nerds have it easy."\footnotemark
 \begin{itemize}
     \item
 \end{itemize}
+\begin{figure}
+\includegraphics[scale=0.35]{../docs/assets/images/feature-selection/cross-validation-comparison.png}
+\end{figure}
 \end{frame}
 
 \subsection{Parameter Tuning}
@@ -149,19 +174,50 @@ According to Nate Silver, ``sports nerds have it easy."\footnotemark
 \begin{itemize}
     \item
 \end{itemize}
+\begin{figure}
+\includegraphics[scale=0.35]{../docs/assets/images/model-performance/logistic-regression-confusion-matrix.png}
+\caption{Logistic Regression Confusion Matrix}
+\end{figure}
 \end{frame}
 
 \subsection{Comparison to Published Results}
 \begin{frame}
 \frametitle{Comparison to Published Results}
 \begin{itemize}
-    \item
+    \item The roughly 70\% prediction accuracy is in line with published results
+    \item Zimmermann\footcite{zimmermann} used algorithms in Weka\footcite{witten} to predict NBA and NCAA game winners
+    \begin{itemize}
+        \item He trained the models using data from previous games, making it a more realistic scenario
+        \item He correctly predicted about 57-68\% of NBA games correctly, though most seasons were below 64\% accuracy
+        \item He was much more successful in the NCAA, where the range in skill level is much larger than the NBA
+    \end{itemize}
+    \item Loeffelholz et al.\footcite{loeffelholz} used the MATLAB neural network toolbox to predict NBA game winners
+    \begin{itemize}
+        \item They performed a cross-validation similar to what was shown here
+        \item They only examined part of one season (only 30 games used for testing)
+        \item They predicted approximately 74\% of games correctly, but it is unclear if this generalizes well
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Future Work}
+
+\begin{frame}[t]
+\frametitle{Future Work}
+\begin{itemize}
+    \item Train models with prior games to permit ``real time'' predictions and update the models as each season progresses
+    \item Incorporate player stats to adjust predictions as rosters fluctuate
+    \item Predict winners against Vegas spreads
+    \begin{itemize}
+        \item Track return on investment (ROI) if a prospective bettor were to bet on the model's predicted winners
+        \item Incorporate a confidence threshold to investigate how ROI changes when bets are only made on games in which the model's confidence exceeds the threshold
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
 \section{References}
 
-\begin{frame}[t]
+\begin{frame}[t, allowframebreaks]
 \frametitle{References}
 \printbibliography
 \end{frame}
