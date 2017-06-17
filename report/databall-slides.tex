@@ -80,11 +80,7 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Process}
 \begin{itemize}
-    \item The predictions shown here use models trained with season-averaged team stats
-    \begin{itemize}
-        \item This does not provide a realistic scenario for making predictions in real time
-    \end{itemize}
-    \item I used several algorithms from the popular Python machine learning library scikit-learn\footcite{scikit-learn}
+    \item I used several algorithms from the popular Python machine learning library scikit-learn\footcite{scikit-learn} to predict NBA game winners
     \begin{itemize}
         \item Logistic Regression
         \item Support Vector Machine
@@ -92,6 +88,13 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
         \item Multilayer Perceptron
         \item Na{\"i}ve Bayes
     \end{itemize}
+    \item I used box score data from the 1990-91 season through 2015-16
+    \item The games are split into training and test sets randomly, so games from future seasons are used to predict past games
+    \begin{itemize}
+        \item This does not provide a realistic scenario for making predictions in real time, such as in betting
+        \item Provides a easy way to compare several algorithms and feature combinations, which will help inform future work
+    \end{itemize}
+    \item All models are trained with season-averaged team stats
 \end{itemize}
 \end{frame}
 
