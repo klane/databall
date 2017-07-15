@@ -205,11 +205,25 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Model Performance}
 \begin{itemize}
-    \item
+    \item Logistic regression does a great job at predicting home wins (81.5\% accuracy), but struggles with home losses (about 50\% accuracy)
+    \item This holds true for all the models tested
 \end{itemize}
 \begin{figure}
 \includegraphics[scale=0.35]{../docs/assets/images/model-performance/logistic-regression-confusion-matrix.png}
 \caption{Logistic Regression Confusion Matrix}
+\end{figure}
+\end{frame}
+
+\subsection{Model Performance}
+\begin{frame}
+\frametitle{Model Performance}
+\begin{itemize}
+    \item All models performed about the same with the exception of the random forest model
+    \item The random forest performed about the same with home losses, but had degraded performance predicting home wins
+\end{itemize}
+\begin{figure}
+\includegraphics[scale=0.35]{../docs/assets/images/model-performance/model-performance-comparison.png}
+\caption{Model Performance Comparison}
 \end{figure}
 \end{frame}
 
