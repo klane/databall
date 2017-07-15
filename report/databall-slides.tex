@@ -166,7 +166,21 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Feature Selection}
 \begin{itemize}
-    \item
+    \item The plots below show cross-validation ROC and precision/recall curves using home and away SRS
+    \item The folds show little spread, so we are confident the cross-validation results in a good estimate of model performance
+\end{itemize}
+\begin{figure}
+\includegraphics[scale=0.35]{../docs/assets/images/feature-selection/srs-cross-validation.png}
+\end{figure}
+\end{frame}
+
+\subsection{Feature Selection}
+\begin{frame}
+\frametitle{Feature Selection}
+\begin{itemize}
+    \item The plots below show cross-validation ROC and precision/recall curves for various metrics
+    \item All point-related metrics (SRS, Plus/Minus, etc.) are nearly identical
+    \item The point-related metrics outperform the two metrics based on the four factors
 \end{itemize}
 \begin{figure}
 \includegraphics[scale=0.35]{../docs/assets/images/feature-selection/cross-validation-comparison.png}
@@ -177,8 +191,12 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Parameter Tuning}
 \begin{itemize}
-    \item
+    \item Parameter tuning did not yield models that performed noticeably better than the default models
 \end{itemize}
+\begin{figure}
+\includegraphics[scale=0.3]{../docs/assets/images/parameter-tuning/logistic-regression-metrics.png}
+\caption{Logistic Regression Parameter Tuning}
+\end{figure}
 \end{frame}
 
 \section{Results}
