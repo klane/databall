@@ -123,7 +123,7 @@ def select_columns(df, names, columns=X_train.columns):
 
 The plots below show `LogisticRegression` model performance using different combinations of three parameters: `penalty` (type of norm), `class_weight` (where "balanced" indicates weights are inversely proportional to class frequencies and the default is one), and `dual` (flag to use the dual formulation). For each combination, models were trained with different `C` values, which controls the inverse of the regularization strength.
 
-All models have similar accuracy, ROC area, and precision/recall area up to a `C` value of about 3, at which point the models using the dual formulation have degraded performance. Setting `class_weight` to "balanced" raises model precision slightly in most cases, but dramatically reduces recall. None of the models perform noticeably better than the default `LogisticRegression` model.
+All models have similar accuracy, ROC area, and precision/recall area up to a `C` value of about 10, at which point the models using the dual formulation have degraded performance. Setting `class_weight` to "balanced" raises model precision slightly in most cases, but dramatically reduces recall. None of the models perform noticeably better than the default `LogisticRegression` model.
 
 
 ```python
@@ -200,7 +200,7 @@ plot_metrics(n_vec, results, 'Forest Size', legend)
 
 # Neural Network
 
-The plots below show [`MLPClassifier`](http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier) model performance using different combinations of the parameters `hidden_layer_sizes` (number of neurons in each hidden layer) and `activation` (network activation function). For each combination, models were trained with different `alpha` values, which controls the L2 regularization similar to `LogisticRegression` and `LinearSVC`. All models have nearly identical performance until higher regularization strength. At high values of `alpha`, recall dramatically improves, but the other four metrics all worsen. None of the models perform noticeably better than the default `MLPClassifier` model.
+The plots below show [`MLPClassifier`](http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier) model performance using different combinations of the parameters `hidden_layer_sizes` (number of neurons in each hidden layer) and `activation` (network activation function). For each combination, models were trained with different `alpha` values, which controls the L2 regularization similar to `LogisticRegression` and `LinearSVC`. All models have nearly identical performance until higher regularization strength. At high values of `alpha`, recall dramatically improves, but the other four metrics all worsen. This implies that the number of false negatives goes to zero and the number of false positives increases for recall to increase and precision to decrease. None of the models perform noticeably better than the default `MLPClassifier` model.
 
 
 ```python
