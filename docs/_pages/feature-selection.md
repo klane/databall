@@ -325,7 +325,25 @@ cross_val_curves(model, X_train[attributes], y_train)
 
 ![png]({{ site.baseurl }}/assets/images/feature-selection/srs-cross-validation.png){: .center-image }
 
-The ROC and precision/recall curves below use the four factors defined during [data wrangling](data-wrangling.md). A [`FunctionTransformer`](http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.FunctionTransformer.html#sklearn.preprocessing.FunctionTransformer) that selects columns from the `DataFrame` is added to simplify the process of specifying all the attributes. The selector and classifier are combined into a `Pipeline` using the [`make_pipeline`](http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline) function. The spread among the individual folds are similar to those using SRS above. However, the areas under the cross-validated curves are lower, indicating SRS is a more predictive variable of home team performance than the four factors.
+An ROC curve compares a classifier's true positive rate ($$TPR$$) to its false positive rate ($$FPR$$), where:
+
+$$\begin{align}
+TPR & =\frac{TP}{TP+FN} \\
+FPR & =\frac{FP}{FP+TN} \\
+TP & =\text{true positive} \\
+FP & =\text{false positive} \\
+TN & =\text{true negative} \\
+FN & =\text{false negative}
+\end{align}$$
+
+Therefore, a perfect classifier ($$TPR=1$$ and $$FPR=0$$) would be located in the upper left corner of an ROC curve. The aptly-named precision/recall curve compares a classifier's precision with its recall, which are defined as:
+
+$$\begin{align}
+\text{Precision} & =\frac{TP}{TP+FP} \\
+\text{Recall} & =TPR
+\end{align}$$
+
+making the ideal point of a precision/recall curve the upper right corner. The ROC and precision/recall curves below use the four factors defined during [data wrangling](data-wrangling.md). A [`FunctionTransformer`](http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.FunctionTransformer.html#sklearn.preprocessing.FunctionTransformer) that selects columns from the `DataFrame` is added to simplify the process of specifying all the attributes. The selector and classifier are combined into a `Pipeline` using the [`make_pipeline`](http://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html#sklearn.pipeline.make_pipeline) function. The spread among the individual folds are similar to those using SRS above. However, the areas under the cross-validated curves are lower, indicating SRS is a more predictive variable of home team performance than the four factors.
 
 
 ```python
