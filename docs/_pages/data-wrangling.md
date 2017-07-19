@@ -6,7 +6,7 @@ permalink: /data/wrangling/
 
 ## Collecting the Data
 
-The NBA provides a wealth of basic and advanced stats on their website [stats.nba.com](http://stats.nba.com). The site exposes a wide variety of information in JSON format through various endpoints and parameters that take the form:
+The NBA provides a wealth of basic and advanced stats on their website [stats.nba.com](http://stats.nba.com). The site exposes a wide variety of information in JSON format through various web API endpoints and parameters that take the form:
 
 ```
   stats.nba.com/stats/{endpoint}/?{params}
@@ -19,7 +19,7 @@ This makes it easy to pull in the data programmatically without having to scrape
   stats = GameLog(season='2016-17', season_type='Regular Season', player_or_team='P').overall()
 ```
 
-A Jupyter Notebook detailing the available stats is located [here](https://github.com/klane/databall/blob/master/notebooks/nba-stats.ipynb). The API also provides sensible defaults, such as the current season for the season parameter, which reduces the amount of code required. The code below produces the same output as that above given that this page was written during the 2016-17 season. These two code snippets will produce different results at the start of the 2017-18 campaign.
+A Jupyter Notebook detailing some of the available stats is located [here](https://github.com/klane/databall/blob/master/notebooks/nba-stats.ipynb). The API also provides sensible defaults, such as the current season for the season parameter, which reduces the amount of code required. The code below produces the same output as that above given that this page was written during the 2016-17 season. These two code snippets will produce different results at the start of the 2017-18 campaign.
 
 ```python
   from nba_py.league import GameLog
@@ -72,7 +72,18 @@ where the values from each team are averaged. The NBA's stats site calculates po
 
 $$POSS_{NBA}=\frac{FGA+0.44*FTA-OREB+TOV}{2}$$
 
-where the totals from each team are included. I use Basketball-Reference.com's definition for my analysis. With this estimate along with points scored/allowed in each game, we can calculate offensive/defensive ratings (also referred to as offensive/defensive efficiencies), which is the number of points scored/allowed per 100 possessions. The difference between the two is called net rating and measures point differential per 100 possessions. Offensive and defensive stats are occasionally presented per 48 minutes instead of per 100 possessions or game. To calculate this we need to know a team's pace, or the number of possessions per 48 minutes. This is calculated as:
+where the totals from each team are included. I use Basketball-Reference.com's definition for my analysis. The terms in the above equations are as follows:
+
+$$\begin{align}
+FG & =\text{field goals made} \\
+FGA & =\text{field goal attempts} \\
+FTA & =\text{free throw attempts} \\
+OREB & =\text{offensive rebounds} \\
+DREB & =\text{defensive rebounds} \\
+TOV & =\text{turnovers}
+\end{align}$$
+
+With this estimate along with points scored/allowed in each game, we can calculate offensive/defensive ratings (also referred to as offensive/defensive efficiencies), which is the number of points scored/allowed per 100 possessions. The difference between the two is called net rating and measures point differential per 100 possessions. Offensive and defensive stats are occasionally presented per 48 minutes instead of per 100 possessions or game. To calculate this we need to know a team's pace, or the number of possessions per 48 minutes. This is calculated as:
 
 $$PACE=\frac{240*POSS}{MIN}$$
 
@@ -82,26 +93,29 @@ where 240 is the number of team minutes in a regulation-length game and $$MIN$$ 
 
 Another stat that models team strength is Sports-Reference.com's [Simple Rating System](http://www.sports-reference.com/blog/2015/03/srs-calculation-details/) (SRS), which was first introduced by [Pro-Football-Reference.com](http://www.pro-football-reference.com/blog/index4837.html?p=37). It if a measure of team strength relative to an average opponent. A team with an SRS of 5 is considered 5 points better than an average team. It is calculated as average margin of victory adjusted for strength of schedule. It must be calculated iteratively because each team's rating depends on those of its opponents. The equation is:
 
-$$\vec{SRS}_i=\vec{PD}+\mathbf{S}\times\vec{SRS}_{i-1}$$
+$$\begin{align}
+\vec{SRS}_i & =\vec{PD}+\mathbf{S}\times\vec{SRS}_{i-1} \\
+\vec{SRS}_0 & =\vec{PD}
+\end{align}$$
 
-where $$\vec{SRS}_i$$ is a vector of all team's SRS values at iteration $$i$$, $$\vec{PD}$$ is a vector of average point differentials, and $$\mathbf{S}$$ denotes the schedule matrix. The schedule matrix is symmetric about the diagonal and $$\mathbf{S}_{i,j}$$ indicates what percentage of team $$i$$'s games were played against team $$j$$. The SRS vector is updated until it converges, which typically only takes a few iterations to reach an acceptable tolerance.
+where $$\vec{SRS}_i$$ is a vector of all team's SRS values at iteration $$i$$, $$\vec{PD}$$ is a vector of average point differentials, and $$\mathbf{S}$$ denotes the schedule matrix. Both $$\vec{PD}$$ and $$\mathbf{S}$$ are fixed (do not update with $$i$$) and $$\vec{SRS}$$ is initialized to $$\vec{PD}$$. The schedule matrix is symmetric about the diagonal and $$\mathbf{S}_{i,j}$$ indicates what percentage of team $$i$$'s games were played against team $$j$$. The SRS vector is updated until it converges, which is achieved when the maximum difference between $$\vec{SRS}_i$$ and $$\vec{SRS}_{i-1}$$ is below a selected tolerance. It typically only requires a few iterations to obtain convergence. 
 
 ### Four Factors
 
 Another set of stats that can be easily calculated were originally identified by Dean Oliver[^1], which he coined the four factors. They aim to identify four key areas---including their relative weights---that winning teams excel at, namely efficient shooting (40%), minimizing turnovers (25%), rebounding (20%), and getting to the free throw line (15%). The percentages in parentheses are the weights Oliver assigned to each factor. [Basketball-Reference.com's](http://www.basketball-reference.com/about/factors.html) definition of the four factors are:
 
 $$\begin{align}
-eFG\% & =\frac{FG+0.5*3FG}{FGA} \\
-TOV\% & =\frac{TOV}{FGA+0.44*FTA+TOV} \\
-OREB\% & =\frac{OREB}{OREB+DREB_{OPP}} \\
-DREB\% & =\frac{DREB}{DREB+OREB_{OPP}} \\
-FTF & =\frac{FT}{FGA}
+eFG\% & =\frac{FG+0.5*3FG}{FGA}=\text{effective field goal percentage} \\
+TOV\% & =\frac{TOV}{FGA+0.44*FTA+TOV}=\text{turnover percentage} \\
+OREB\% & =\frac{OREB}{OREB+DREB_{OPP}}=\text{offensive rebound percentage} \\
+DREB\% & =\frac{DREB}{DREB+OREB_{OPP}}=\text{defensive rebound percentage} \\
+FTF & =\frac{FT}{FGA}=\text{free throw factor}
 \end{align}$$
 
-The NBA's [definition](http://stats.nba.com/help/faq/) is slightly different than Basketball-Reference.com. The NBA's turnover percentage includes assists in the denominator.
+where $$FT$$ is the number of free throws made and $$3FG$$ is the number of three-point field goals made. The NBA's [definition](http://stats.nba.com/help/faq/) is slightly different than Basketball-Reference.com. The NBA's turnover percentage includes assists in the denominator.
 
 $$TOV\%=\frac{TOV}{FGA+0.44*FTA+AST+TOV}$$
 
-The NBA also uses free throw attempt rate ($$FTA/FGA$$) instead of free throw rate ($$FT/FGA$$) like Basketball-Reference.com. Basketball-Reference.com uses free throw rate to not only measure how often teams get to the free throw line, but also how often they convert those chances. A lousy free throw shooting team that gets fouled a lot will have a high free throw attempt rate even though their poor foul shooting cost them easy points. However, Basketball-Reference.com's free throw factor is not impressed by fruitless trips to the free throw line. I use Basketball-Reference.com's definition of the four factors for my analysis.
+where $$AST$$ is the number of assists. The NBA also uses free throw attempt rate ($$FTA/FGA$$) as the free throw factor instead of free throw rate ($$FT/FGA$$) like Basketball-Reference.com. Basketball-Reference.com uses free throw rate to not only measure how often teams get to the free throw line, but also how often they convert those chances. A lousy free throw shooting team that gets fouled a lot will have a high free throw attempt rate even though their poor foul shooting cost them easy points. However, Basketball-Reference.com's free throw factor is not impressed by fruitless trips to the free throw line. I use Basketball-Reference.com's definition of the four factors for my analysis.
 
 [^1]: Oliver, Dean. *Basketball on Paper: Rules and Tools for Performance Analysis*. Potomac Books, 2004.
