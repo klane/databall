@@ -20,7 +20,7 @@ Sports provide an enticing testbed for machine learning. In a [FiveThirtyEight a
 
 1. "**Sports has awesome data.**" Silver describes sports data as not just big data, but rich data, which he defines as "accurate, precise, and subject to rigorous quality control." Data is also readily available with many websites across a variety of sports offering a plethora of information.
 2. "**In sports, we know the rules.**" This allows us to have strong intuition as to what stats make good predictive variables before ever making a model.
-3. "**Sports offers fast feedback and clear marks of success.**" The objective of sports is winning. While that is not a novel concept, such a clear-cut goal is not always present in other subjects.
+3. "**Sports offers fast feedback and clear marks of success.**" The objective of sports is winning. While that is not a novel concept, such a clear-cut goal is not always present in other subjects. However, the problem does become more complicated when framed in the context of a betting scenario, such as determining the classification probability threshold to maximize return on investment (ROI).
 
 ## Why the NBA?
 
