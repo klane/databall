@@ -121,7 +121,7 @@ def select_columns(df, names, columns=X_train.columns):
 
 # Logistic Regression
 
-The plots below show `LogisticRegression` model performance using different combinations of three parameters: `penalty` (type of norm), `class_weight` (where "balanced" indicates weights are inversely proportional to class frequencies and the default is one), and `dual` (flag to use the dual formulation). For each combination, models were trained with different `C` values, which controls the inverse of the regularization strength.
+The plots below show `LogisticRegression` model performance using different combinations of three parameters: `penalty` (type of norm), `class_weight` (where "balanced" indicates weights are inversely proportional to class frequencies and the default is one), and `dual` (flag to use the dual formulation, which changes the equation being optimized). For each combination, models were trained with different `C` values, which controls the inverse of the regularization strength.
 
 All models have similar accuracy, ROC area, and precision/recall area up to a `C` value of about 10, at which point the models using the dual formulation have degraded performance. Setting `class_weight` to "balanced" raises model precision slightly in most cases, but dramatically reduces recall. None of the models perform noticeably better than the default `LogisticRegression` model.
 
