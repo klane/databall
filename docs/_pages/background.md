@@ -34,6 +34,8 @@ The world of sports betting can be very lucrative for those that are skilled at 
 
 Betting on the spread involves picking winners of games where the favorite is handicapped. For example, if a given team is favored by 5 points and wins by more than 5, they are said to have "covered" and won against the spread. The betting line for this scenario will be set at -5 for the favorite. The opposite holds true for underdogs. They cover by either winning or losing by less than the line. An over/under bet requires comparing the total number of points scored by the two teams in a given game to a number set by the oddsmakers. Bettors must decide if they think the total points scored will be over or under this value. These provide more challenging problems than simply picking game winners.
 
+The workflow outlined here can be used by prospective sports bettors to help inform their decisions. They can use it to determine which team to bet on in a given game. They can also flag games the model has low confidence in to avoid betting on difficult games. Lastly, they can identify the most attractive games to bet on by finding games in which the model predicts the underdog will win. Underdogs are on the beneficial side of the moneyline since they do not win as often as the favorites. Betting on underdogs does not require risking as much money as betting on the favorites and successful bets on the underdogs pay out more.
+
 [^1]: James, Bill. *The Bill James Historical Baseball Abstract*. Villard, 1985.
 
 [^2]: Lewis, Michael. *Moneyball: The Art of Winning an Unfair Game*. W. W. Norton & Company, 2003.
