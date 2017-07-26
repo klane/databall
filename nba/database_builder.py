@@ -69,8 +69,8 @@ def add_teams(conn, sleep=1):
     teams['CITY'] = 'TEMP'
     teams['MASCOT'] = 'TEMP'
 
-    for ID in teams.TEAM_ID:
-        teams.loc[teams.TEAM_ID == ID, ['CITY', 'MASCOT']] = TeamDetails(ID).background()[['CITY', 'NICKNAME']].values
+    for ID in teams.ID:
+        teams.loc[teams.ID == ID, ['CITY', 'MASCOT']] = TeamDetails(ID).background()[['CITY', 'NICKNAME']].values
         time.sleep(sleep)
 
     teams.to_sql('teams', conn, if_exists='append', index=False)
