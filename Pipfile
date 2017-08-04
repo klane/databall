@@ -5,13 +5,13 @@ verify_ssl = true
 [packages]
 numpy = "*"
 pandas = "*"
-requests = "*"
-requests-cache = "*"
-jupyter = "*"
 scipy = "*"
 scikit-learn = "*"
 matplotlib = "*"
 seaborn = "*"
+jupyter = "*"
+requests = "*"
+requests-cache = "*"
 scrapy = "*"
 click = "*"
 
