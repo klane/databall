@@ -25,3 +25,6 @@ report/build/
 # Databases
 *.db
 *.sqlite
+
+# Scrapy output
+data/
