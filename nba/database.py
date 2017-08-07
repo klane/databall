@@ -1,7 +1,7 @@
 import sqlite3
 import numpy as np
 import pandas as pd
-import stats, team_stats
+from . import stats, team_stats
 
 
 class Database(object):

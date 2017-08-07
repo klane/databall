@@ -20,7 +20,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
     conn.execute('CREATE TABLE IF NOT EXISTS players (ID INTEGER, NAME TEXT)')
 
     for season in range(start_season, end_season + 1):
-        print 'Reading ' + season_str(season) + ' player game stats'
+        print('Reading ' + season_str(season) + ' player game stats')
         table = GameLog(season=season_str(season), player_or_team='P').overall()
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
@@ -49,7 +49,7 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
                  .format(table_name))
 
     for season in range(start_season, end_season + 1):
-        print 'Reading ' + season_str(season) + ' player season stats'
+        print('Reading ' + season_str(season) + ' player season stats')
         table = PlayerStats(season=season_str(season)).overall()
         table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['PLAYER_ID', 'TEAM_ID'], inplace=True)
@@ -59,7 +59,7 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
 
 
 def add_teams(conn, sleep=1):
-    print 'Reading team information'
+    print('Reading team information')
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
     conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT)')
@@ -91,7 +91,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
         AWAY_TEAM_ID INTEGER, GAME_DATE TEXT, MATCHUP TEXT, HOME_WL TEXT)''')
 
     for season in range(start_season, end_season + 1):
-        print 'Reading ' + season_str(season) + ' team game stats'
+        print('Reading ' + season_str(season) + ' team game stats')
         table = GameLog(season=season_str(season), player_or_team='T').overall()
         table['SEASON'] = season
         table.to_sql('temp', conn, if_exists='append', index=False)
@@ -142,7 +142,7 @@ def add_team_season_stats(conn, start_season, end_season, if_exists='append', sl
         PFD REAL, PTS REAL, PLUS_MINUS REAL)'''.format(table_name))
 
     for season in range(start_season, end_season + 1):
-        print 'Reading ' + season_str(season) + ' team season stats'
+        print('Reading ' + season_str(season) + ' team season stats')
         table = TeamStats(season=season_str(season)).overall()
         table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['TEAM_ID'], inplace=True)
