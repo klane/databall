@@ -1,6 +1,8 @@
 import sqlite3
 import numpy as np
 import pandas as pd
+from collections import namedtuple
+from itertools import product, starmap
 from nba import stats, team_stats
 
 
@@ -181,5 +183,39 @@ class Database(object):
                 srs = point_diff + schedule.dot(srs)
 
             data.loc[data.SEASON == season, 'TEAM_SRS'] = srs
+
+        return data
+
+    # data = DataFrame to average over
+    # stat_names = list of stats that should be averaged and shifted
+    # window = number of games to average, None indicates all games are used
+    # weighted = whether or not recent games are weighted more heavily
+    def windowed_stats(self, data, stat_names, window=None, weighted=False):
+        data = data.copy()
+        seasons = data.SEASON.unique()[1:]
+        teams = data.TEAM_ID.unique()
+        grouped = data.groupby(['SEASON', 'TEAM_ID'])
+        keys = grouped.groups.keys()
+        team_season = namedtuple('team_season', ['season', 'team'])
+
+        for group in starmap(team_season, [x for x in product(seasons, teams) if x in keys]):
+            g = grouped.get_group(group)
+            sub = g[stat_names].expanding().mean()
+
+            if window is not None:
+                roll = g[stat_names].rolling(window=window).mean()
+                sub = sub[:window - 1].append(roll[window - 1:])
+
+            # Shift stats down one game so only previous information is used
+            sub = sub.shift(1)
+
+            # Fill in first game with average of previous season
+            previous = (group.season - 1, group.team)
+
+            if previous in keys:
+                sub.iloc[0] = grouped.get_group(previous)[stat_names].mean()
+
+            # Store subset in full DataFrame
+            data.loc[sub.index, stat_names] = sub
 
         return data
