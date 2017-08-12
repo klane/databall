@@ -10,7 +10,7 @@ from subprocess import call
 @click.argument('notebook')
 @click.option('--nbloc', default='notebooks')
 @click.option('--siteloc', default='docs')
-@click.option('--imglist', default=os.path.join('util', 'nbprocess.yml'))
+@click.option('--imglist', default=os.path.join('nbprocess', 'nbprocess.yml'))
 @click.option('--movepng', is_flag=True)
 def cli(notebook, nbloc, siteloc, imglist, movepng):
     # convert notebook to markdown
