@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from collections import namedtuple
 from itertools import product, starmap
-from nba import stats, team_stats
+from databall import stats, team_stats
 
 
 class Database(object):
