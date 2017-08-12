@@ -1,4 +1,4 @@
-from .team_stats import possessions
+from nba.team_stats import possessions
 
 
 def ast_pct(data):
