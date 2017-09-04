@@ -9,6 +9,8 @@
   pages:
   - title: Data Wrangling
     url: /data/wrangling/
+  - title: Covers
+    url: /data/covers/
   - title: Data Exploration
     url: /data/explore/
 
