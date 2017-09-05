@@ -1,6 +1,6 @@
 baseurl: /databall
 title: DataBall
-description: Using stats to predict NBA game winners
+description: Betting on the NBA with data
 
 include:
   - _pages
