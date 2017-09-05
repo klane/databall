@@ -6,7 +6,7 @@ permalink: /data/wrangling/
 
 ## Collecting the Data
 
-The NBA provides a wealth of basic and advanced stats on their website [stats.nba.com](http://stats.nba.com). The site exposes a wide variety of information in JSON format through various web API endpoints and parameters that take the form:
+The NBA provides a wealth of basic and advanced stats on their website [stats.nba.com](http://stats.nba.com). The site exposes a wide variety of information in JSON format through several web API endpoints and parameters that take the form:
 
 ```
   stats.nba.com/stats/{endpoint}/?{params}
