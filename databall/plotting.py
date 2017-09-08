@@ -74,6 +74,33 @@ def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
     ax.set_ylabel('True Positive Rate')
 
 
+def format_538(fig, title, subtitle, source, bottomtick=0, sig='line', n=75):
+    plt.style.use('fivethirtyeight')
+    ax = fig.gca()
+    plt.tick_params(axis='both', which='major', labelsize=18)
+    plt.axhline(y=bottomtick, color='black', linewidth=1.3, alpha=0.7)
+    plt.text(x=-0.07, y=1.15, s=title, fontsize=26, weight='bold', alpha=0.75, transform=ax.transAxes)
+    plt.text(x=-0.07, y=1.025, s=subtitle, fontsize=19, alpha=0.85, transform=ax.transAxes)
+
+    label1 = '©Kevin Lane'
+    label2 = 'Source: ' + source
+
+    if sig is 'line':
+        plt.text(x=-0.075, y=-0.1, s='  ' + '_' * n, color='grey', alpha=0.7, transform=ax.transAxes)
+        plt.text(x=1.01, y=-0.1, s='_' * n + '  ', color='grey', alpha=0.7, transform=ax.transAxes,
+                 horizontalalignment='right')
+        plt.text(x=-0.075, y=-0.15, s='  ' + label1, fontsize=14, color='grey', transform=ax.transAxes)
+        plt.text(x=1.01, y=-0.15, s=label2 + '  ', fontsize=14, color='grey', transform=ax.transAxes,
+                 horizontalalignment='right')
+    elif sig is 'bar':
+        plt.text(x=-0.075, y=-0.14, s='  ' + label1 + ' ' * n, fontsize=14, color='#f0f0f0', backgroundcolor='grey',
+                 transform=ax.transAxes)
+        plt.text(x=1.01, y=-0.14, s=' ' * n + label2 + '  ', fontsize=14, color='#f0f0f0', backgroundcolor='grey',
+                 transform=ax.transAxes, horizontalalignment='right')
+
+    plt.show()
+
+
 def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cmap('Blues')):
     # This function prints and plots the confusion matrix.
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
