@@ -92,15 +92,16 @@ class Database(object):
             WHERE home.GAME_ID = away.GAME_ID
         '''.format(select, team_stats_str, opp_stats_str)
 
-    def betting_stats(self, window=None):
+    def betting_stats(self, stat_names=None, window=None):
         data = self.game_stats()
         data['TEAM_OFF_RTG'] = team_stats.off_rating(data)
         data['TEAM_DEF_RTG'] = team_stats.def_rating(data)
         data['TEAM_NET_RTG'] = data['TEAM_OFF_RTG'] - data['TEAM_DEF_RTG']
 
-        stat_names = ['FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA', 'OREB', 'DREB', 'REB', 'AST', 'TOV', 'STL', 'BLK']
-        stat_names = ['TEAM_' + s for s in stat_names] + ['OPP_' + s for s in stat_names] +\
-                     ['TEAM_OFF_RTG', 'TEAM_DEF_RTG', 'TEAM_NET_RTG']
+        if stat_names is None:
+            stat_names = ['FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA', 'OREB', 'DREB', 'REB', 'AST', 'TOV', 'STL', 'BLK']
+            stat_names = ['TEAM_' + s for s in stat_names] + ['OPP_' + s for s in stat_names] +\
+                         ['TEAM_OFF_RTG', 'TEAM_DEF_RTG', 'TEAM_NET_RTG']
 
         data = data[['SEASON', 'GAME_ID', 'TEAM_ID'] + stat_names]
         data = self.windowed_stats(data, stat_names, window=window)
