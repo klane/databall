@@ -74,13 +74,17 @@ def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
     ax.set_ylabel('True Positive Rate')
 
 
-def format_538(fig, title, subtitle, source, bottomtick=0, sig='line', n=75):
+def format_538(fig, xlabel, ylabel, title, subtitle, source, bottomtick=0, sig='line', n=75):
     plt.style.use('fivethirtyeight')
     ax = fig.gca()
-    plt.tick_params(axis='both', which='major', labelsize=18)
+    plt.xlabel(xlabel, fontsize=20, weight='bold')
+    plt.ylabel(ylabel, fontsize=20, weight='bold')
+    plt.tick_params(axis='both', which='major', labelsize=16)
     plt.axhline(y=bottomtick, color='black', linewidth=1.3, alpha=0.7)
+    [t.set_alpha(0.7) for t in ax.get_xticklabels()]
+    [t.set_alpha(0.7) for t in ax.get_yticklabels()]
     plt.text(x=-0.07, y=1.15, s=title, fontsize=26, weight='bold', alpha=0.75, transform=ax.transAxes)
-    plt.text(x=-0.07, y=1.025, s=subtitle, fontsize=19, alpha=0.85, transform=ax.transAxes)
+    plt.text(x=-0.07, y=1.025, s=subtitle, fontsize=20, alpha=0.85, transform=ax.transAxes)
 
     label1 = '©Kevin Lane'
     label2 = 'Source: ' + source
