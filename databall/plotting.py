@@ -6,20 +6,19 @@ from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_curve, av
 
 
 def cross_val_curves(model, x, y, k=10):
-    plt.figure(figsize=(16, 6))
+    fig = plt.figure(figsize=(16, 6))
 
     # Plot ROC curve
-    ax = plt.subplot(121)
-    cross_val_roc_curve(model, x, y, ax, k=k, label='Mean', show_folds=True)
-    ax.legend()
+    ax1 = plt.subplot(121)
+    cross_val_roc_curve(model, x, y, ax1, k=k, label='Mean', show_folds=True)
+    ax1.legend()
 
     # Plot precision/recall curve
-    ax = plt.subplot(122)
-    cross_val_precision_recall_curve(model, x, y, ax, k=k, label='Mean', show_folds=True)
-    ax.legend()
-    ax.set_ylim(0.4)
+    ax2 = plt.subplot(122)
+    cross_val_precision_recall_curve(model, x, y, ax2, k=k, label='Mean', show_folds=True)
+    ax2.legend()
 
-    plt.show()
+    return fig, ax1, ax2
 
 
 def cross_val_precision_recall_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
@@ -121,12 +120,10 @@ def format_538(fig, xlabel, ylabel, title, subtitle, source, xoff, toff, soff, b
         plt.text(x=1.01, y=-0.14, s=' ' * n + label2 + '  ', fontsize=14, color='#f0f0f0', backgroundcolor='grey',
                  transform=ax.transAxes, horizontalalignment='right')
 
-    plt.show()
-
 
 def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cmap('Blues')):
     # This function prints and plots the confusion matrix.
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    fig = plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
     plt.colorbar()
     tick_marks = np.arange(len(classes))
@@ -144,14 +141,15 @@ def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cm
     plt.tight_layout()
     plt.ylabel('True Label')
     plt.xlabel('Predicted Label')
-    plt.show()
+
+    return fig
 
 
 def plot_metrics(x, y, xlabel, legend, legendsize=14, figsize=(16, 8), log=False):
     rows = 2
     cols = 3
     ylabel = ['Accuracy', 'Precision', 'Recall', 'ROC Area', 'Precision/Recall Area']
-    plt.figure(figsize=figsize)
+    fig = plt.figure(figsize=figsize)
 
     for i in range(0, len(y[0][0])):
         ax = plt.subplot(100 * rows + 10 * cols + i + 1)
@@ -168,4 +166,5 @@ def plot_metrics(x, y, xlabel, legend, legendsize=14, figsize=(16, 8), log=False
         ax.legend(legend, fontsize=legendsize)
 
     plt.tight_layout()
-    plt.show()
+
+    return fig
