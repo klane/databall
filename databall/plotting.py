@@ -74,18 +74,37 @@ def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
     ax.set_ylabel('True Positive Rate')
 
 
-def format_538(fig, xlabel, ylabel, title, subtitle, source, xoff, toff, soff, bottomtick=0, sig='line', n=75):
+def format_538(fig, xlabel, ylabel, title, subtitle, source, xoff, toff, soff, bottomtick=0, sig='line', n=75,
+               prefix='', suffix='', suffix_offset=0):
     plt.style.use('fivethirtyeight')
     ax = fig.gca()
+
+    # Add axis labels
     plt.xlabel(xlabel, fontsize=20, weight='bold')
     plt.ylabel(ylabel, fontsize=20, weight='bold')
+
+    # Customize ticks
     plt.tick_params(axis='both', which='major', labelsize=16)
     plt.axhline(y=bottomtick, color='black', linewidth=1.3, alpha=0.7)
-    [t.set_alpha(0.7) for t in ax.get_xticklabels()]
-    [t.set_alpha(0.7) for t in ax.get_yticklabels()]
+    [t.set_alpha(0.5) for t in ax.get_xticklabels()]
+    [t.set_alpha(0.5) for t in ax.get_yticklabels()]
+
+    fig.canvas.draw()
+    ticks = ax.get_yticklabels()
+    index = [i for i in range(len(ticks)) if len(ticks[i].get_text()) == 0]
+    if len(index) > 0:
+        index = max(index) - 1
+    else:
+        index = len(ticks) - 1
+    [t.set_text(t.get_text() + ' '*suffix_offset) for t in ticks[:index]]
+    ticks[index].set_text(prefix + ticks[index].get_text() + suffix)
+    ax.set_yticklabels(ticks)
+
+    # Add title and subtitle
     plt.text(x=toff[0], y=toff[1], s=title, fontsize=26, weight='bold', alpha=0.75, transform=ax.transAxes)
     plt.text(x=soff[0], y=soff[1], s=subtitle, fontsize=20, alpha=0.85, transform=ax.transAxes)
 
+    # Add signature bar
     label1 = '©Kevin Lane'
     label2 = 'Source: ' + source
 
