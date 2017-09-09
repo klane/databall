@@ -5,7 +5,7 @@ from hyperopt import fmin, space_eval, tpe
 
 def simulate(model, data, season, predictors, output, build=None, evolve=False, freq=1):
     result = output + '_PRED'
-    data = data.copy().dropna()
+    data = data.copy()
     encoder = LabelEncoder().fit(data[output])
     data[output] = encoder.transform(data[output])
     train, test = data[data.SEASON < season].copy(), data[data.SEASON == season].copy()
