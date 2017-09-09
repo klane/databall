@@ -5,18 +5,20 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_curve, average_precision_score
 
 
-def cross_val_curves(model, x, y, k=10):
+def cross_val_curves(model, x, y, k=10, legend=True):
     fig = plt.figure(figsize=(16, 6))
 
     # Plot ROC curve
     ax1 = plt.subplot(121)
     cross_val_roc_curve(model, x, y, ax1, k=k, label='Mean', show_folds=True)
-    ax1.legend()
 
     # Plot precision/recall curve
     ax2 = plt.subplot(122)
     cross_val_precision_recall_curve(model, x, y, ax2, k=k, label='Mean', show_folds=True)
-    ax2.legend()
+
+    if legend:
+        ax1.legend()
+        ax2.legend()
 
     return fig, ax1, ax2
 
@@ -145,7 +147,7 @@ def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cm
     return fig
 
 
-def plot_metrics(x, y, xlabel, legend, legendsize=14, figsize=(16, 8), log=False):
+def plot_metrics(x, y, xlabel, legend=None, legendsize=14, figsize=(16, 8), log=False):
     rows = 2
     cols = 3
     ylabel = ['Accuracy', 'Precision', 'Recall', 'ROC Area', 'Precision/Recall Area']
@@ -163,7 +165,9 @@ def plot_metrics(x, y, xlabel, legend, legendsize=14, figsize=(16, 8), log=False
         ax.set_ylim(0, 1)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel[i])
-        ax.legend(legend, fontsize=legendsize)
+
+        if legend is not None:
+            ax.legend(legend, fontsize=legendsize)
 
     plt.tight_layout()
 
