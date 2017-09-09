@@ -75,52 +75,74 @@ def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
     ax.set_ylabel('True Positive Rate')
 
 
-def format_538(fig, xlabel, ylabel, title, subtitle, source, xoff, toff, soff, bottomtick=0, sig='line', n=75,
+def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subtitle=None, bottomtick=0, sig='line',
+               n=75, xoff=(-0.075, 1.01), yoff=(-0.1, -0.15), toff=(-0.7, 1.15), soff=(-0.7, 1.05),
                prefix='', suffix='', suffix_offset=0):
     plt.style.use('fivethirtyeight')
-    ax = fig.gca()
 
-    # Add axis labels
-    plt.xlabel(xlabel, fontsize=20, weight='bold')
-    plt.ylabel(ylabel, fontsize=20, weight='bold')
+    if ax is None:
+        ax = [fig.gca()]
+    elif type(ax) is not list and type(ax) is not tuple:
+        ax = [ax]
+
+    if type(bottomtick) is not list and type(bottomtick) is not tuple:
+        bottomtick = [bottomtick] * len(ax)
+
+    # Customize axis labels
+    if xlabel is None:
+        [a.set_xlabel(a.get_xlabel(), fontsize=20, weight='bold') for a in ax]
+    elif type(xlabel) is str:
+        plt.xlabel(xlabel, fontsize=20, weight='bold')
+    else:
+        [a.set_xlabel(x, fontsize=20, weight='bold') for a, x in zip(ax, xlabel)]
+
+    if ylabel is None:
+        [a.set_ylabel(a.get_ylabel(), fontsize=20, weight='bold') for a in ax]
+    elif type(ylabel) is str:
+        plt.ylabel(ylabel, fontsize=20, weight='bold')
+    else:
+        [a.set_ylabel(y, fontsize=20, weight='bold') for a, y in zip(ax, ylabel)]
 
     # Customize ticks
-    plt.tick_params(axis='both', which='major', labelsize=16)
-    plt.axhline(y=bottomtick, color='black', linewidth=1.3, alpha=0.7)
-    [t.set_alpha(0.5) for t in ax.get_xticklabels()]
-    [t.set_alpha(0.5) for t in ax.get_yticklabels()]
-
     fig.canvas.draw()
-    ticks = ax.get_yticklabels()
-    index = [i for i in range(len(ticks)) if len(ticks[i].get_text()) == 0]
-    if len(index) > 0:
-        index = max(index) - 1
-    else:
-        index = len(ticks) - 1
-    [t.set_text(t.get_text() + ' '*suffix_offset) for t in ticks[:index]]
-    ticks[index].set_text(prefix + ticks[index].get_text() + suffix)
-    ax.set_yticklabels(ticks)
+    [a.tick_params(axis='both', which='major', labelsize=16) for a in ax]
+    [a.axhline(y=btick, color='black', linewidth=1.3, alpha=0.7) for a, btick in zip(ax, bottomtick)]
+    [t.set_alpha(0.5) for a in ax for t in a.get_xticklabels()]
+    [t.set_alpha(0.5) for a in ax for t in a.get_yticklabels()]
+
+    for a in ax:
+        ticks = a.get_yticklabels()
+        index = [i for i in range(len(ticks)) if len(ticks[i].get_text()) == 0]
+
+        if len(index) > 0:
+            index = max(index) - 1
+        else:
+            index = len(ticks) - 1
+
+        [t.set_text(t.get_text() + ' ' * suffix_offset) for t in ticks[:index]]
+        ticks[index].set_text(prefix + ticks[index].get_text() + suffix)
+        a.set_yticklabels(ticks)
 
     # Add title and subtitle
-    plt.text(x=toff[0], y=toff[1], s=title, fontsize=26, weight='bold', alpha=0.75, transform=ax.transAxes)
-    plt.text(x=soff[0], y=soff[1], s=subtitle, fontsize=20, alpha=0.85, transform=ax.transAxes)
+    ax[0].text(x=toff[0], y=toff[1], s=title, fontsize=26, weight='bold', alpha=0.75, transform=ax[0].transAxes)
+    ax[0].text(x=soff[0], y=soff[1], s=subtitle, fontsize=20, alpha=0.85, transform=ax[0].transAxes)
 
     # Add signature bar
     label1 = '©Kevin Lane'
     label2 = 'Source: ' + source
 
     if sig is 'line':
-        plt.text(x=xoff, y=-0.1, s='  ' + '_' * n, color='grey', alpha=0.7, transform=ax.transAxes)
-        plt.text(x=1.01, y=-0.1, s='_' * n + '  ', color='grey', alpha=0.7, transform=ax.transAxes,
-                 horizontalalignment='right')
-        plt.text(x=xoff, y=-0.15, s='  ' + label1, fontsize=14, color='grey', transform=ax.transAxes)
-        plt.text(x=1.01, y=-0.15, s=label2 + '  ', fontsize=14, color='grey', transform=ax.transAxes,
-                 horizontalalignment='right')
+        ax[0].text(x=xoff[0], y=yoff[0], s='  ' + '_' * n, color='grey', alpha=0.7, transform=ax[0].transAxes)
+        ax[0].text(x=xoff[1], y=yoff[0], s='_' * n + '  ', color='grey', alpha=0.7, transform=ax[0].transAxes,
+                   horizontalalignment='right')
+        ax[0].text(x=xoff[0], y=yoff[1], s='  ' + label1, fontsize=14, color='grey', transform=ax[0].transAxes)
+        ax[0].text(x=xoff[1], y=yoff[1], s=label2 + '  ', fontsize=14, color='grey', transform=ax[0].transAxes,
+                   horizontalalignment='right')
     elif sig is 'bar':
-        plt.text(x=xoff, y=-0.14, s='  ' + label1 + ' ' * n, fontsize=14, color='#f0f0f0', backgroundcolor='grey',
-                 transform=ax.transAxes)
-        plt.text(x=1.01, y=-0.14, s=' ' * n + label2 + '  ', fontsize=14, color='#f0f0f0', backgroundcolor='grey',
-                 transform=ax.transAxes, horizontalalignment='right')
+        ax[0].text(x=xoff[0], y=-0.14, s='  ' + label1 + ' ' * n, fontsize=14, color='#f0f0f0', backgroundcolor='grey',
+                   transform=ax[0].transAxes)
+        ax[0].text(x=xoff[1], y=-0.14, s=' ' * n + label2 + '  ', fontsize=14, color='#f0f0f0', backgroundcolor='grey',
+                   transform=ax[0].transAxes, horizontalalignment='right')
 
 
 def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cmap('Blues')):
