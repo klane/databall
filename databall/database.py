@@ -94,14 +94,32 @@ class Database(object):
 
     def betting_stats(self, stat_names=None, window=None):
         data = self.game_stats()
+        data['PACE'] = team_stats.pace(data)
+        data['POSSESSIONS'] = team_stats.possessions(data)
         data['TEAM_OFF_RTG'] = team_stats.off_rating(data)
         data['TEAM_DEF_RTG'] = team_stats.def_rating(data)
         data['TEAM_NET_RTG'] = data['TEAM_OFF_RTG'] - data['TEAM_DEF_RTG']
+        data['TEAM_EFG'] = stats.eff_fg_pct(data, 'TEAM_')
+        data['TEAM_TOV_PCT'] = stats.tov_pct(data, 'TEAM_')
+        data['TEAM_OREB_PCT'] = team_stats.oreb_pct(data)
+        data['TEAM_DREB_PCT'] = team_stats.dreb_pct(data)
+        data['TEAM_FT_PER_FGA'] = stats.ft_per_fga(data, 'TEAM_')
+
+        efg = data.TEAM_EFG
+        oreb = data.TEAM_OREB_PCT
+        dreb = data.TEAM_DREB_PCT
+        ftr = data.TEAM_FT_PER_FGA
+        tov = data.TEAM_TOV_PCT
+
+        data['TEAM_FOUR_FACTORS'] = 0.4 * efg + 0.2 * oreb + 0.15 * ftr - 0.25 * tov
+        data['TEAM_FOUR_FACTORS_REB'] = 0.4 * efg + 0.1 * oreb + 0.1 * dreb + 0.15 * ftr - 0.25 * tov
 
         if stat_names is None:
             stat_names = ['FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA', 'OREB', 'DREB', 'REB', 'AST', 'TOV', 'STL', 'BLK']
             stat_names = ['TEAM_' + s for s in stat_names] + ['OPP_' + s for s in stat_names] +\
-                         ['TEAM_OFF_RTG', 'TEAM_DEF_RTG', 'TEAM_NET_RTG']
+                         ['TEAM_OFF_RTG', 'TEAM_DEF_RTG', 'TEAM_NET_RTG', 'TEAM_EFG', 'TEAM_TOV_PCT',
+                          'TEAM_OREB_PCT', 'TEAM_DREB_PCT', 'TEAM_FT_PER_FGA', 'TEAM_FOUR_FACTORS',
+                          'TEAM_FOUR_FACTORS_REB', 'PACE', 'POSSESSIONS']
 
         data = data[['SEASON', 'GAME_ID', 'TEAM_ID'] + stat_names]
         data = self.windowed_stats(data, stat_names, window=window)
@@ -110,7 +128,7 @@ class Database(object):
         games = games.merge(data, left_on=['SEASON', 'ID', 'HOME_TEAM_ID'], right_on=['SEASON', 'GAME_ID', 'TEAM_ID'])
         games = games.merge(data, left_on=['SEASON', 'ID', 'AWAY_TEAM_ID'], right_on=['SEASON', 'GAME_ID', 'TEAM_ID'],
                             suffixes=('', '_AWAY'))
-        games.loc[games.HOME_SPREAD_WL == 'P', 'HOME_SPREAD_WL'] = 'W'
+        games = games[games.HOME_SPREAD_WL != 'P']
 
         return games
 
