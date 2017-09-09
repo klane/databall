@@ -23,7 +23,7 @@ def cross_val_curves(model, x, y, k=10, legend=True):
     return fig, ax1, ax2
 
 
-def cross_val_precision_recall_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
+def cross_val_precision_recall_curve(model, x, y, ax, k=10, label='Mean', show_auc=True, show_folds=False):
     # Compute cross-validated precision/recall curve and area under the curve
     kfold = StratifiedKFold(n_splits=k)
     proba = cross_val_predict(model, x, y, cv=kfold, method='predict_proba')
@@ -42,14 +42,16 @@ def cross_val_precision_recall_curve(model, x, y, ax, k=10, label='Mean', show_f
             ax.plot(recall, precision, lw=1, label='Fold %d (Area = %0.2f)' % (i + 1, pr_auc))
 
         ax.plot(mean_recall, mean_precision, 'k--', label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
-    else:
+    elif show_auc:
         ax.plot(mean_recall, mean_precision, label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
+    else:
+        ax.plot(mean_recall, mean_precision, label=label, lw=2)
 
     ax.set_xlabel('Recall')
     ax.set_ylabel('Precision')
 
 
-def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
+def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_auc=True, show_folds=False):
     # Compute cross-validated ROC curve and area under the curve
     kfold = StratifiedKFold(n_splits=k)
     proba = cross_val_predict(model, x, y, cv=kfold, method='predict_proba')
@@ -68,8 +70,10 @@ def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_folds=False):
             ax.plot(fpr, tpr, lw=1, label='Fold %d (Area = %0.2f)' % (i + 1, roc_auc))
 
         ax.plot(mean_fpr, mean_tpr, 'k--', label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
-    else:
+    elif show_auc:
         ax.plot(mean_fpr, mean_tpr, label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
+    else:
+        ax.plot(mean_fpr, mean_tpr, label=label, lw=2)
 
     ax.set_xlabel('False Positive Rate')
     ax.set_ylabel('True Positive Rate')
