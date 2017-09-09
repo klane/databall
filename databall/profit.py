@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def profit(data, var_predict='HOME_SPREAD_WL', bet_amount=100):
     grouped = data.groupby('GAME_DATE')
     num_games = 0
@@ -26,4 +29,4 @@ def profit(data, var_predict='HOME_SPREAD_WL', bet_amount=100):
 
         cumulative_percent += [cumulative_correct[-1] / num_games]
 
-    return days, cumulative_percent, cumulative_profit
+    return days, np.array(cumulative_percent), np.array(cumulative_profit)
