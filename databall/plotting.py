@@ -80,7 +80,7 @@ def cross_val_roc_curve(model, x, y, ax, k=10, label='Mean', show_auc=True, show
 
 
 def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subtitle=None, bottomtick=0, sig='line',
-               n=75, xoff=(-0.075, 1.01), yoff=(-0.1, -0.15), toff=(-0.7, 1.15), soff=(-0.7, 1.05),
+               n=75, xoff=(-0.075, 1.01), yoff=(-0.1, -0.15), toff=(-0.07, 1.15), soff=(-0.07, 1.05),
                prefix='', suffix='', suffix_offset=0):
     plt.style.use('fivethirtyeight')
 
