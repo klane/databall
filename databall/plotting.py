@@ -5,8 +5,8 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_curve, average_precision_score
 
 
-def cross_val_curves(model, x, y, k=10, legend=True):
-    fig = plt.figure(figsize=(16, 6))
+def cross_val_curves(model, x, y, k=10, figsize=(16, 6), legend=True):
+    fig = plt.figure(figsize=figsize)
 
     # Plot ROC curve
     ax1 = plt.subplot(121)
