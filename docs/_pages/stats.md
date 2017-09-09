@@ -1,6 +1,6 @@
 ---
 layout: page
-title: NBA Stats
+title: Stats
 permalink: /data/stats/
 ---
 
