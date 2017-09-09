@@ -7,8 +7,8 @@
 
 - title: Data
   pages:
-  - title: Data Wrangling
-    url: /data/wrangling/
+  - title: NBA Stats
+    url: /data/stats/
   - title: Covers
     url: /data/covers/
   - title: Data Exploration

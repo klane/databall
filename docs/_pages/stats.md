@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Data Wrangling
-permalink: /data/wrangling/
+title: NBA Stats
+permalink: /data/stats/
 ---
 
 ## Collecting the Data
