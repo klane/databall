@@ -130,6 +130,7 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
     # Add title and subtitle
     ax[0].text(x=toff[0], y=toff[1], s=title, fontsize=26, weight='bold', alpha=0.75, transform=ax[0].transAxes)
     ax[0].text(x=soff[0], y=soff[1], s=subtitle, fontsize=20, alpha=0.85, transform=ax[0].transAxes)
+    [a.set_title(a.get_title(), fontsize=20, weight='bold') for a in ax]
 
     # Add signature bar
     label1 = '©Kevin Lane'
