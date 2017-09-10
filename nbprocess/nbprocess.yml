@@ -1,10 +1,21 @@
 data-exploration:
+  - three-point-shots
   - home-win-pct
   - ratings-scatter
   - srs-distribution
+  - net-rating-distribution
   - srs-kde
   - srs-win-loss-kde
   - net-rating-win-loss-kde
+  - margin-of-victory-distribution
+  - point-spread-distribution
+  - home-court-advantage
+  - point-spread-scatter
+  - point-spread-kde
+  - scoring-by-season
+  - scoring-2011
+  - scoring-2015
+  - over-under-scatter
 
 feature-selection:
   - srs-cross-validation

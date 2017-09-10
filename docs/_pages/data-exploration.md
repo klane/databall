@@ -16,7 +16,7 @@ import seaborn as sns
 from scipy.stats import norm
 ```
 
-Next we need to import a local module to calculate some advanced stats not stored in the database.
+Next we need to import a few local modules to calculate some advanced stats not stored in the database and format plots.
 
 
 ```python
@@ -28,55 +28,99 @@ module_path = os.path.abspath(os.path.join('..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
 
-from nba.database import Database
+from databall.database import Database
+from databall.plotting import format_538
+from databall.util import print_df
 ```
 
-The code below simply customizes font sizes for all the plots that follow.
+The command below applies a plot style that is influenced by the beautiful graphs found on [FiveThirtyEight](http://fivethirtyeight.com/). I also wrote a function to further customize my plots to more closely mimick FiveThirtyEight graphs using this [DataQuest article](https://www.dataquest.io/blog/making-538-plots/) as a guide.
 
 
 ```python
-plt.rc('font', size=14)        # controls default text sizes
-plt.rc('axes', titlesize=16)   # fontsize of the axes title
-plt.rc('axes', labelsize=16)   # fontsize of the x and y labels
-plt.rc('xtick', labelsize=14)  # fontsize of the tick labels
-plt.rc('ytick', labelsize=14)  # fontsize of the tick labels
-plt.rc('legend', fontsize=14)  # legend fontsize
+plt.style.use('fivethirtyeight')
 ```
 
 We then need to connect to the database generated during the [data wrangling](data-wrangling.md) process.
 
 
 ```python
-conn = sqlite3.connect('../nba.db')
+conn = sqlite3.connect('../data/nba.db')
 ```
 
-Without knowing what two teams are playing, a reasonable baseline prediction is probably that the home team wins. Let's take a look at how often that actually happens in the NBA. The SQL query below calculates the home team's winning percentage since the 1990-91 season and groups the results by season. Specifically, it sums up all occurrences of 'W' in the HOME_WL column and divides by the total number of games in a given season.
+The SQL query below calculates the home team's winning percentage straight up and against the spread since the 1990-91 season and groups the results by season. Specifically, it sums up all occurrences of 'W' in the HOME_WL and HOME_SPREAD_WL columns and divides by the total number of games in a given season. It also calculates the percentage of games that hit the over and a few other average stats that I plot later.
 
 
 ```python
 data = pd.read_sql('''
-    SELECT SEASON,
-           100.0 * SUM(CASE WHEN HOME_WL = 'W' THEN 1 ELSE 0 END) / COUNT(HOME_WL) AS HomeWinPct
+    SELECT
+        SEASON,
+        100.0 * SUM(CASE WHEN HOME_WL = 'W' THEN 1 ELSE 0 END) / COUNT(HOME_WL) AS HomeWinPct,
+        100.0 * SUM(CASE WHEN HOME_SPREAD_WL = 'W' THEN 1 ELSE 0 END) / COUNT(HOME_SPREAD_WL) AS HomeWinPctATS,
+        100.0 * SUM(CASE WHEN OU_RESULT = 'O' THEN 1 ELSE 0 END) / COUNT(OU_RESULT) AS OverPct,
+        AVG(OVER_UNDER) AS AVG_OVER_UNDER,
+        AVG(HOME_SPREAD) AS AVG_HOME_SPREAD,
+        2 * AVG(PTS) as AVG_PTS,
+        AVG(FG3A) as AVG3
     FROM games
-    WHERE SEASON >= 1990
+    JOIN betting ON games.ID IS betting.GAME_ID
+    JOIN team_game_stats ON games.ID IS team_game_stats.GAME_ID
     GROUP BY SEASON''', conn)
 ```
 
-The plot below shows the win percentage for all home teams across the league from 1990-2015. The chart along with the annotation show that the home team wins about 60% of the time historically. That rate is also remarkably consistent. It has a standard deviation of less than 2% and has stayed within about $$\pm$$4% since the 1990-91 season. FiveThirtyEight [reported](https://fivethirtyeight.com/features/a-home-playoff-game-is-a-big-advantage-unless-you-play-hockey/) a similar percentage when analyzing home court/field/ice advantages of the four major American sports. They calculated that the home team in the NBA has won 59.9% of regular season games since the 2000 season. They also estimated that playing at home provides the biggest advantage in the NBA, where home teams win nearly 10% more games than expected had all games been played at neutral sites. Contrast that with MLB, where home teams win only 4% more games than expected. It is interesting to note that regardless of the sport, FiveThirtyEight's models expect the "home" team to win about 50% of the time on neutral sites, which makes sense when averaged across all teams and multiple seasons.
+I first wanted to look at the rise of three-point shooting in the NBA. As discussed in the [background](background.md), teams have been shooting more and more threes every season for a while because they are worth more in terms of expected value, and the data clearly indicates that. Since the three-point line was extended in 1997, teams have shot more threes the following season virtually every year.
 
 
 ```python
-pct = data.HomeWinPct
-plt.figure(figsize=(10, 6))
-plt.plot(data.SEASON, pct)
-plt.text(1990.5, 83,
-         '$\mu=${0:.1f}%\n$\sigma=${1:.1f}%\nRange = {2:.1f}%'
-         .format(np.mean(pct), np.std(pct), np.ptp(pct)))
-plt.xlabel('Season')
-plt.ylabel('NBA Home Team Win Percentage')
-plt.title('NBA Home Teams Win Predictably Often')
-plt.xlim(1990, 2015)
-plt.ylim(0, 100)
+fig = plt.figure(figsize=(12, 8))
+plt.plot(data.SEASON, data.AVG3)
+plt.annotate('3-Point line extended', xy=(1997, 12.5), xytext=(2000, 10.2), fontsize=16, 
+             arrowprops=dict(facecolor='black'))
+plt.ylim(-1)
+title = 'Teams are shooting more threes than ever'
+subtitle = 'Average number of 3-point shot attempts taken per game'
+format_538(fig, 'NBA Stats', xlabel='Season', ylabel='3PT Attempts Per Game',
+           title=title, subtitle=subtitle, toff=(-0.07, 1.12))
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/three-point-shots.png){: .center-image }
+
+In terms of predicting game winners, a reasonable baseline prediction without knowing what two teams are playing is probably that the home team wins. Let's take a look at how often that actually happens in the NBA. The plot below shows home team win percentage across the league from 1990-2016. The chart along with the annotation show that the home team wins about 60% of the time historically. That rate is also remarkably consistent. It has a standard deviation of less than 2% and has stayed within about $$\pm$$4% since the 1990-91 season. FiveThirtyEight [reported](https://fivethirtyeight.com/features/a-home-playoff-game-is-a-big-advantage-unless-you-play-hockey/) a similar percentage when analyzing home court/field/ice advantages of the four major American sports. They calculated that the home team in the NBA has won 59.9% of regular season games since the 2000 season. They also estimated that playing at home provides the biggest advantage in the NBA, where home teams win nearly 10% more games than expected had all games been played at neutral sites. Contrast that with MLB, where home teams win only 4% more games than expected. It is interesting to note that regardless of the sport, FiveThirtyEight's models expect the "home" team to win about 50% of the time on neutral sites, which makes sense when averaged across all teams and multiple seasons.
+
+The plot also shows winning percentage against the spread (ATS) and percentage of games that hit the over. It really shows how skilled oddsmakers are at setting point spreads and over/under lines. Both percentages 
+
+
+```python
+wpct = data.HomeWinPct
+wpct_ats = data.HomeWinPctATS
+opct = data.OverPct
+
+fig = plt.figure(figsize=(12, 8))
+p = []
+p += plt.plot(data.SEASON, wpct, label='Straight Up')
+p += plt.plot(data.SEASON, wpct_ats, label='ATS')
+p += plt.plot(data.SEASON, opct, label='Over')
+plt.ylim(-5)
+
+plt.text(2017.5, 41, '$\mu$ = {0:.1f}%\n$\sigma$ = {1:.1f}%\nRange = {2:.1f}%'
+         .format(np.mean(wpct), np.std(wpct), np.ptp(wpct)),
+         fontsize=18, fontweight='bold', color=p[0].get_color())
+plt.text(2017.5, 26, '$\mu$ = {0:.1f}%\n$\sigma$ = {1:.1f}%\nRange = {2:.1f}%'
+         .format(np.mean(wpct_ats), np.std(wpct_ats), np.ptp(wpct_ats)),
+         fontsize=18, fontweight='bold', color=p[1].get_color())
+plt.text(2017.5, 11, '$\mu$ = {0:.1f}%\n$\sigma$ = {1:.1f}%\nRange = {2:.1f}%'
+         .format(np.mean(opct), np.std(opct), np.ptp(opct)),
+         fontsize=18, fontweight='bold', color=p[2].get_color())
+
+xlabel = 'Season'
+ylabel = 'Home Team Win Percentage'
+title = 'NBA home teams win predictably often'
+subtitle = '''Home team winning percentages straight up and against the spread plus
+percentage of games that hit the over'''
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+format_538(fig, 'NBA Stats & Covers.com', xlabel=xlabel, ylabel=ylabel, title=title, subtitle=subtitle,
+           xoff=(-0.09, 1.01), toff=(-0.082, 1.16), soff=(-0.082, 1.05), suffix='%', suffix_offset=3)
 plt.show()
 ```
 
@@ -89,7 +133,7 @@ Now let's calculate some advanced stats from the basic box score data. The code 
 
 
 ```python
-database = Database('../nba.db')
+database = Database('../data/nba.db')
 season_stats = database.season_stats()
 ```
 
@@ -113,7 +157,7 @@ net_flag = (season_stats.TEAM_NET_RTG > net_lim) & (season_stats.SEASON >= 1990)
 stats = ['SEASON', 'TEAM_ID', 'TEAM_OFF_RTG', 'TEAM_DEF_RTG', 'TEAM_NET_RTG', 'TEAM_SRS']
 ```
 
-There are 13 teams since the 1990-91 season with an offensive rating greater than 114 and 4 of them are Jordan-led Bulls teams. The only other teams to appear more than once are the Suns (one led by Charles Barkley and two by the duo of Steve Nash and Amar'e Stoudemire) and the Warriors (one led by hall of famer Chris Mullin and the record-setting 2015-16 team). Note that the NBA's database does not differentiate teams that change location and/or mascots, so the table identifies the 1994 Oklahoma City Thunder, even though they were the Seattle SuperSonics at the time.
+There are 15 teams since the 1990-91 season with an offensive rating greater than 114 and 4 of them are Jordan-led Bulls teams. The only other teams to appear more than once are the Suns (one led by Charles Barkley and two by the duo of Steve Nash and Amar'e Stoudemire) and the Warriors (one led by hall of famer Chris Mullin and the record-setting 2015-16 team). Note that the NBA's database does not differentiate teams that change location and/or mascots, so the table identifies the 1994 Oklahoma City Thunder, even though they were the Seattle SuperSonics at the time.
 
 
 ```python
@@ -127,17 +171,13 @@ best_off = teams.merge(best_off, left_on='ID', right_on='TEAM_ID')
 best_off = best_off[[c for c in best_off.columns if 'ID' not in c]]
 
 # Sort by descending offensive rating
-best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
+print_df(best_off.sort_values(by='TEAM_OFF_RTG', ascending=False))
 ```
 
 
-
-
-<div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
       <th>ABBREVIATION</th>
       <th>CITY</th>
       <th>MASCOT</th>
@@ -150,7 +190,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
   </thead>
   <tbody>
     <tr>
-      <th>2</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -161,7 +200,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>10.068209</td>
     </tr>
     <tr>
-      <th>3</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -172,7 +210,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>11.799077</td>
     </tr>
     <tr>
-      <th>7</th>
       <td>ORL</td>
       <td>Orlando</td>
       <td>Magic</td>
@@ -183,7 +220,16 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>6.438905</td>
     </tr>
     <tr>
-      <th>11</th>
+      <td>GSW</td>
+      <td>Golden State</td>
+      <td>Warriors</td>
+      <td>2016</td>
+      <td>115.569072</td>
+      <td>103.967168</td>
+      <td>11.601904</td>
+      <td>11.351390</td>
+    </tr>
+    <tr>
       <td>OKC</td>
       <td>Oklahoma City</td>
       <td>Thunder</td>
@@ -194,7 +240,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>7.907164</td>
     </tr>
     <tr>
-      <th>10</th>
       <td>PHX</td>
       <td>Phoenix</td>
       <td>Suns</td>
@@ -205,7 +250,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>4.677408</td>
     </tr>
     <tr>
-      <th>1</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -216,7 +260,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>8.565998</td>
     </tr>
     <tr>
-      <th>12</th>
       <td>UTA</td>
       <td>Utah</td>
       <td>Jazz</td>
@@ -227,7 +270,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>7.751535</td>
     </tr>
     <tr>
-      <th>8</th>
       <td>PHX</td>
       <td>Phoenix</td>
       <td>Suns</td>
@@ -238,7 +280,16 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>3.849692</td>
     </tr>
     <tr>
-      <th>9</th>
+      <td>HOU</td>
+      <td>Houston</td>
+      <td>Rockets</td>
+      <td>2016</td>
+      <td>114.745295</td>
+      <td>109.006817</td>
+      <td>5.738478</td>
+      <td>5.844508</td>
+    </tr>
+    <tr>
       <td>PHX</td>
       <td>Phoenix</td>
       <td>Suns</td>
@@ -249,7 +300,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>7.076859</td>
     </tr>
     <tr>
-      <th>6</th>
       <td>GSW</td>
       <td>Golden State</td>
       <td>Warriors</td>
@@ -260,7 +310,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>10.380270</td>
     </tr>
     <tr>
-      <th>4</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -271,7 +320,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>10.697142</td>
     </tr>
     <tr>
-      <th>0</th>
       <td>CLE</td>
       <td>Cleveland</td>
       <td>Cavaliers</td>
@@ -282,7 +330,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
       <td>5.340416</td>
     </tr>
     <tr>
-      <th>5</th>
       <td>GSW</td>
       <td>Golden State</td>
       <td>Warriors</td>
@@ -294,8 +341,6 @@ best_off.sort_values(by='TEAM_OFF_RTG', ascending=False)
     </tr>
   </tbody>
 </table>
-</div>
-
 
 
 There are 11 teams since 1990 with a defensive rating under 98 and 3 of them are late 90s/early 2000s Spurs teams with Tim Duncan, two of which featured hall of famer David Robinson. What is more impressive is that they are the only team to grace this list more than once.
@@ -312,17 +357,13 @@ best_def = teams.merge(best_def, left_on='ID', right_on='TEAM_ID')
 best_def = best_def[[c for c in best_def.columns if 'ID' not in c]]
 
 # Sort by ascending defensive rating
-best_def.sort_values(by='TEAM_DEF_RTG')
+print_df(best_def.sort_values(by='TEAM_DEF_RTG'))
 ```
 
 
-
-
-<div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
       <th>ABBREVIATION</th>
       <th>CITY</th>
       <th>MASCOT</th>
@@ -335,7 +376,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
   </thead>
   <tbody>
     <tr>
-      <th>9</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -346,7 +386,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>7.512427</td>
     </tr>
     <tr>
-      <th>7</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -357,7 +396,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>7.151218</td>
     </tr>
     <tr>
-      <th>10</th>
       <td>DET</td>
       <td>Detroit</td>
       <td>Pistons</td>
@@ -368,7 +406,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>5.035363</td>
     </tr>
     <tr>
-      <th>0</th>
       <td>ATL</td>
       <td>Atlanta</td>
       <td>Hawks</td>
@@ -379,7 +416,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>2.790164</td>
     </tr>
     <tr>
-      <th>3</th>
       <td>IND</td>
       <td>Indiana</td>
       <td>Pacers</td>
@@ -390,7 +426,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>4.932295</td>
     </tr>
     <tr>
-      <th>2</th>
       <td>ORL</td>
       <td>Orlando</td>
       <td>Magic</td>
@@ -401,7 +436,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>3.082168</td>
     </tr>
     <tr>
-      <th>1</th>
       <td>NYK</td>
       <td>New York</td>
       <td>Knicks</td>
@@ -412,7 +446,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>1.423433</td>
     </tr>
     <tr>
-      <th>4</th>
       <td>PHI</td>
       <td>Philadelphia</td>
       <td>76ers</td>
@@ -423,7 +456,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>2.528796</td>
     </tr>
     <tr>
-      <th>6</th>
       <td>POR</td>
       <td>Portland</td>
       <td>Trail Blazers</td>
@@ -434,7 +466,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>5.697009</td>
     </tr>
     <tr>
-      <th>8</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -445,7 +476,6 @@ best_def.sort_values(by='TEAM_DEF_RTG')
       <td>7.916999</td>
     </tr>
     <tr>
-      <th>5</th>
       <td>PHX</td>
       <td>Phoenix</td>
       <td>Suns</td>
@@ -457,11 +487,9 @@ best_def.sort_values(by='TEAM_DEF_RTG')
     </tr>
   </tbody>
 </table>
-</div>
 
 
-
-The 16 teams listed below have a net rating greater than 9 and are some of the strongest teams in NBA history. These include 4 of the Jordan-led Bulls and two of the recent Warriors teams. Only one of the strong defensive teams isolated above make the cut, while 5 of the strong offensive teams appear. As before, note that the 1993 Oklahoma City Thunder were in fact the Seattle SuperSonics.
+The 17 teams listed below have a net rating greater than 9 and are some of the strongest teams in NBA history. These include 4 of the Jordan-led Bulls and two of the recent Warriors teams. Only one of the strong defensive teams isolated above make the cut, while 5 of the strong offensive teams appear. As before, note that the 1993 Oklahoma City Thunder were in fact the Seattle SuperSonics.
 
 
 ```python
@@ -475,17 +503,13 @@ best_net = teams.merge(best_net, left_on='ID', right_on='TEAM_ID')
 best_net = best_net[[c for c in best_net.columns if 'ID' not in c]]
 
 # Sort by descending net rating
-best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
+print_df(best_net.sort_values(by='TEAM_NET_RTG', ascending=False))
 ```
 
 
-
-
-<div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
       <th>ABBREVIATION</th>
       <th>CITY</th>
       <th>MASCOT</th>
@@ -498,7 +522,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
   </thead>
   <tbody>
     <tr>
-      <th>4</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -509,7 +532,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>11.799077</td>
     </tr>
     <tr>
-      <th>5</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -520,7 +542,16 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>10.697142</td>
     </tr>
     <tr>
-      <th>12</th>
+      <td>GSW</td>
+      <td>Golden State</td>
+      <td>Warriors</td>
+      <td>2016</td>
+      <td>115.569072</td>
+      <td>103.967168</td>
+      <td>11.601904</td>
+      <td>11.351390</td>
+    </tr>
+    <tr>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -531,7 +562,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>10.276618</td>
     </tr>
     <tr>
-      <th>0</th>
       <td>BOS</td>
       <td>Boston</td>
       <td>Celtics</td>
@@ -542,7 +572,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>9.307345</td>
     </tr>
     <tr>
-      <th>3</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -553,7 +582,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>10.068209</td>
     </tr>
     <tr>
-      <th>8</th>
       <td>GSW</td>
       <td>Golden State</td>
       <td>Warriors</td>
@@ -564,7 +592,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>10.380270</td>
     </tr>
     <tr>
-      <th>7</th>
       <td>GSW</td>
       <td>Golden State</td>
       <td>Warriors</td>
@@ -575,7 +602,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>10.008125</td>
     </tr>
     <tr>
-      <th>1</th>
       <td>CLE</td>
       <td>Cleveland</td>
       <td>Cavaliers</td>
@@ -586,7 +612,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>8.680389</td>
     </tr>
     <tr>
-      <th>14</th>
       <td>OKC</td>
       <td>Oklahoma City</td>
       <td>Thunder</td>
@@ -597,7 +622,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>9.149670</td>
     </tr>
     <tr>
-      <th>15</th>
       <td>UTA</td>
       <td>Utah</td>
       <td>Jazz</td>
@@ -608,7 +632,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>7.969128</td>
     </tr>
     <tr>
-      <th>13</th>
       <td>OKC</td>
       <td>Oklahoma City</td>
       <td>Thunder</td>
@@ -619,7 +642,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>8.675828</td>
     </tr>
     <tr>
-      <th>2</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -630,7 +652,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>8.565998</td>
     </tr>
     <tr>
-      <th>11</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -641,7 +662,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>8.347217</td>
     </tr>
     <tr>
-      <th>6</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -652,7 +672,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>7.426924</td>
     </tr>
     <tr>
-      <th>9</th>
       <td>LAL</td>
       <td>Los Angeles</td>
       <td>Lakers</td>
@@ -663,7 +682,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
       <td>8.413792</td>
     </tr>
     <tr>
-      <th>10</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -675,8 +693,6 @@ best_net.sort_values(by='TEAM_NET_RTG', ascending=False)
     </tr>
   </tbody>
 </table>
-</div>
-
 
 
 The following table shows all NBA champions since the 1990-91 season. Not surprisingly, most of the champions have solid net ratings and SRS numbers with the 1995 Bulls shining above all other teams. The weakest champion by these measures is the 1994 Rockets led by hall of famers Hakeem Olajuwon and Clyde Drexler.
@@ -684,10 +700,10 @@ The following table shows all NBA champions since the 1990-91 season. Not surpri
 
 ```python
 # Create champions table that identifies which team won the NBA championship each season
-champs = pd.DataFrame({'SEASON': range(1990, 2016),
+champs = pd.DataFrame({'SEASON': range(1990, 2017),
                        'ABBREVIATION': ['CHI', 'CHI', 'CHI', 'HOU', 'HOU', 'CHI', 'CHI', 'CHI', 'SAS',
                                         'LAL', 'LAL', 'LAL', 'SAS', 'DET', 'SAS', 'MIA', 'SAS', 'BOS',
-                                        'LAL', 'LAL', 'DAL', 'MIA', 'MIA', 'SAS', 'GSW', 'CLE']})
+                                        'LAL', 'LAL', 'DAL', 'MIA', 'MIA', 'SAS', 'GSW', 'CLE', 'GSW']})
 # Isolate desired stats from all teams
 champ_stats = season_stats[stats]
 
@@ -700,17 +716,13 @@ champ_stats = champs.merge(champ_stats, left_on=columns, right_on=columns)
 
 # Remove ID columns
 champ_stats = champ_stats[[c for c in best_net.columns if 'ID' not in c]]
-champ_stats
+print_df(champ_stats)
 ```
 
 
-
-
-<div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
       <th>ABBREVIATION</th>
       <th>CITY</th>
       <th>MASCOT</th>
@@ -723,7 +735,6 @@ champ_stats
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -734,7 +745,6 @@ champ_stats
       <td>8.565998</td>
     </tr>
     <tr>
-      <th>1</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -745,7 +755,6 @@ champ_stats
       <td>10.068209</td>
     </tr>
     <tr>
-      <th>2</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -756,7 +765,6 @@ champ_stats
       <td>6.192637</td>
     </tr>
     <tr>
-      <th>3</th>
       <td>HOU</td>
       <td>Houston</td>
       <td>Rockets</td>
@@ -767,7 +775,6 @@ champ_stats
       <td>4.194021</td>
     </tr>
     <tr>
-      <th>4</th>
       <td>HOU</td>
       <td>Houston</td>
       <td>Rockets</td>
@@ -778,7 +785,6 @@ champ_stats
       <td>2.318131</td>
     </tr>
     <tr>
-      <th>5</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -789,7 +795,6 @@ champ_stats
       <td>11.799077</td>
     </tr>
     <tr>
-      <th>6</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -800,7 +805,6 @@ champ_stats
       <td>10.697142</td>
     </tr>
     <tr>
-      <th>7</th>
       <td>CHI</td>
       <td>Chicago</td>
       <td>Bulls</td>
@@ -811,7 +815,6 @@ champ_stats
       <td>7.244613</td>
     </tr>
     <tr>
-      <th>8</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -822,7 +825,6 @@ champ_stats
       <td>7.151218</td>
     </tr>
     <tr>
-      <th>9</th>
       <td>LAL</td>
       <td>Los Angeles</td>
       <td>Lakers</td>
@@ -833,7 +835,6 @@ champ_stats
       <td>8.413792</td>
     </tr>
     <tr>
-      <th>10</th>
       <td>LAL</td>
       <td>Los Angeles</td>
       <td>Lakers</td>
@@ -844,7 +845,6 @@ champ_stats
       <td>3.742580</td>
     </tr>
     <tr>
-      <th>11</th>
       <td>LAL</td>
       <td>Los Angeles</td>
       <td>Lakers</td>
@@ -855,7 +855,6 @@ champ_stats
       <td>7.145147</td>
     </tr>
     <tr>
-      <th>12</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -866,7 +865,6 @@ champ_stats
       <td>5.649958</td>
     </tr>
     <tr>
-      <th>13</th>
       <td>DET</td>
       <td>Detroit</td>
       <td>Pistons</td>
@@ -877,7 +875,6 @@ champ_stats
       <td>5.035363</td>
     </tr>
     <tr>
-      <th>14</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -888,7 +885,6 @@ champ_stats
       <td>7.835147</td>
     </tr>
     <tr>
-      <th>15</th>
       <td>MIA</td>
       <td>Miami</td>
       <td>Heat</td>
@@ -899,7 +895,6 @@ champ_stats
       <td>3.592696</td>
     </tr>
     <tr>
-      <th>16</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -910,7 +905,6 @@ champ_stats
       <td>8.347217</td>
     </tr>
     <tr>
-      <th>17</th>
       <td>BOS</td>
       <td>Boston</td>
       <td>Celtics</td>
@@ -921,7 +915,6 @@ champ_stats
       <td>9.307345</td>
     </tr>
     <tr>
-      <th>18</th>
       <td>LAL</td>
       <td>Los Angeles</td>
       <td>Lakers</td>
@@ -932,7 +925,6 @@ champ_stats
       <td>7.112944</td>
     </tr>
     <tr>
-      <th>19</th>
       <td>LAL</td>
       <td>Los Angeles</td>
       <td>Lakers</td>
@@ -943,7 +935,6 @@ champ_stats
       <td>4.782049</td>
     </tr>
     <tr>
-      <th>20</th>
       <td>DAL</td>
       <td>Dallas</td>
       <td>Mavericks</td>
@@ -954,7 +945,6 @@ champ_stats
       <td>4.407577</td>
     </tr>
     <tr>
-      <th>21</th>
       <td>MIA</td>
       <td>Miami</td>
       <td>Heat</td>
@@ -965,7 +955,6 @@ champ_stats
       <td>5.719582</td>
     </tr>
     <tr>
-      <th>22</th>
       <td>MIA</td>
       <td>Miami</td>
       <td>Heat</td>
@@ -976,7 +965,6 @@ champ_stats
       <td>7.031001</td>
     </tr>
     <tr>
-      <th>23</th>
       <td>SAS</td>
       <td>San Antonio</td>
       <td>Spurs</td>
@@ -987,7 +975,6 @@ champ_stats
       <td>7.994012</td>
     </tr>
     <tr>
-      <th>24</th>
       <td>GSW</td>
       <td>Golden State</td>
       <td>Warriors</td>
@@ -998,7 +985,6 @@ champ_stats
       <td>10.008125</td>
     </tr>
     <tr>
-      <th>25</th>
       <td>CLE</td>
       <td>Cleveland</td>
       <td>Cavaliers</td>
@@ -1008,10 +994,18 @@ champ_stats
       <td>6.376349</td>
       <td>5.452116</td>
     </tr>
+    <tr>
+      <td>GSW</td>
+      <td>Golden State</td>
+      <td>Warriors</td>
+      <td>2016</td>
+      <td>115.569072</td>
+      <td>103.967168</td>
+      <td>11.601904</td>
+      <td>11.351390</td>
+    </tr>
   </tbody>
 </table>
-</div>
-
 
 
 The scatter plot below shows all teams since 1990 represented by their offensive and defensive ratings. The strongest teams are towards the bottom right, those that score a lot and do not give up many points. The line represents a constant net rating of 9, below which are the 16 teams listed above that have a net rating greater than 9.
@@ -1019,9 +1013,9 @@ The scatter plot below shows all teams since 1990 represented by their offensive
 
 ```python
 # Add line of constant net rating
-x = np.array([95, 120])
-plt.figure(figsize=(10, 8))
-plt.plot(x, x-net_lim, 'black', label='Net Rating = %d' % net_lim)
+x = np.array([99, 120])
+fig = plt.figure(figsize=(10, 8))
+plt.plot(x, x-net_lim, 'black', label='Net Rating = {:d}'.format(net_lim))
 
 # Isolate teams that do not make the offensive/defensive/net rating cutoffs
 others = season_stats.loc[~off_flag & ~def_flag & ~net_flag & (season_stats.SEASON >= 1990), stats]
@@ -1034,17 +1028,20 @@ others = others[others._merge == 'right_only']
 
 # Plot data
 plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=others, label='Everyone Else')
-plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=best_off, label='Off Rating > %d' % off_lim)
-plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=best_def, label='Def Rating < %d' % def_lim)
-plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=best_net, label='Net Rating > %d' % net_lim)
-plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=champ_stats, label='Champions')
+plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=best_off, label='Off Rating > {:d}'.format(off_lim))
+plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=best_def, label='Def Rating < {:d}'.format(def_lim),
+            color='green')
+plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=best_net, label='Net Rating > {:d}'.format(net_lim),
+            color='purple')
+plt.scatter(x='TEAM_OFF_RTG', y='TEAM_DEF_RTG', data=champ_stats, label='Champions', color='gold')
 
-# Label axes and add legend
-plt.legend()
-plt.xlabel('Offensive Rating')
-plt.ylabel('Defensive Rating')
-plt.xlim(90, 120)
-plt.ylim(90, 120)
+# Add legend for format plot
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+title = 'It is hard to be great on both ends of the floor'
+subtitle = '''Comparison of offensive and defensive ratings for teams grouped
+by different ratings cutoffs'''
+format_538(fig, 'NBA Stats', xlabel='Offensive Rating', ylabel='Defensive Rating', title=title,
+           subtitle=subtitle, xoff=(-0.11, 1.01), toff=(-0.09, 1.16), soff=(-0.09, 1.05), bottomtick=90)
 plt.show()
 ```
 
@@ -1053,29 +1050,54 @@ plt.show()
 
 ## Team Strength Distribution
 
-The histogram and kernel density estimation (KDE) of team SRS below show that teams are fairly normally distributed. The best fit normal distribution has a mean of essentially zero with a standard deviation of about 4.6 points. A zero-mean distribution makes sense here because an SRS of zero indicates a perfectly average team.
+The histogram and KDE of team SRS below show that teams are fairly normally distributed. The best fit normal distribution has a mean of essentially zero with a standard deviation of about 4.6 points. A zero-mean distribution makes sense here because an SRS of zero indicates a perfectly average team.
 
 
 ```python
 srs = season_stats['TEAM_SRS']
 (mu, sigma) = norm.fit(srs)
 
-plt.figure(figsize=(12, 6))
-ax = sns.distplot(srs, fit=norm, kde=True, kde_kws={'label': 'KDE', 'color': 'green', 'linewidth': 3},
-                  hist_kws={'label': 'SRS', 'edgecolor': 'k', 'linewidth': 2},
-                  fit_kws={'label': 'Normal Dist ($\mu=${0:.2g}, $\sigma=${1:.2f})'.format(mu, sigma),
-                           'linewidth': 3})
-ax.legend()
-plt.xlabel('SRS')
-plt.ylabel('Frequency')
-plt.title('Most NBA Teams are Average')
-plt.xlim(-20, 20)
-plt.ylim(0, 0.1)
+fig = plt.figure(figsize=(10, 8))
+sns.distplot(srs, fit=norm, kde=True, kde_kws={'label': 'KDE', 'color': 'green', 'linewidth': 3},
+             hist_kws={'label': 'SRS', 'edgecolor': 'k', 'linewidth': 2},
+             fit_kws={'label': 'Normal\n($\mu$ = {0:.2g}, $\sigma$ = {1:.2f})'
+                      .format(mu, sigma), 'linewidth': 3})
+plt.ylim(-0.001)
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+title = 'Most NBA teams are average'
+subtitle = '''Histogram of team Simple Rating System (SRS) with a normal
+distribution and kernel density estimation overlaid'''
+format_538(fig, 'NBA Stats', xlabel='SRS', ylabel='Frequency', title=title,
+           subtitle=subtitle, xoff=(-0.11, 1.01), toff=(-0.09, 1.16), soff=(-0.09, 1.05))
 plt.show()
 ```
 
 
 ![png]({{ site.baseurl }}/assets/images/data-exploration/srs-distribution.png){: .center-image }
+
+
+```python
+net_rtg = season_stats['TEAM_NET_RTG']
+(mu, sigma) = norm.fit(net_rtg)
+
+fig = plt.figure(figsize=(10, 8))
+sns.distplot(net_rtg, fit=norm, kde=True, kde_kws={'label': 'KDE', 'color': 'green', 'linewidth': 3},
+             hist_kws={'label': 'Net Rating', 'edgecolor': 'k', 'linewidth': 2},
+             fit_kws={'label': 'Normal\n($\mu$ = {0:.2g}, $\sigma$ = {1:.2f})'
+                      .format(mu, sigma), 'linewidth': 3})
+
+plt.ylim(-0.001)
+plt.legend(fontsize=16, bbox_to_anchor=(1.38, 1), borderaxespad=0)
+title = 'Most NBA teams are average'
+subtitle = '''Histogram of team net rating with a normal distribution and a
+kernel density estimation overlaid'''
+format_538(fig, 'NBA Stats', xlabel='Net Rating', ylabel='Frequency', title=title,
+           subtitle=subtitle, xoff=(-0.11, 1.01), toff=(-0.09, 1.16), soff=(-0.09, 1.05))
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/net-rating-distribution.png){: .center-image }
 
 ## Home vs. Away Strength
 
@@ -1084,7 +1106,7 @@ The next step is to look at games in terms of home and away team stats. The code
 
 ```python
 seasons = season_stats.filter(regex='SEASON|TEAM')
-games = pd.read_sql('SELECT * FROM games', conn)
+games = pd.read_sql('SELECT * FROM games JOIN betting ON games.ID is betting.GAME_ID', conn)
 games = games.merge(seasons, left_on=['SEASON', 'HOME_TEAM_ID'], right_on=['SEASON', 'TEAM_ID'])
 games = games.merge(seasons, left_on=['SEASON', 'AWAY_TEAM_ID'], right_on=['SEASON', 'TEAM_ID'], 
                     suffixes=('', '_AWAY'))
@@ -1094,9 +1116,15 @@ The plot below shows a 2D KDE that compares home and away team SRS. By inspectio
 
 
 ```python
-ax = sns.jointplot(x='TEAM_SRS', y='TEAM_SRS_AWAY', data=games, kind='kde',
+ax = sns.jointplot(x='TEAM_SRS', y='TEAM_SRS_AWAY', data=games, kind='kde', cmap='Blues',
                    shade_lowest=False, stat_func=None, xlim=(-15, 15), ylim=(-15, 15), size=8)
 ax.set_axis_labels(xlabel='Home Team SRS', ylabel='Away Team SRS')
+
+plt.ylim(-16)
+title = 'Most NBA teams are average'
+subtitle = '''Kernel density estimation of home and away team SRS'''
+format_538(plt.gcf(), 'NBA Stats', ax=ax.ax_joint, title=title, subtitle=subtitle, xoff=(-0.18, 1.22),
+           yoff=(-0.12, -0.17), toff=(-0.16, 1.34), soff=(-0.16, 1.26), bottomtick=-15, n=50)
 plt.show()
 ```
 
@@ -1110,7 +1138,7 @@ The function below makes and customizes KDE plots of home and away team stats.
 def kde(data, stat, label, title, ax):
     stat = 'TEAM_' + stat
     sns.kdeplot(data[stat], data[stat + '_AWAY'], cmap='Blues', shade=True, shade_lowest=False, ax=ax)
-    ax.plot(0, 0, 'or')
+    ax.plot(0, 0, 'or', markersize=10)
     ax.set_xlabel('Home Team ' + label)
     ax.set_ylabel('Away Team ' + label)
     ax.set_title(title)
@@ -1122,14 +1150,26 @@ A better view of this data is to separate games into home team wins and losses. 
 
 
 ```python
-plt.figure(figsize=(14, 6))
+fig = plt.figure(figsize=(14, 6))
+ax1 = plt.subplot(121)
+ax2 = plt.subplot(122)
 
 # Find games where the home team won
-kde(games[games.HOME_WL=='W'], 'SRS', 'SRS', 'KDE of Home Team Wins', plt.subplot(121))
+kde(games[games.HOME_WL=='W'], 'SRS', 'SRS', 'KDE of Home Team Wins', ax1)
+ax1.annotate('Average teams', xy=(-0.25, 0.25), xytext=(-14, 11), fontsize=16, 
+             arrowprops=dict(facecolor='black'))
+ax1.set_ylim(-16)
 
 # Find games where the home team lost
-kde(games[games.HOME_WL=='L'], 'SRS', 'SRS', 'KDE of Home Team Losses', plt.subplot(122))
+kde(games[games.HOME_WL=='L'], 'SRS', 'SRS', 'KDE of Home Team Losses', ax2)
+ax2.annotate('Average teams', xy=(0.25, -0.25), xytext=(6, -9), fontsize=16, 
+             arrowprops=dict(facecolor='black'))
+ax2.set_ylim(-16)
 
+title = 'Bad teams lose at home more often'
+subtitle = 'Kernel density estimations of home and away team SRS for home team wins and losses'
+format_538(fig, 'NBA Stats', ax=(ax1, ax2), title=title, subtitle=subtitle, xoff=(-0.18, 2.25),
+           yoff=(-0.13, -0.18), toff=(-.15, 1.25), soff=(-0.15, 1.15), bottomtick=[-15, -15], n=80)
 plt.show()
 ```
 
@@ -1141,15 +1181,359 @@ The KDE plots below repeat those above for team net ratings (offensive rating - 
 
 ```python
 plt.figure(figsize=(14, 6))
+ax1 = plt.subplot(121)
+ax2 = plt.subplot(122)
 
 # Find games where the home team won
-kde(games[games.HOME_WL=='W'], 'NET_RTG', 'Net Rating', 'KDE of Home Team Wins', plt.subplot(121))
+kde(games[games.HOME_WL=='W'], 'NET_RTG', 'Net Rating', 'KDE of Home Team Wins', ax1)
+ax1.annotate('Average teams', xy=(-0.25, 0.25), xytext=(-14, 11), fontsize=16, 
+             arrowprops=dict(facecolor='black'))
+ax1.set_ylim(-16)
 
 # Find games where the home team lost
-kde(games[games.HOME_WL=='L'], 'NET_RTG', 'Net Rating', 'KDE of Home Team Losses', plt.subplot(122))
+kde(games[games.HOME_WL=='L'], 'NET_RTG', 'Net Rating', 'KDE of Home Team Losses', ax2)
+ax2.annotate('Average teams', xy=(0.25, -0.25), xytext=(6, -9), fontsize=16, 
+             arrowprops=dict(facecolor='black'))
+ax2.set_ylim(-16)
 
+title = 'Bad teams lose at home more often'
+subtitle = 'Kernel density estimations of home and away team net rating for home team wins and losses'
+format_538(fig, 'NBA Stats', ax=(ax1, ax2), title=title, subtitle=subtitle, xoff=(-0.18, 2.25),
+           yoff=(-0.13, -0.18), toff=(-.15, 1.25), soff=(-0.15, 1.15), bottomtick=[-15, -15], n=80)
 plt.show()
 ```
 
 
 ![png]({{ site.baseurl }}/assets/images/data-exploration/net-rating-win-loss-kde.png){: .center-image }
+
+
+```python
+mov = pd.read_sql('''
+    SELECT SEASON, PLUS_MINUS
+    FROM team_game_stats
+    JOIN games
+    ON team_game_stats.GAME_ID IS games.ID
+    AND team_game_stats.TEAM_ID = games.AWAY_TEAM_ID''', conn)
+
+
+mov = mov.PLUS_MINUS
+(mu, sigma) = norm.fit(mov)
+
+fig = plt.figure(figsize=(12, 8))
+ax = sns.distplot(mov, bins=15, fit=norm, kde=True,
+                  kde_kws={'label': 'KDE', 'color': 'green', 'linewidth': 3},
+                  hist_kws={'label': 'Away Margin of Victory', 'edgecolor': 'k', 'linewidth': 2},
+                  fit_kws={'label': 'Normal\n($\mu$ = {0:.2f}, $\sigma$ = {1:.2f})'.format(mu, sigma),
+                           'linewidth': 3})
+
+plt.ylim(-0.001)
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+title = 'Home teams have the advantage'
+subtitle = '''Histogram of away team margin of victory (negative indicates the home
+team wins) with a normal distribution and kernel density estimation overlaid'''
+format_538(fig, 'NBA Stats', xlabel='Away Team Margin of Victory', ylabel='Frequency', title=title,
+           subtitle=subtitle, xoff=(-0.1, 1.01), toff=(-0.082, 1.16), soff=(-0.082, 1.05), yoff=(-0.12, -0.17))
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/margin-of-victory-distribution.png){: .center-image }
+
+# Point Spreads
+
+
+```python
+bets = pd.read_sql('SELECT * FROM games JOIN betting ON games.ID is betting.GAME_ID', conn)
+bets = bets.drop(['ID', 'GAME_ID', 'HOME_TEAM_ID', 'AWAY_TEAM_ID'], 1)
+print_df(bets.head())
+```
+
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>SEASON</th>
+      <th>GAME_DATE</th>
+      <th>MATCHUP</th>
+      <th>HOME_WL</th>
+      <th>OVER_UNDER</th>
+      <th>OU_RESULT</th>
+      <th>HOME_SPREAD</th>
+      <th>HOME_SPREAD_WL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1990</td>
+      <td>1990-11-10</td>
+      <td>PHX vs. DEN</td>
+      <td>W</td>
+      <td>293.5</td>
+      <td>O</td>
+      <td>-19.5</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>1990</td>
+      <td>1990-12-29</td>
+      <td>WAS vs. DEN</td>
+      <td>W</td>
+      <td>244.0</td>
+      <td>O</td>
+      <td>-10.5</td>
+      <td>W</td>
+    </tr>
+    <tr>
+      <td>1990</td>
+      <td>1990-11-07</td>
+      <td>SAN vs. DEN</td>
+      <td>W</td>
+      <td>274.0</td>
+      <td>O</td>
+      <td>-17.0</td>
+      <td>L</td>
+    </tr>
+    <tr>
+      <td>1990</td>
+      <td>1990-11-02</td>
+      <td>DEN vs. GOS</td>
+      <td>L</td>
+      <td>310.0</td>
+      <td>O</td>
+      <td>2.0</td>
+      <td>L</td>
+    </tr>
+    <tr>
+      <td>1990</td>
+      <td>1990-12-30</td>
+      <td>ORL vs. DEN</td>
+      <td>W</td>
+      <td>250.5</td>
+      <td>O</td>
+      <td>-11.0</td>
+      <td>W</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+```python
+bets = pd.read_sql('SELECT * FROM betting', conn)
+spread = bets.HOME_SPREAD.dropna()
+(mu, sigma) = norm.fit(spread)
+
+fig = plt.figure(figsize=(12, 8))
+ax = sns.distplot(spread, bins=15, fit=norm, kde=True,
+                  kde_kws={'label': 'KDE', 'color': 'green', 'linewidth': 3},
+                  hist_kws={'label': 'Home Point Spread', 'edgecolor': 'k', 'linewidth': 2},
+                  fit_kws={'label': 'Normal\n($\mu$ = {0:.2f}, $\sigma$ = {1:.2f})'.format(mu, sigma),
+                           'linewidth': 3})
+
+plt.ylim(-0.001)
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+title = 'Home teams have the advantage'
+subtitle = '''Histogram of home team point spread (negative indicates the home team
+is favored) with a normal distribution and kernel density estimation overlaid'''
+format_538(fig, 'Covers.com', xlabel='Home Team Spread', ylabel='Frequency', title=title, subtitle=subtitle,
+           xoff=(-0.1, 1.01), toff=(-0.082, 1.18), soff=(-0.082, 1.05), yoff=(-0.12, -0.17))
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/point-spread-distribution.png){: .center-image }
+
+
+```python
+data_mov = pd.read_sql('''
+    SELECT
+        SEASON,
+        AVG(PLUS_MINUS) as AVG_PLUS_MINUS
+    FROM team_game_stats
+    JOIN games
+    ON team_game_stats.GAME_ID IS games.ID
+    AND team_game_stats.TEAM_ID = games.AWAY_TEAM_ID
+    WHERE SEASON >= 1990
+    GROUP BY SEASON''', conn)
+```
+
+
+```python
+fig = plt.figure(figsize=(10, 6))
+plt.plot(data_mov.SEASON, data_mov.AVG_PLUS_MINUS, label='Away Margin of Victory')
+plt.plot(data.SEASON, data.AVG_HOME_SPREAD, label='Home Point Spread')
+plt.xlabel('Season')
+plt.ylabel('Home Advantage')
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+plt.ylim(-5.1)
+
+title = 'Is home court advantage decreasing?'
+subtitle = 'Average away margin of victory and home point spread per season'
+format_538(fig, 'NBA Stats & Covers.com', title=title, subtitle=subtitle, xoff=(-0.12, 1.01),
+           yoff=(-0.12, -0.17), toff=(-0.094, 1.13), soff=(-0.094, 1.05), bottomtick=-5)
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/home-court-advantage.png){: .center-image }
+
+
+```python
+games['NET_RTG'] = games.TEAM_NET_RTG - games.TEAM_NET_RTG_AWAY
+games = games.dropna()
+
+# fig = plt.figure(figsize=(12, 8))
+ax = sns.lmplot(x='NET_RTG', y='HOME_SPREAD', data=games, fit_reg=False, size=8)
+plt.xlabel('Net Rating Difference')
+plt.ylabel('Home Spread')
+plt.ylim(-31)
+
+title = 'Favorites are easy to spot'
+subtitle = '''Home team point spreads compared to the difference
+in home and away team net ratings'''
+format_538(plt.gcf(), 'NBA Stats & Covers.com', title=title, subtitle=subtitle,
+           xoff=(-0.14, 1.01), toff=(-0.12, 1.15), soff=(-0.12, 1.05), bottomtick=-30)
+
+# plt.grid()
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/point-spread-scatter.png){: .center-image }
+
+
+```python
+mean_net_rtg = games.NET_RTG.mean()
+ax = sns.jointplot(x='NET_RTG', y='HOME_SPREAD', data=games, kind='kde',
+                  shade_lowest=False, stat_func=None, xlim=(-15, 15), ylim=(-15, 15), size=8)
+ax.set_axis_labels(xlabel='Net Rating Difference', ylabel='Home Spread')
+ax.ax_joint.plot(mean_net_rtg, mu, 'or', markersize=10)
+ax.ax_joint.annotate('Average of data', xy=(mean_net_rtg, mu+0.25), xytext=(2.5, 7), fontsize=16, 
+                     arrowprops=dict(facecolor='black'))
+plt.ylim(-21)
+
+title = 'Favorites are easy to spot'
+subtitle = '''Home team point spreads compared to the difference
+in home and away team net ratings'''
+format_538(plt.gcf(), 'NBA Stats & Covers.com', ax=ax.ax_joint, title=title, subtitle=subtitle, n=50,
+           xoff=(-0.18, 1.22), yoff=(-0.12, -0.17), toff=(-0.16, 1.38), soff=(-0.16, 1.26), bottomtick=-20)
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/point-spread-kde.png){: .center-image }
+
+# Over/Under Lines
+
+
+```python
+fig = plt.figure(figsize=(10, 6))
+plt.plot(data.SEASON, data.AVG_PTS, label='Points Scored')
+plt.plot(data.SEASON, data.AVG_OVER_UNDER, label='Over/Under')
+plt.annotate('Lockout', xy=(1998, 182), xytext=(1992, 186), fontsize=16,
+             arrowprops=dict(facecolor='black'))
+plt.annotate('Lockout', xy=(2011, 192), xytext=(2006, 188), fontsize=16,
+             arrowprops=dict(facecolor='black'))
+plt.xlabel('Season')
+plt.ylabel('Points Per Game')
+plt.ylim(179)
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+
+title = 'NBA scoring increasing in recent years'
+subtitle = 'Average points scored and over/under line per season'
+format_538(fig, 'NBA Stats & Covers.com', title=title, subtitle=subtitle, xoff=(-0.12, 1.01),
+           yoff=(-0.12, -0.17), toff=(-0.094, 1.13), soff=(-0.094, 1.05), bottomtick=180)
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/scoring-by-season.png){: .center-image }
+
+
+```python
+season = 2011
+data = pd.read_sql('''
+    SELECT
+        2 * AVG(PTS) as TOTAL_PTS,
+        OVER_UNDER
+    FROM games
+    JOIN team_game_stats ON games.ID IS team_game_stats.GAME_ID
+    JOIN betting ON games.ID IS betting.GAME_ID
+    WHERE SEASON == {:d}
+    GROUP BY GAME_DATE, ID'''.format(season), conn)
+
+x = range(0, len(data))
+fig = plt.figure(figsize=(10, 6))
+plt.plot(x, data.TOTAL_PTS.expanding().mean(), label='Points Scored')
+plt.plot(x, data.OVER_UNDER.expanding().mean(), label='Over/Under')
+plt.xlabel('Game Number')
+plt.ylabel('Points')
+plt.legend(fontsize=16, bbox_to_anchor=(1.28, 1), borderaxespad=0)
+plt.ylim(184)
+
+title = 'Oddsmakers notice trends and make corrections'
+subtitle = 'Average points scored and over/under lines throughout the {:d} season'.format(season)
+format_538(fig, 'NBA Stats & Covers.com', title=title, subtitle=subtitle, xoff=(-0.12, 1.01),
+           yoff=(-0.12, -0.17), toff=(-0.094, 1.13), soff=(-0.094, 1.05), bottomtick=185)
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/scoring-2011.png){: .center-image }
+
+
+```python
+season = 2015
+data = pd.read_sql('''
+    SELECT
+        2 * AVG(PTS) as TOTAL_PTS,
+        OVER_UNDER
+    FROM games
+    JOIN team_game_stats ON games.ID IS team_game_stats.GAME_ID
+    JOIN betting ON games.ID IS betting.GAME_ID
+    WHERE SEASON == {:d}
+    GROUP BY GAME_DATE, ID'''.format(season), conn)
+
+x = range(0, len(data))
+fig = plt.figure(figsize=(10, 6))
+plt.plot(x, data.TOTAL_PTS.expanding().mean(), label='Points Scored')
+plt.plot(x, data.OVER_UNDER.expanding().mean(), label='Over/Under')
+plt.xlabel('Game Number')
+plt.ylabel('Points')
+plt.legend(fontsize=16, bbox_to_anchor=(1.01, 1), borderaxespad=0)
+plt.ylim(191)
+
+title = 'Oddsmakers notice trends and make corrections'
+subtitle = 'Average points scored and over/under lines throughout the {:d} season'.format(season)
+format_538(fig, 'NBA Stats & Covers.com', title=title, subtitle=subtitle, xoff=(-0.12, 1.01),
+           yoff=(-0.12, -0.17), toff=(-0.094, 1.13), soff=(-0.094, 1.05), bottomtick=192)
+
+# plt.grid()
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/scoring-2015.png){: .center-image }
+
+
+```python
+pts = (games.TEAM_OFF_RTG + games.TEAM_DEF_RTG + games.TEAM_OFF_RTG_AWAY + games.TEAM_DEF_RTG_AWAY) / 2
+fig = plt.figure(figsize=(10, 6))
+plt.scatter(pts, games['OVER_UNDER'])
+plt.annotate('Website Error', xy=(203, 82), xytext=(208, 110), fontsize=16,
+             arrowprops=dict(facecolor='black'))
+plt.annotate('Website Error', xy=(220, 25), xytext=(211, 60), fontsize=16,
+             arrowprops=dict(facecolor='black'))
+plt.ylim(-2)
+
+title = 'Over/under lines increase with team ratings'
+subtitle = '''Comparison of over/under lines with the sum of home and away
+mean ratings (average of offensive and defensive ratings)'''
+format_538(fig, 'NBA Stats & Covers.com', xlabel='Sum of Mean Team Ratings', ylabel='Over/Under Line',
+           title=title, subtitle=subtitle, xoff=(-0.11, 1.01), yoff=(-0.14, -0.2),
+           toff=(-0.09, 1.18), soff=(-0.09, 1.04))
+plt.show()
+```
+
+
+![png]({{ site.baseurl }}/assets/images/data-exploration/over-under-scatter.png){: .center-image }
