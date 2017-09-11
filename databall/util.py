@@ -5,5 +5,5 @@ def print_df(df):
     display(HTML(df.to_html(index=False)))
 
 
-def select_columns(df, attributes):
-    return df[:, [index for index, column in enumerate(df.columns) if any(name in column for name in attributes)]]
+def select_columns(data, attributes, columns):
+    return data[:, [index for index, col in enumerate(columns) if any(name in col for name in attributes)]]
