@@ -188,23 +188,24 @@ def plot_metrics(x, y, xlabel, legend=None, legendsize=14, figsize=(16, 8), log=
     cols = 3
     ylabel = ['Accuracy', 'Precision', 'Recall', 'ROC Area', 'Precision/Recall Area']
     fig = plt.figure(figsize=figsize)
+    ax = []
 
-    for i in range(0, len(y[0][0])):
-        ax = plt.subplot(100 * rows + 10 * cols + i + 1)
+    for i in range(0, len(ylabel)):
+        ax += [plt.subplot(100 * rows + 10 * cols + i + 1)]
 
         if log:
-            [ax.semilogx(x, [yvec[i] for yvec in y[j]]) for j in range(0, len(y))]
+            [ax[i].semilogx(x, [yvec[i] for yvec in y[j]]) for j in range(0, len(y))]
         else:
-            [ax.plot(x, [yvec[i] for yvec in y[j]]) for j in range(0, len(y))]
-            ax.set_xlim(0)
+            [ax[i].plot(x, [yvec[i] for yvec in y[j]]) for j in range(0, len(y))]
+            ax[i].set_xlim(0)
 
-        ax.set_ylim(0, 1)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel[i])
+        ax[i].set_ylim(0, 1)
+        ax[i].set_xlabel(xlabel)
+        ax[i].set_ylabel(ylabel[i])
 
         if legend is not None:
-            ax.legend(legend, fontsize=legendsize)
+            ax[i].legend(legend, fontsize=legendsize)
 
     plt.tight_layout()
 
-    return fig
+    return fig, ax
