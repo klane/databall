@@ -108,9 +108,9 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
         [a.set_ylabel(y, fontsize=20, weight='bold') for a, y in zip(ax, ylabel)]
 
     # Customize ticks
-    fig.canvas.draw()
     [a.tick_params(axis='both', which='major', labelsize=16) for a in ax]
     [a.axhline(y=btick, color='black', linewidth=1.3, alpha=0.7) for a, btick in zip(ax, bottomtick)]
+    fig.canvas.draw()
     [t.set_alpha(0.5) for a in ax for t in a.get_xticklabels()]
     [t.set_alpha(0.5) for a in ax for t in a.get_yticklabels()]
 
