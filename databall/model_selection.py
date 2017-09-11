@@ -1,6 +1,8 @@
+from functools import partial
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
+from databall.util import select_columns
 
 
 def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
@@ -8,8 +10,7 @@ def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
     results = []
 
     # Make transformer that selects the desired attributes from the DataFrame
-    selector = FunctionTransformer(lambda df: df[:, [index for index, column in enumerate(x.columns) if
-                                                     any(name in column for name in attributes)]])
+    selector = FunctionTransformer(partial(select_columns, attributes=attributes))
 
     for i in range(len(models)):
         for param in param_vec:
