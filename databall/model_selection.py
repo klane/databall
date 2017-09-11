@@ -7,10 +7,10 @@ from databall.util import select_columns
 
 def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
     # Initialize list of results
-    results = []
+    results = [[]]
 
     # Make transformer that selects the desired attributes from the DataFrame
-    selector = FunctionTransformer(partial(select_columns, attributes=attributes))
+    selector = FunctionTransformer(partial(select_columns, attributes=attributes, columns=x.columns))
 
     for i in range(len(models)):
         for param in param_vec:
@@ -20,7 +20,7 @@ def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
 
             # Calculate performance metrics
             if i == len(results):
-                results += [metrics]
+                results += [[metrics]]
             else:
                 results[i] += [metrics]
 
