@@ -114,7 +114,16 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
     [t.set_alpha(0.5) for a in ax for t in a.get_xticklabels()]
     [t.set_alpha(0.5) for a in ax for t in a.get_yticklabels()]
 
-    for a in ax:
+    if type(prefix) is str:
+        prefix = [prefix]
+
+    if type(suffix) is str:
+        suffix = [suffix]
+
+    if type(suffix_offset) is not list and type(suffix_offset) is not tuple:
+        suffix_offset = [suffix_offset]
+
+    for (a, p, s, so) in zip(ax, prefix, suffix, suffix_offset):
         ticks = a.get_yticklabels()
         index = [i for i in range(len(ticks)) if len(ticks[i].get_text()) == 0]
 
@@ -123,8 +132,8 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
         else:
             index = len(ticks) - 1
 
-        [t.set_text(t.get_text() + ' ' * suffix_offset) for t in ticks[:index]]
-        ticks[index].set_text(prefix + ticks[index].get_text() + suffix)
+        [t.set_text(t.get_text() + ' ' * so) for t in ticks[:index]]
+        ticks[index].set_text(p + ticks[index].get_text() + s)
         a.set_yticklabels(ticks)
 
     # Add title and subtitle
