@@ -2,9 +2,9 @@ import pandas as pd
 from functools import partial
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import FunctionTransformer
+from sklearn.preprocessing import FunctionTransformer, LabelEncoder
 from hyperopt import fmin, tpe, space_eval, Trials
-from databall.util import select_columns
+from databall.util import select_columns, stat_names
 
 
 def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
@@ -61,3 +61,14 @@ def optimize_params(model, x, y, attributes, space, k=6, max_evals=100, eval_spa
     param_df = pd.DataFrame(param_values)
     param_df['accuracy'] = [1 - loss for loss in trials.losses()]
     return space_eval(space, best), param_df
+
+
+def train_test_split(data, season, xlabels=None, ylabel='HOME_SPREAD_WL'):
+    if xlabels is None:
+        xlabels = stat_names()
+
+    data = data[xlabels].dropna()
+    x, y = data[xlabels], LabelEncoder().fit_transform(data[ylabel])
+    x_train, y_train = x[data.SEASON < season].copy(), y[data.SEASON < season].copy()
+    x_test, y_test = x[data.SEASON == season].copy(), y[data.SEASON == season].copy()
+    return x_train, y_train, x_test, y_test
