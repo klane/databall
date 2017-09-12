@@ -183,6 +183,32 @@ def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cm
     return fig
 
 
+def plot_matrix(x, y, xlabel, ylabel, rows, cols, figsize=(16, 8), logx=False, logy=False):
+    fig = plt.figure(figsize=figsize)
+    ax = []
+    n = len(ylabel)
+
+    if type(logy) is bool:
+        logy = [logy] * n
+
+    for i in range(n):
+        ax += [plt.subplot(rows, cols, i + 1)]
+
+        if logx and logy[i]:
+            ax[i].loglog(x, y[:, i], '.', markersize=5)
+        elif logx:
+            ax[i].semilogx(x, y[:, i], '.', markersize=5)
+        elif logy[i]:
+            ax[i].semilogy(x, y[:, i], '.', markersize=5)
+        else:
+            ax[i].plot(x, y[:, i], '.', markersize=5)
+
+        ax[i].set_xlabel(xlabel)
+        ax[i].set_ylabel(ylabel[i])
+
+    return fig, ax
+
+
 def plot_metrics(x, y, xlabel, legend=None, legendsize=14, figsize=(16, 8), log=False):
     rows = 2
     cols = 3
@@ -190,13 +216,13 @@ def plot_metrics(x, y, xlabel, legend=None, legendsize=14, figsize=(16, 8), log=
     fig = plt.figure(figsize=figsize)
     ax = []
 
-    for i in range(0, len(ylabel)):
+    for i in range(len(ylabel)):
         ax += [plt.subplot(100 * rows + 10 * cols + i + 1)]
 
         if log:
-            [ax[i].semilogx(x, [yvec[i] for yvec in y[j]]) for j in range(0, len(y))]
+            [ax[i].semilogx(x, [yvec[i] for yvec in y[j]]) for j in range(len(y))]
         else:
-            [ax[i].plot(x, [yvec[i] for yvec in y[j]]) for j in range(0, len(y))]
+            [ax[i].plot(x, [yvec[i] for yvec in y[j]]) for j in range(len(y))]
             ax[i].set_xlim(0)
 
         ax[i].set_ylim(0, 1)
