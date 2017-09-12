@@ -183,7 +183,7 @@ def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cm
     return fig
 
 
-def plot_matrix(x, y, xlabel, ylabel, rows, cols, figsize=(16, 8), logx=False, logy=False):
+def plot_matrix(x, y, xlabel, ylabel, rows, cols, figsize=(16, 8), logx=False, logy=False, markersize=5):
     fig = plt.figure(figsize=figsize)
     ax = []
     n = len(ylabel)
@@ -195,13 +195,13 @@ def plot_matrix(x, y, xlabel, ylabel, rows, cols, figsize=(16, 8), logx=False, l
         ax += [plt.subplot(rows, cols, i + 1)]
 
         if logx and logy[i]:
-            ax[i].loglog(x, y[:, i], '.', markersize=5)
+            ax[i].loglog(x, y[:, i], '.', markersize=markersize)
         elif logx:
-            ax[i].semilogx(x, y[:, i], '.', markersize=5)
+            ax[i].semilogx(x, y[:, i], '.', markersize=markersize)
         elif logy[i]:
-            ax[i].semilogy(x, y[:, i], '.', markersize=5)
+            ax[i].semilogy(x, y[:, i], '.', markersize=markersize)
         else:
-            ax[i].plot(x, y[:, i], '.', markersize=5)
+            ax[i].plot(x, y[:, i], '.', markersize=markersize)
 
         ax[i].set_xlabel(xlabel)
         ax[i].set_ylabel(ylabel[i])
