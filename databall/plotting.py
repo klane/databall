@@ -159,9 +159,13 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
                    transform=ax[0].transAxes, horizontalalignment='right')
 
 
-def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cmap('Blues')):
+def plot_confusion_matrix(cm, classes, fig=None, title='Confusion Matrix', cmap=plt.get_cmap('Blues')):
     # This function prints and plots the confusion matrix.
-    fig = plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    if fig is None:
+        fig = plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    else:
+        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+
     plt.title(title)
     plt.colorbar()
     tick_marks = np.arange(len(classes))
@@ -170,7 +174,7 @@ def plot_confusion_matrix(cm, classes, title='Confusion Matrix', cmap=plt.get_cm
     plt.grid(visible=False)
 
     cm_norm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    thresh = cm.max() / 2
+    thresh = (cm.max() + cm.min()) / 2
 
     for i, j in product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, '%d\n%.2f%%' % (cm[i, j], cm_norm[i, j] * 100),
