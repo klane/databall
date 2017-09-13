@@ -1,5 +1,6 @@
 data-exploration:
   - three-point-shots
+  - pace
   - home-win-pct
   - ratings-scatter
   - srs-distribution
