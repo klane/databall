@@ -70,7 +70,11 @@ def train_test_split(data, start_season, end_season, test_season_start=None, xla
     if xlabels is None:
         xlabels = stat_names()
 
-    data = data[xlabels + [ylabel]].dropna()
+    if 'SEASON' in data.columns:
+        data = data[xlabels + [ylabel]].dropna()
+    else:
+        data = data[xlabels + ['SEASON', ylabel]].dropna()
+
     x, y = data[xlabels], LabelEncoder().fit_transform(data[ylabel])
     x_train = x[(start_season <= data.SEASON) & (data.SEASON < test_season_start)].copy()
     y_train = y[(start_season <= data.SEASON) & (data.SEASON < test_season_start)].copy()
