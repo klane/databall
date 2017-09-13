@@ -72,8 +72,8 @@ def train_test_split(data, start_season, end_season, test_season_start=None, xla
 
     data = data[xlabels + [ylabel]].dropna()
     x, y = data[xlabels], LabelEncoder().fit_transform(data[ylabel])
-    x_train = x[start_season <= data.SEASON < test_season_start].copy()
-    y_train = y[start_season <= data.SEASON < test_season_start].copy()
-    x_test = x[test_season_start <= data.SEASON <= end_season].copy()
-    y_test = y[test_season_start <= data.SEASON <= end_season].copy()
+    x_train = x[(start_season <= data.SEASON) & (data.SEASON < test_season_start)].copy()
+    y_train = y[(start_season <= data.SEASON) & (data.SEASON < test_season_start)].copy()
+    x_test = x[(test_season_start <= data.SEASON) & (data.SEASON <= end_season)].copy()
+    y_test = y[(test_season_start <= data.SEASON) & (data.SEASON <= end_season)].copy()
     return x_train, y_train, x_test, y_test
