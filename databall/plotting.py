@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 from itertools import product
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_curve, average_precision_score
@@ -157,6 +158,18 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
                    transform=ax[0].transAxes)
         ax[0].text(x=xoff[1], y=-0.14, s=' ' * n + label2 + '  ', fontsize=14, color='#f0f0f0', backgroundcolor='grey',
                    transform=ax[0].transAxes, horizontalalignment='right')
+
+
+def kde(data, stat, label, title, ax):
+    stat = 'TEAM_' + stat
+    sns.kdeplot(data[stat], data[stat + '_AWAY'], cmap='Blues', shade=True, shade_lowest=False, ax=ax)
+    ax.plot(0, 0, 'or', markersize=10)
+    ax.set_xlabel('Home Team ' + label)
+    ax.set_ylabel('Away Team ' + label)
+    ax.set_title(title)
+    ax.set_xlim(-13, 12)
+    ax.set_ylim(-16, 12)
+    ax.annotate('Average teams', xy=(-0.25, -0.25), xytext=(-13, -13), fontsize=16, arrowprops=dict(facecolor='black'))
 
 
 def plot_confusion_matrix(cm, classes, fig=None, title='Confusion Matrix', cmap=plt.get_cmap('Blues')):
