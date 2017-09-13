@@ -63,12 +63,17 @@ def optimize_params(model, x, y, attributes, space, k=6, max_evals=100, eval_spa
     return space_eval(space, best), param_df
 
 
-def train_test_split(data, season, xlabels=None, ylabel='HOME_SPREAD_WL'):
+def train_test_split(data, start_season, end_season, test_season_start=None, xlabels=None, ylabel='HOME_SPREAD_WL'):
+    if test_season_start is None:
+        test_season_start = end_season
+
     if xlabels is None:
         xlabels = stat_names()
 
     data = data[xlabels + [ylabel]].dropna()
     x, y = data[xlabels], LabelEncoder().fit_transform(data[ylabel])
-    x_train, y_train = x[data.SEASON < season].copy(), y[data.SEASON < season].copy()
-    x_test, y_test = x[data.SEASON == season].copy(), y[data.SEASON == season].copy()
+    x_train = x[start_season <= data.SEASON < test_season_start].copy()
+    y_train = y[start_season <= data.SEASON < test_season_start].copy()
+    x_test = x[test_season_start <= data.SEASON <= end_season].copy()
+    y_test = y[test_season_start <= data.SEASON <= end_season].copy()
     return x_train, y_train, x_test, y_test
