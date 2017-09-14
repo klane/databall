@@ -164,7 +164,7 @@ output = simulate(LogisticRegression(), games_sub, 2016, ratings, var_predict)
 days_rtg, cumper_rtg, cumprofit_rtg = profit(output, var_predict=var_predict, bet_amount=100)
 ```
 
-This method starts out worse than just betting on the favorite, but eventually overtakes it about a month into the season and ends up making about \$3,000. While the model results in a profit, the return on investment is very low. This assumes bettors make \$100 bets on every game, which results in a total of \$123,000 wagered at the end of a full-length season.
+This method starts out worse than just betting on the favorite, but eventually overtakes it about a month into the season and ends up making about \$3,000. While the model results in a profit, the return on investment is very low. This assumes bettors make \$100 bets on every game, which results in a total of \$123,000 wagered at the end of a full-length season (82 games in a 30-team league).
 
 
 ```python
@@ -431,7 +431,7 @@ plt.show()
 
 ![png]({{ site.baseurl }}/assets/images/feature-selection/cross-validation-comparison.png){: .center-image }
 
-The plots below show 
+The plots below show accuracy and profits throughout the 2016 season using logistic regression models trained with different sets of stats compared with simply picking the favorite. All the logistic regression models end up making money, but the model trained with the complete set of box score stats outperforms all others.
 
 
 ```python
