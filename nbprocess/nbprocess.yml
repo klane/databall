@@ -46,5 +46,6 @@ model-performance:
   - support-vector-machine-confusion-matrix
   - random-forest-confusion-matrix
   - neural-network-confusion-matrix
-  - naive-bayes-confusion-matrix
   - model-performance-comparison
+  - default-model-performance-comparison
+  - model-evolution-performance-comparison
