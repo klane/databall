@@ -32,9 +32,14 @@ feature-selection:
 
 parameter-tuning:
   - logistic-regression-metrics
-  - support-vector-machine-metrics
-  - random-forest-metrics
-  - neural-network-metrics
+  - logistic-regression-hyperopt
+  - logistic-regression-accuracy
+  - support-vector-machine-hyperopt
+  - support-vector-machine-accuracy
+  - random-forest-hyperopt
+  - random-forest-accuracy
+  - neural-network-hyperopt
+  - neural-network-accuracy
 
 model-performance:
   - logistic-regression-confusion-matrix
