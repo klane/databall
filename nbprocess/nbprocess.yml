@@ -19,11 +19,16 @@ data-exploration:
   - over-under-scatter
 
 feature-selection:
-  - srs-cross-validation
-  - four-factors-cross-validation
-  - weighted-four-factors-cross-validation
-  - k-best-cross-validation
+  - favorite-straight-up-accuracy
+  - favorite-straight-up-profit
+  - favorite-ats-profit
+  - ratings-ats-profit
+  - ratings-straight-up-cross-validation
+  - ratings-ats-cross-validation
+  - k-best-ats-cross-validation
+  - box-score-ats-cross-validation
   - cross-validation-comparison
+  - profit-comparison
 
 parameter-tuning:
   - logistic-regression-metrics
