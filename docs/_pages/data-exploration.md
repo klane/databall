@@ -40,7 +40,7 @@ The command below applies a plot style that is influenced by the beautiful graph
 plt.style.use('fivethirtyeight')
 ```
 
-We then need to connect to the database generated during the [data wrangling](data-wrangling.md) process.
+We then need to connect to the database generated during the [stat collection](stats.md) process.
 
 
 ```python
@@ -68,7 +68,7 @@ data = pd.read_sql('''
     GROUP BY SEASON''', conn)
 ```
 
-The code below returns a Pandas DataFrame with season-averaged team advanced stats including offensive and defensive ratings (points scored/allowed per 100 possessions), net rating (offensive - defensive rating), as well as simple rating system (SRS) defined during [data wrangling](data-wrangling.md).
+The code below returns a Pandas DataFrame with season-averaged team advanced stats including offensive and defensive ratings (points scored/allowed per 100 possessions), net rating (offensive - defensive rating), as well as simple rating system (SRS) defined during [stat collection](stats.md).
 
 
 ```python
