@@ -93,7 +93,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\three-point-shots.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/three-point-shots.png){: .center-image }
 
 I next wanted to look at team pace, a measure of the number of possessions per 48 minutes (regulation game length). Teams played slower during the late '90s and 2000s, but have been playing faster in recent seasons.
 
@@ -112,7 +112,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\pace.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/pace.png){: .center-image }
 
 In terms of predicting game winners straight up, a reasonable baseline prediction without knowing what two teams are playing is probably that the home team wins. Let's take a look at how often that actually happens in the NBA. The plot below shows the win percentage for all home teams across the league from 1990-2016. The chart along with the annotation show that the home team wins about 60% of the time historically. That rate is also remarkably consistent. It has a standard deviation of less than 2% and has stayed within about $$\pm$$4% since the 1990-91 season. FiveThirtyEight [reported](https://fivethirtyeight.com/features/a-home-playoff-game-is-a-big-advantage-unless-you-play-hockey/) a similar percentage when analyzing home court/field/ice advantages of the four major American sports. They calculated that the home team in the NBA has won 59.9% of regular season games since the 2000 season. They also estimated that playing at home provides the biggest advantage in the NBA, where home teams win nearly 10% more games than expected had all games been played at neutral sites. Contrast that with MLB, where home teams win only 4% more games than expected. It is interesting to note that regardless of the sport, FiveThirtyEight's models expect the "home" team to win about 50% of the time on neutral sites, which makes sense when averaged across all teams and multiple seasons.
 
@@ -153,7 +153,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\home-win-pct.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/home-win-pct.png){: .center-image }
 
 ## Historically Great Teams
 
@@ -1066,7 +1066,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\ratings-scatter.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/ratings-scatter.png){: .center-image }
 
 ## Team Strength Distribution
 
@@ -1094,7 +1094,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\srs-distribution.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/srs-distribution.png){: .center-image }
 
 The histogram and KDE of net rating below appears similar to that for SRS, but the mean is not as small.
 
@@ -1120,7 +1120,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\net-rating-distribution.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/net-rating-distribution.png){: .center-image }
 
 ## Home vs. Away Strength
 
@@ -1152,7 +1152,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\srs-kde.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/srs-kde.png){: .center-image }
 
 A better view of this data is to separate games into home team wins and losses. The plots below show KDE plots of SRS for home team wins and losses with a red marker added to easily identify the origin (average home and away teams). The high-density area towards the lower right of the origin for home team wins (left plot) indicates there are many games in the dataset where above-average home teams beat below-average away teams, which is not a surprising revelation. We draw the opposite conclusion for home team losses. The highest density occurs towards the upper left of the origin, meaning games where a below-average home team plays an above-average visiting teams typically does not go well for the home team.
 
@@ -1176,7 +1176,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\srs-win-loss-kde.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/srs-win-loss-kde.png){: .center-image }
 
 The KDE plots below repeat those above using team net ratings (offensive rating - defensive rating). They illustrate that the same trends hold true for net ratings as did for SRS above.
 
@@ -1200,7 +1200,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\net-rating-win-loss-kde.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/net-rating-win-loss-kde.png){: .center-image }
 
 The histogram below shows away team margin of victory (away points - home points). I chose away margin of victory because the values tend to be negative since home teams win more often than not. This allows them to be compared to home team point spreads. The average game in the database has the home team winning by 3.3 points. The distribution is bimodal with a drop at zero, which makes sense since games cannot end in ties.
 
@@ -1238,7 +1238,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\margin-of-victory-distribution.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/margin-of-victory-distribution.png){: .center-image }
 
 # Point Spreads
 
@@ -1353,7 +1353,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\point-spread-distribution.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/point-spread-distribution.png){: .center-image }
 
 The plot below shows that home court advantage (in the form of both away margin of victory and home point spread) have been decreasing in recent years.
 
@@ -1386,7 +1386,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\home-court-advantage.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/home-court-advantage.png){: .center-image }
 
 The scatterplot below compares home point spread with the difference in home and away net ratings. There appears to be a fairly linear relationship with a negative y-intercept since the average home point spread is negative. There are a number of pick 'em games (zero point spread), but oddsmakers almost never set a point spread of $$\pm$$0.5.
 
@@ -1409,7 +1409,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\point-spread-scatter.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/point-spread-scatter.png){: .center-image }
 
 It is difficult to discern densities from the scatterplot above, so I replotted the same data as a KDE. It clearly shows that points spreads favor the home team when the teams are evenly matched (equal net ratings).
 
@@ -1435,7 +1435,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\point-spread-kde.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/point-spread-kde.png){: .center-image }
 
 # Over/Under Lines
 
@@ -1463,7 +1463,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\scoring-by-season.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/scoring-by-season.png){: .center-image }
 
 Since oddsmakers get average scoring dead on by the end of the season, I wanted to see how close they were throughout the entire season. The plot below shows expanding means of total points scored and over/under lines throughout the strike-shortened 2011 season. Oddsmakers started their lines out too high, but gradually reduced their lines until they started tracking with actual points scored.
 
@@ -1497,7 +1497,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\scoring-2011.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/scoring-2011.png){: .center-image }
 
 Another interesting season was 2015, where oddsmakers held the average over/under line relatively constant during the first half, but scoring increased during the second half and oddsmakers had to adjust their over/under lines accordingly.
 
@@ -1531,7 +1531,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\scoring-2015.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/scoring-2015.png){: .center-image }
 
 The final plot compares over/under lines with the sum of team mean ratings, where mean rating is defined as the mean of offensive and defensive rating. Here I add defensive rating instead of subtract it because an increase in defensive rating, all else being equal, should coincide with an increase in total points scored. The trend appears fairly linear with the spread increasing with higher mean ratings. The few outliers above 250 are from 1990 when teams scored more points, though we may see over/under lines crack 250 again soon if scoring continues to increase. The two major outliers on the low end were parsed correctly from the website, so they clearly must have been entered incorrectly. Given the range of over/under lines, the left point is most likely intended to be 180.5 instead of [80.5](http://www.covers.com/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/2000-2001/team404171.html) and the right 222 instead of [22](http://www.covers.com/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/1994-1995/team404031.html).
 
@@ -1556,7 +1556,7 @@ plt.show()
 ```
 
 
-![png]({{ site.baseurl }}\assets\images\data-exploration\over-under-scatter.png){: .center-image }
+![png]({{ site.baseurl }}/assets/images/data-exploration/over-under-scatter.png){: .center-image }
 
 The query below isolates the two incorrect points.
 
