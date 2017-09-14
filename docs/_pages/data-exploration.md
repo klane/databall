@@ -33,7 +33,7 @@ from databall.plotting import format_538, kde
 from databall.util import print_df
 ```
 
-The command below applies a plot style that is influenced by the beautiful graphs found on [FiveThirtyEight](http://fivethirtyeight.com/). I also wrote a function to further customize my plots to more closely mimick FiveThirtyEight graphs using this [DataQuest article](https://www.dataquest.io/blog/making-538-plots/) as a guide.
+The command below applies a plot style that is influenced by the beautiful graphs found on [FiveThirtyEight](http://fivethirtyeight.com/). I also wrote a function to further customize my plots to more closely mimic FiveThirtyEight graphs using this [DataQuest article](https://www.dataquest.io/blog/making-538-plots/) as a guide.
 
 
 ```python

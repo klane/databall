@@ -208,7 +208,7 @@ plt.show()
 
 ![png]({{ site.baseurl }}/assets/images/parameter-tuning/support-vector-machine-hyperopt.png){: .center-image }
 
-The plot below shows the `LinearSVC` cross-validation accuracy history. There is a band of points similar to what we observed for logistic regression below 51% accuracy. The support vectory machine model does not perform much better than logistic regression, and several points fall below 50% accuracy.
+The plot below shows the `LinearSVC` cross-validation accuracy history. There is a band of points similar to what we observed for logistic regression below 51% accuracy. The support vector machine model does not perform much better than logistic regression, and several points fall below 50% accuracy.
 
 
 ```python

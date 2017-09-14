@@ -258,7 +258,7 @@ plt.show()
 
 # Select Features Automatically
 
-Next I wanted to investigate how well automatically-selected stats perform. The code below uses [`SelectKBest`](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html#sklearn.feature_selection.SelectKBest) to select the 20 best attributes according to the [ANOVA F-value](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn.feature_selection.f_classif). This uses a process called [univariate feature selection](http://scikit-learn.org/stable/auto_examples/feature_selection/plot_feature_selection.html#sphx-glr-auto-examples-feature-selection-plot-feature-selection-py), which uses univariate statistical tests to select features. In the first project, the majority of automatically-selected attributes were point ratings (SRS, offensive rating, etc). However none of the point rating stats appear until well down the list. The FOUR_FACTORS stat is the weighted sum of the four factors. The FOUR_FACTORS_REB stat is identical with the exception that it includes defensive rebounds. The two definitions of the four factors are weighted according to Oliver's selected weights (discussed during [stat collection](stats.md)) and combined into single metrics as:
+Next I wanted to investigate how well automatically-selected stats perform. The code below uses [`SelectKBest`](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html#sklearn.feature_selection.SelectKBest) to select the 20 best attributes according to the [ANOVA F-value](http://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html#sklearn.feature_selection.f_classif). This uses a process called [univariate feature selection](http://scikit-learn.org/stable/auto_examples/feature_selection/plot_feature_selection.html#sphx-glr-auto-examples-feature-selection-plot-feature-selection-py), which uses univariate statistical tests to select features. In the first project, the majority of automatically-selected attributes were point ratings (SRS, offensive rating, etc.). However none of the point rating stats appear until well down the list. The FOUR_FACTORS stat is the weighted sum of the four factors. The FOUR_FACTORS_REB stat is identical with the exception that it includes defensive rebounds. The two definitions of the four factors are weighted according to Oliver's selected weights (discussed during [stat collection](stats.md)) and combined into single metrics as:
 
 $$FF=0.4*EFG\% + 0.2*OREB\% + 0.15*FTR - 0.25*TOV\%$$
 $$FF_{REB}=0.4*EFG\% + 0.1*OREB\% + 0.1*DREB\% + 0.15*FTR - 0.25*TOV\%$$
@@ -356,7 +356,7 @@ days_kbest, cumper_kbest, cumprofit_kbest = profit(output, var_predict=var_predi
 
 # Compare Attribute Groupings
 
-I then wanted to test a simplier method using only basic box score stats (FG, REB, AST, etc.) for the average user. The ROC and precision/recall curves below do not show much improvement.
+I then wanted to test a simpler method using only basic box score stats (FG, REB, AST, etc.) for the average user. The ROC and precision/recall curves below do not show much improvement.
 
 
 ```python
