@@ -1,4 +1,4 @@
-# ![DataBall logo](https://raw.github.com/klane/databall/master/docs/favicon.ico) DataBall
+# <img src="https://raw.github.com/klane/databall/master/docs/favicon.ico" width="48"> DataBall
 
 This project uses [scikit-learn](http://scikit-learn.org/stable/) to predict the winners of NBA games.
 
