@@ -87,14 +87,13 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
         \item Random Forest
         \item Multilayer Perceptron
     \end{itemize}
-    \item I used box score data from the 1990-91 season through 2015-16
-    \item Point spreads scraped from covers.com with the Scrapy framework
-    \item The games are split into training and test sets randomly, so games from future seasons are used to predict past games
+    \item I collected box scores, point spreads, and over/under lines from the 1990-91 season through 2016-17
+    \item I used the 2016-17 season as my test set and trained models with prior seasons
+    \item All models are trained with stats averaged over a rolling window
     \begin{itemize}
-        \item This does not provide a realistic scenario for making predictions in real time, such as in betting
-        \item Provides a easy way to compare several algorithms and feature combinations, which will help inform future work
+        \item The stats were shifted so that stats were not used to predict the game from which they were obtained
+        \item This provides a realistic scenario for making predictions in real time, such as in betting
     \end{itemize}
-    \item All models are trained with season-averaged team stats
 \end{itemize}
 \end{frame}
 
@@ -109,10 +108,12 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
         \item The site exposes a wealth of information in JSON format through various web API endpoints
         \item I utilized the Python module nba\_py to format URLs and collect stats
     \end{itemize}
+    \item I scraped point spreads and over/under lines from covers.com using the Python web scraping framework Scrapy
     \item I stored all data to a SQLite database using Python's built-in support
     \item I used the basic box score stats to calculate more advanced stats
     \begin{itemize}
         \item Offensive/defensive ratings (points scored/allowed per 100 possessions), which requires an estimate for the number of possessions
+        \item Simple Rating System (SRS), which is a team's average margin of victory adjusted for its strength of schedule
         \item Oliver's four factors\footcite{oliver}, which include effective FG\%, TOV\%, OREB\%, and free throw rate
         \item Weighted four factors, which is just sum of the four factors weighted according to Oliver's assigned weights
     \end{itemize}
@@ -126,13 +127,14 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \column{0.5\textwidth}
 \begin{itemize}
     \item The top figure shows that the home team winning percentage is remarkably consistent
+    \item Teams only win about half the time against the spread (ATS)
     \begin{itemize}
-        \item Simply predicting the home team wins will yield about 60\% accuracy
-        \item This provides a good baseline; any predictive model worth implementing should beat this
+        \item This provides a tougher problem than picking game winners straight up
     \end{itemize}
-    \item The bottom figure shows that team performance (according to SRS) very closely resembles a normal distribution
+    \item The bottom figure shows that home point spreads favor the home teams
     \begin{itemize}
-        \item An SRS of zero indicates an average team
+        \item The betting lines indicate home court advantage is about 3.4 points
+        \item The distribution is bimodal because oddsmakers rarely set a spread of zero
     \end{itemize}
 \end{itemize}
 \column{0.5\textwidth}
@@ -142,7 +144,7 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \end{figure}
 \vspace{-0.5cm}
 \begin{figure}
-\includegraphics[width=60mm]{../docs/assets/images/data-exploration/srs-distribution.png}
+\includegraphics[width=60mm]{../docs/assets/images/data-exploration/point-spread-distribution.png}
 \end{figure}
 \end{columns}
 \end{frame}
@@ -150,13 +152,32 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Data Exploration}
 \begin{itemize}
-    \item The plots below show kernel density estimations (KDE) of SRS split between home team wins and losses
+    \item The plots below show kernel density estimations (KDE) of net rating split between home team wins and losses
     \item The dark region to the bottom right of the origin for home team wins shows above-average home teams tend to beat below-average visitors
     \item The opposite appears in the KDE of home team losses
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.35]{../docs/assets/images/data-exploration/srs-win-loss-kde.png}
+\includegraphics[scale=0.35]{../docs/assets/images/data-exploration/net-rating-win-loss-kde.png}
 \end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Data Exploration}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+    \item The plot to the right shows a kernel density estimation (KDE) comparing home point spread with the difference in net rating between the two teams playing in the game
+    \item The highest density of points occurs at a positive net rating difference and a negative point spread
+    \begin{itemize}
+        \item A positive net rating difference indicates the home team is stronger
+        \item A negative point spread means the home team is favored
+    \end{itemize}
+\end{itemize}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[scale=0.25]{../docs/assets/images/data-exploration/point-spread-kde.png}
+\end{figure}
+\end{columns}
 \end{frame}
 
 \section{Model Selection}
@@ -165,12 +186,12 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Feature Selection}
 \begin{itemize}
-    \item The plots below show cross-validation ROC and precision/recall curves using home and away SRS
-    \item The folds show little spread, so we are confident the cross-validation results in a good estimate of model performance
+    \item Picking winners ATS is much harder than picking winners straight up
+    \item Simply picking the favorite wins ATS will only be right half the time
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.35]{../docs/assets/images/feature-selection/favorite-ats-profit.png}
-\caption{Cross-Validated ROC and Precision/Recall Curves (SRS)}
+\includegraphics[scale=0.2]{../docs/assets/images/feature-selection/favorite-ats-profit.png}
+\caption{Comparison of Betting on Games Straight Up and ATS}
 \end{figure}
 \end{frame}
 
@@ -178,11 +199,10 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \frametitle{Feature Selection}
 \begin{itemize}
     \item The plots below show cross-validation ROC and precision/recall curves for various metrics
-    \item All point-related metrics (SRS, Plus/Minus, etc.) are nearly identical
-    \item The point-related metrics outperform the four factors metrics
+    \item None of the models perform particularly well
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.35]{../docs/assets/images/feature-selection/cross-validation-comparison.png}
+\includegraphics[scale=0.25]{../docs/assets/images/feature-selection/cross-validation-comparison.png}
 \caption{ROC and Precision/Recall Curve Feature Comparison}
 \end{figure}
 \end{frame}
@@ -191,22 +211,24 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Parameter Tuning}
 \begin{itemize}
-    \item Parameter tuning did not yield models that performed noticeably better than the default models
+    \item I used the Python module hyperopt to optimize model parameters
+    \item It provides a flexible framework for optimizing any scikit-learn classifier
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.3]{../docs/assets/images/parameter-tuning/logistic-regression-hyperopt.png}
-\caption{Logistic Regression Parameter Tuning}
+\includegraphics[scale=0.25]{../docs/assets/images/parameter-tuning/logistic-regression-hyperopt.png}
+\caption{Logistic Regression Hyperopt Parameter Tuning}
 \end{figure}
 \end{frame}
 
 \begin{frame}
 \frametitle{Parameter Tuning}
 \begin{itemize}
-    \item Parameter tuning did not yield models that performed noticeably better than the default models
+    \item Parameter tuning yielded marginal benefits for logistic regression
+    \item None of the optimized models performed substantially better than models with default parameters
 \end{itemize}
 \begin{figure}
 \includegraphics[scale=0.3]{../docs/assets/images/parameter-tuning/logistic-regression-accuracy.png}
-\caption{Logistic Regression Parameter Tuning}
+\caption{Logistic Regression Accuracy History}
 \end{figure}
 \end{frame}
 
@@ -218,23 +240,23 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{columns}
 \column{0.5\textwidth}
 \begin{itemize}
-    \item Logistic regression does a great job at predicting home wins (81.5\% accuracy), but struggles with home losses (about 50\% accuracy)
-    \item These general numbers hold true for all the models tested except the random forest model, which performed about 10\% worse predicting home wins
-    \item Additional effort should be focused on improving home loss predictions to improve overall model performance
+    \item Logistic regression does a decent job at predicting home wins, but struggles with home losses
     \begin{itemize}
-        \item One option is to down sample home wins to achieve a 50/50 split of the two classes
+        \item The confusion matrix shows the model tends to predict the home team wins
+    \end{itemize}
+    \item None of the models performed particularly well
+    \begin{itemize}
+        \item The maximum accuracy was below 55\%
+    \end{itemize}
+    \item Any accuracy above 50\% will result in a profit
+    \begin{itemize}
+        \item A 1\% improvement over the course of a season results in about \$2,500 extra when betting \$100 on every game
     \end{itemize}
 \end{itemize}
 \column{0.5\textwidth}
-\vspace{-0.5cm}
 \begin{figure}
-\includegraphics[scale=0.23]{../docs/assets/images/model-performance/logistic-regression-confusion-matrix.png}
-\caption{Logistic Regression CM}
-\end{figure}
-\vspace{-1cm}
-\begin{figure}
-\includegraphics[scale=0.23]{../docs/assets/images/model-performance/random-forest-confusion-matrix.png}
-\caption{Random Forest CM}
+\includegraphics[scale=0.25]{../docs/assets/images/model-performance/logistic-regression-confusion-matrix.png}
+\caption{\tabular[t]{@{}l@{}}Logistic Regression \\ Confusion Matrix\endtabular}
 \end{figure}
 \end{columns}
 \end{frame}
@@ -242,12 +264,24 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Model Performance}
 \begin{itemize}
-    \item All models performed about the same with the exception of the random forest model
-    \item The random forest performed about the same with home losses, but had degraded performance predicting home wins
+    \item The neural network was the highest earning model
+    \item All models with optimized parameters returned a profit
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.35]{../docs/assets/images/model-performance/model-performance-comparison.png}
+\includegraphics[scale=0.2]{../docs/assets/images/model-performance/model-performance-comparison.png}
 \caption{Model Performance Comparison}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Model Performance}
+\begin{itemize}
+    \item The hyperparameters optimized prior to the 2016 season did not work well for the logistic regression model
+    \item Logistic regression with default parameters earned almost double
+\end{itemize}
+\begin{figure}
+\includegraphics[scale=0.2]{../docs/assets/images/model-performance/default-model-performance-comparison.png}
+\caption{Default Model Performance Comparison}
 \end{figure}
 \end{frame}
 
@@ -255,19 +289,17 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}[t]
 \frametitle{Future Work}
 \begin{itemize}
-    \item Train models with prior games to permit ``real time'' predictions and update the models as each season progresses
-    \item Incorporate player stats to adjust predictions as rosters fluctuate
-    \item Predict winners against Vegas spreads
-    \begin{itemize}
-        \item Track return on investment (ROI) if a prospective bettor were to bet on the model's predicted winners
-        \item Incorporate a confidence threshold to investigate how ROI changes when bets are only made on games in which the model's confidence exceeds the threshold
-    \end{itemize}
+    \item Incorporate player stats to adjust predictions as rosters fluctuate and players sit for rest or injury
+    \item Test how well models generalize by predicting other seasons
+    \item Calculate stats relative to league average to control for opponent strength and league-wide changes in game strategy
+    \item Include a dummy variable indicating if teams are playing the second game of a back-to-back
+    \item Predict games against over/under lines
 \end{itemize}
 \end{frame}
 
 \section{References}
 
-\begin{frame}[t, allowframebreaks]
+\begin{frame}[t]
 \frametitle{References}
 \printbibliography
 \end{frame}
