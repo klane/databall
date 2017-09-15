@@ -70,7 +70,7 @@ stats += [s + '_AWAY' for s in stats] + ['HOME_SPREAD']
 
 # Logistic Regression
 
-The plots below show `LogisticRegression` model performance using different combinations of three parameters in a grid search: `penalty` (type of norm), `class_weight` (where "balanced" indicates weights are inversely proportional to class frequencies and the default is one), and `dual` (flag to use the dual formulation). For each combination, models were trained with different `C` values, which controls the inverse of the regularization strength.
+The plots below show `LogisticRegression` model performance using different combinations of three parameters in a grid search: `penalty` (type of norm), `class_weight` (where "balanced" indicates weights are inversely proportional to class frequencies and the default is one), and `dual` (flag to use the dual formulation, which changes the equation being optimized). For each combination, models were trained with different `C` values, which controls the inverse of the regularization strength.
 
 All models have similar accuracy, ROC area, and precision/recall area for all `C` values tested. However, their individual precision and recall metrics change wildly with C. We are more interested in accuracy for this specific problem because accuracy directly controls profit. Using a grid search is not the most efficient parameter tuning method because grid searches do not use information from prior runs to aid future parameter choices. You are at the mercy of the selected grid points.
 
@@ -289,7 +289,7 @@ plt.show()
 
 # Neural Network
 
-The code below builds a [`MLPClassifier`](http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier) hyperparameter search space using the parameters `hidden_layer_sizes` (number of neurons in each hidden layer), `alpha` (L2 penalty parameter similar to `C` in `LogisticRegression` and `LinearSVC`), `activation` (network activation function), and `solver` (the algorithm used to optimize network weights). The network structure was held to a single hidden layer. I kept the number of function evaluations at 100 in the interest of computational time.
+The code below builds a [`MLPClassifier`](http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier) hyperparameter search space using the parameters `hidden_layer_sizes` (number of neurons in each hidden layer), `alpha` (controls the L2 regularization similar to the `C` parameter in `LogisticRegression` and `LinearSVC`), `activation` (network activation function), and `solver` (the algorithm used to optimize network weights). The network structure was held to a single hidden layer. I kept the number of function evaluations at 100 in the interest of computational time.
 
 
 ```python
