@@ -20,7 +20,7 @@
 \DeclareNameAlias{default}{last-first}
 
 \title{DataBall}
-\subtitle{Predicting NBA Winners with Data}
+\subtitle{Betting on the NBA with Data}
 \author{Kevin Lane}
 
 \begin{document}
@@ -80,15 +80,15 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \begin{frame}
 \frametitle{Process}
 \begin{itemize}
-    \item I used several algorithms from the popular Python machine learning library scikit-learn\footcite{scikit-learn} to predict NBA game winners
+    \item I used several algorithms from the popular Python machine learning library scikit-learn\footcite{scikit-learn} to predict NBA game winners against the spread
     \begin{itemize}
         \item Logistic Regression
         \item Support Vector Machine
         \item Random Forest
         \item Multilayer Perceptron
-        \item Na{\"i}ve Bayes
     \end{itemize}
     \item I used box score data from the 1990-91 season through 2015-16
+    \item Point spreads scraped from covers.com with the Scrapy framework
     \item The games are split into training and test sets randomly, so games from future seasons are used to predict past games
     \begin{itemize}
         \item This does not provide a realistic scenario for making predictions in real time, such as in betting
@@ -107,13 +107,12 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
     \item I collected stats from the NBA's stats website \url{stats.nba.com}
     \begin{itemize}
         \item The site exposes a wealth of information in JSON format through various web API endpoints
-        \item I utilized the GitHub project nba\_py to format the URLs and collect stats into Pandas DataFrames
+        \item I utilized the Python module nba\_py to format URLs and collect stats
     \end{itemize}
-    \item I stored all collected stats to a SQLite database using Python's built-in SQLite support
+    \item I stored all data to a SQLite database using Python's built-in support
     \item I used the basic box score stats to calculate more advanced stats
     \begin{itemize}
         \item Offensive/defensive ratings (points scored/allowed per 100 possessions), which requires an estimate for the number of possessions
-        \item Simple Rating System (SRS), which is a team's average margin of victory adjusted for its strength of schedule
         \item Oliver's four factors\footcite{oliver}, which include effective FG\%, TOV\%, OREB\%, and free throw rate
         \item Weighted four factors, which is just sum of the four factors weighted according to Oliver's assigned weights
     \end{itemize}
@@ -170,7 +169,7 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
     \item The folds show little spread, so we are confident the cross-validation results in a good estimate of model performance
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.35]{../docs/assets/images/feature-selection/srs-cross-validation.png}
+\includegraphics[scale=0.35]{../docs/assets/images/feature-selection/favorite-ats-profit.png}
 \caption{Cross-Validated ROC and Precision/Recall Curves (SRS)}
 \end{figure}
 \end{frame}
@@ -195,12 +194,23 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
     \item Parameter tuning did not yield models that performed noticeably better than the default models
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.3]{../docs/assets/images/parameter-tuning/logistic-regression-metrics.png}
+\includegraphics[scale=0.3]{../docs/assets/images/parameter-tuning/logistic-regression-hyperopt.png}
 \caption{Logistic Regression Parameter Tuning}
 \end{figure}
 \end{frame}
 
-\section{Results}
+\begin{frame}
+\frametitle{Parameter Tuning}
+\begin{itemize}
+    \item Parameter tuning did not yield models that performed noticeably better than the default models
+\end{itemize}
+\begin{figure}
+\includegraphics[scale=0.3]{../docs/assets/images/parameter-tuning/logistic-regression-accuracy.png}
+\caption{Logistic Regression Parameter Tuning}
+\end{figure}
+\end{frame}
+
+\section{Results \& Future Work}
 
 \subsection{Model Performance}
 \begin{frame}
@@ -241,28 +251,7 @@ According to Nate Silver, ``sports nerds have it easy.''\footnotemark
 \end{figure}
 \end{frame}
 
-\subsection{Comparison to Published Results}
-\begin{frame}
-\frametitle{Comparison to Published Results}
-\begin{itemize}
-    \item The roughly 70\% prediction accuracy is in line with published results
-    \item Zimmermann\footcite{zimmermann} used algorithms in Weka\footcite{witten} to predict NBA and NCAA game winners
-    \begin{itemize}
-        \item He trained the models using data from previous games, making it a more realistic scenario
-        \item He correctly predicted about 57-68\% of NBA games correctly, though most seasons were below 64\% accuracy
-        \item He was much more successful in the NCAA, where the range in skill level is much larger than the NBA
-    \end{itemize}
-    \item Loeffelholz et al.\footcite{loeffelholz} used the MATLAB neural network toolbox to predict NBA game winners
-    \begin{itemize}
-        \item They performed a cross-validation similar to what was shown here
-        \item They only examined part of one season (only 30 games used for testing)
-        \item They predicted approximately 74\% of games correctly, but it is unclear if this generalizes well
-    \end{itemize}
-\end{itemize}
-\end{frame}
-
-\section{Future Work}
-
+\subsection{Future Work}
 \begin{frame}[t]
 \frametitle{Future Work}
 \begin{itemize}
