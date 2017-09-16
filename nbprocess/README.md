@@ -1,0 +1,3 @@
+# nbprocess
+
+The nbprocess module provides a command line interface to convert Jupyter notebooks to Markdown. Jupyter provides the nbconvert command, but figures are simply named with the notebook name followed by a number. The nbprocess command leverages nbconvert, but renames figures to the names provided in a .yml file like [this one](https://github.com/klane/databall/blob/master/nbprocess/nbprocess.yml). Several of the [pages](https://github.com/klane/databall/tree/master/docs/_pages) and all the [images](https://github.com/klane/databall/tree/master/docs/assets/images) for the GitHub Pages [site](https://klane.github.io/databall/) were generated with nbprocess.
