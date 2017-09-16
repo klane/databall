@@ -111,6 +111,22 @@ a.sidebar-nav-item:focus {
   margin-bottom: 0;
   font-size: .75rem;
 }
+.sidebar-footer img {
+  margin: 0.1rem 0 0.1rem;
+}
+.sidebar-footer table {
+  border: 0;
+  margin-bottom: 0;
+}
+.sidebar-footer td {
+  border: 0;
+  font-size: .75rem;
+  padding: 0 0;
+}
+.sidebar-footer tbody tr:nth-child(odd) td,
+tbody tr:nth-child(odd) th {
+  background-color: #202020;
+}
 
 /* Sticky sidebar
  *
