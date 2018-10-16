@@ -1,6 +1,9 @@
 # Jupyter Notebook
 .ipynb_checkpoints/
 
+# Local virtual environment
+.venv/
+
 # Python
 *.pyc
 
