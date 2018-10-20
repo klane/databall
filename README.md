@@ -8,9 +8,9 @@ This project combines my interest in data science with my love of sports. I atte
 
 Contents:
 
-- [covers](https://github.com/klane/databall/tree/master/covers): Scrapy project to scrape point spreads and over/under lines from [covers.com](http://covers.com)
-- [databall](https://github.com/klane/databall/tree/master/databall): Python module with support functions to perform tasks including collecting stats to a SQLite database, simulating seasons, and customizing plots
-- [docs](https://github.com/klane/databall/tree/master/docs): Code required to build the GitHub Pages [site](https://klane.github.io/databall/) for this project
-- [nbprocess](https://github.com/klane/databall/tree/master/nbprocess): Support module to convert Jupyter notebooks to Markdown and rename generated figures to desired names
-- [notebooks](https://github.com/klane/databall/tree/master/notebooks): Jupyter notebooks of all analyses
-- [report](https://github.com/klane/databall/tree/master/report): LaTeX files for report and slides
+-   [covers](https://github.com/klane/databall/tree/master/covers): Scrapy project to scrape point spreads and over/under lines from [covers.com](http://covers.com)
+-   [databall](https://github.com/klane/databall/tree/master/databall): Python module with support functions to perform tasks including collecting stats to a SQLite database, simulating seasons, and customizing plots
+-   [docs](https://github.com/klane/databall/tree/master/docs): Code required to build the GitHub Pages [site](https://klane.github.io/databall/) for this project
+-   [nbprocess](https://github.com/klane/databall/tree/master/nbprocess): Support module to convert Jupyter notebooks to Markdown and rename generated figures to desired names
+-   [notebooks](https://github.com/klane/databall/tree/master/notebooks): Jupyter notebooks of all analyses
+-   [report](https://github.com/klane/databall/tree/master/report): LaTeX files for report and slides
