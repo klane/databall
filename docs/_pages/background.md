@@ -12,15 +12,15 @@ The term analytics in sports refers to using statistical analysis to inform deci
 
 The impact of analytics in sports is evidenced by many examples including:
 
-1. MLB's increased attention to on-base percentage beginning in the early 2000s
-2. The [rise of the three-point shot](https://bballbreakdown.com/2016/12/16/the-nba-3-point-revolution/) and [fall of the midrange jumper](http://grantland.com/the-triangle/the-nbas-next-shooting-revolution-has-already-been-televised/) in the NBA with players like [Stephen Curry](http://fivethirtyeight.com/features/stephen-curry-is-the-revolution/) and [James Harden](https://fivethirtyeight.com/features/james-harden-gets-fouled-on-3s-more-than-any-nba-team/) leading the charge
-3. Increase in [short, high-percentage passes](https://fivethirtyeight.com/features/running-backs-are-finally-getting-paid-what-theyre-worth/) in the NFL
+1.  MLB's increased attention to on-base percentage beginning in the early 2000s
+2.  The [rise of the three-point shot](https://bballbreakdown.com/2016/12/16/the-nba-3-point-revolution/) and [fall of the midrange jumper](http://grantland.com/the-triangle/the-nbas-next-shooting-revolution-has-already-been-televised/) in the NBA with players like [Stephen Curry](http://fivethirtyeight.com/features/stephen-curry-is-the-revolution/) and [James Harden](https://fivethirtyeight.com/features/james-harden-gets-fouled-on-3s-more-than-any-nba-team/) leading the charge
+3.  Increase in [short, high-percentage passes](https://fivethirtyeight.com/features/running-backs-are-finally-getting-paid-what-theyre-worth/) in the NFL
 
 Sports provide an enticing testbed for machine learning. In a [FiveThirtyEight article](https://fivethirtyeight.com/features/rich-data-poor-data/) by Nate Silver, he identified three reasons "sports nerds have it easy."
 
-1. "**Sports has awesome data.**" Silver describes sports data as not just big data, but rich data, which he defines as "accurate, precise, and subject to rigorous quality control." Data is also readily available with many websites across a variety of sports offering a plethora of information.
-2. "**In sports, we know the rules.**" This allows us to have strong intuition as to what stats make good predictive variables before ever making a model.
-3. "**Sports offers fast feedback and clear marks of success.**" The objective of sports is winning. While that is not a novel concept, such a clear-cut goal is not always present in other subjects. However, the problem does become more complicated when framed in the context of a betting scenario, such as determining the classification probability threshold to maximize return on investment (ROI).
+1.  "**Sports has awesome data.**" Silver describes sports data as not just big data, but rich data, which he defines as "accurate, precise, and subject to rigorous quality control." Data is also readily available with many websites across a variety of sports offering a plethora of information.
+2.  "**In sports, we know the rules.**" This allows us to have strong intuition as to what stats make good predictive variables before ever making a model.
+3.  "**Sports offers fast feedback and clear marks of success.**" The objective of sports is winning. While that is not a novel concept, such a clear-cut goal is not always present in other subjects. However, the problem does become more complicated when framed in the context of a betting scenario, such as determining the classification probability threshold to maximize return on investment (ROI).
 
 ## Why the NBA?
 
