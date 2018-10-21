@@ -4,6 +4,9 @@
 # Local virtual environment
 .venv/
 
+# Development directory
+sandbox/
+
 # Python
 *.pyc
 

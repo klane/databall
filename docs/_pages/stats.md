@@ -19,7 +19,7 @@ This makes it easy to pull in the data programmatically without having to scrape
   stats = GameLog(season='2016-17', season_type='Regular Season', player_or_team='P').overall()
 ```
 
-A Jupyter Notebook detailing some of the available stats is located [here](https://github.com/klane/databall/blob/master/notebooks/nba-stats.ipynb). The API also provides sensible defaults, such as the current season for the season parameter, which reduces the amount of code required. The code below produces the same output as that above given that this page was written during the 2016-17 season. These two code snippets will produce different results at the start of the 2017-18 campaign.
+The API also provides sensible defaults, such as the current season for the season parameter, which reduces the amount of code required. The code below produces the same output as that above given that this page was written during the 2016-17 season. These two code snippets will produce different results at the start of the 2017-18 campaign.
 
 ```python
   from nba_py.league import GameLog
@@ -98,7 +98,7 @@ $$\begin{align}
 \vec{SRS}_0 & =\vec{PD}
 \end{align}$$
 
-where $$\vec{SRS}_i$$ is a vector of all team's SRS values at iteration $$i$$, $$\vec{PD}$$ is a vector of average point differentials, and $$\mathbf{S}$$ denotes the schedule matrix. Both $$\vec{PD}$$ and $$\mathbf{S}$$ are fixed (do not update with $$i$$) and $$\vec{SRS}$$ is initialized to $$\vec{PD}$$. The schedule matrix is symmetric about the diagonal and $$\mathbf{S}_{i,j}$$ indicates what percentage of team $$i$$'s games were played against team $$j$$. The SRS vector is updated until it converges, which is achieved when the maximum difference between $$\vec{SRS}_i$$ and $$\vec{SRS}_{i-1}$$ is below a selected tolerance. It typically only requires a few iterations to obtain convergence. 
+where $$\vec{SRS}_i$$ is a vector of all team's SRS values at iteration $$i$$, $$\vec{PD}$$ is a vector of average point differentials, and $$\mathbf{S}$$ denotes the schedule matrix. Both $$\vec{PD}$$ and $$\mathbf{S}$$ are fixed (do not update with $$i$$) and $$\vec{SRS}$$ is initialized to $$\vec{PD}$$. The schedule matrix is symmetric about the diagonal and $$\mathbf{S}_{i,j}$$ indicates what percentage of team $$i$$'s games were played against team $$j$$. The SRS vector is updated until it converges, which is achieved when the maximum difference between $$\vec{SRS}_i$$ and $$\vec{SRS}_{i-1}$$ is below a selected tolerance. It typically only requires a few iterations to obtain convergence.
 
 ### Four Factors
 
