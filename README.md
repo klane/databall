@@ -1,7 +1,8 @@
 # <img src="docs/assets/icons/favicon.ico" width="48"> DataBall: Betting on the NBA with data
 
-[![GitHub license](https://img.shields.io/github/license/klane/databall.svg)](https://github.com/klane/databall/blob/master/LICENSE)
+[![GitHub License](https://img.shields.io/github/license/klane/databall.svg)](https://github.com/klane/databall/blob/master/LICENSE)
 [![Requirements Status](https://requires.io/github/klane/databall/requirements.svg?branch=master)](https://requires.io/github/klane/databall/requirements/?branch=master)
+[![PyUp Status](https://pyup.io/repos/github/klane/databall/shield.svg)](https://pyup.io/repos/github/klane/databall/)
 
 --------------------------------------------------------------------------------
 
