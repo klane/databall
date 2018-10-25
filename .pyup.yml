@@ -3,6 +3,8 @@
 
 update: all
 schedule: every day
+assignees: klane
+label_prs: update
 requirements:
   - Pipfile:
       pin: False
