@@ -1,5 +1,6 @@
 # <img src="docs/assets/icons/favicon.ico" width="48"> DataBall: Betting on the NBA with data
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fa9fb0e3be334dd69b4709189849fc29)](https://app.codacy.com/app/klane/databall?utm_source=github.com&utm_medium=referral&utm_content=klane/databall&utm_campaign=Badge_Grade_Settings)
 [![GitHub License](https://img.shields.io/github/license/klane/databall.svg)](https://github.com/klane/databall/blob/master/LICENSE)
 [![Requirements Status](https://requires.io/github/klane/databall/requirements.svg?branch=master)](https://requires.io/github/klane/databall/requirements/?branch=master)
 [![PyUp Status](https://pyup.io/repos/github/klane/databall/shield.svg)](https://pyup.io/repos/github/klane/databall/)
