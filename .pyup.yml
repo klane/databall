@@ -4,7 +4,7 @@
 update: all
 schedule: every day
 assignees: klane
-label_prs: update
+label_prs: dependencies
 requirements:
   - Pipfile:
       pin: False
