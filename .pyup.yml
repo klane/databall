@@ -2,7 +2,7 @@
 # see https://pyup.io/docs/configuration/ for all available options
 
 update: all
-schedule: every day
+schedule: every week on monday
 assignees: klane
 label_prs: dependencies
 requirements:
