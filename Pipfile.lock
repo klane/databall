@@ -969,10 +969,10 @@
         },
         "qtconsole": {
             "hashes": [
-                "sha256:f0b74277db5174d7513e9a84138e10e94d1cf767dc1706c247507e79e2c18288",
-                "sha256:faa529167b22412ea51ea44f20728a602415734d2229721d1194cea47cb730fa"
+                "sha256:1ac4a65e81a27b0838330a6d351c2f8435d4013d98a95373e8a41119b2968390",
+                "sha256:bc1ba15f50c29ed50f1268ad823bb6543be263c18dd093b80495e9df63b003ac"
             ],
-            "version": "==4.4.2"
+            "version": "==4.4.3"
         },
         "scipy": {
             "hashes": [
