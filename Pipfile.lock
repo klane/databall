@@ -754,10 +754,10 @@
         },
         "notebook": {
             "hashes": [
-                "sha256:24f38c9cc7d7bd0a4c429cc8381e602e58b2b176d6071096a09a0e6c9cd0b463",
-                "sha256:5cff23bf1b6385ede54f130f64ec58b9147a454f43d06d173817e0263005ce18"
+                "sha256:661341909008d1e7bfa1541904006f9789fa3de1cbec8379d2879819454cc04b",
+                "sha256:91705b109fc785198faed892489cddb233265564d5e2dad5e4f7974af05ee8dd"
             ],
-            "version": "==5.7.1"
+            "version": "==5.7.2"
         },
         "numpy": {
             "hashes": [
