@@ -426,11 +426,11 @@
         },
         "scrapy": {
             "hashes": [
-                "sha256:005933cc426b8ff7eae84ef8b9370f6465f9e43c4daede68474711b5e21fe607",
-                "sha256:c81e8ed141eb0ac0b0dcb13854c19c1faf84da53550a3d3d4c2326e671e90655"
+                "sha256:4ec03552c9aed1e82a376488150e904e0213bdee3ca140225105e9b03d0de204",
+                "sha256:558dfd10ac53cb324ecd7eefd3eac412161c7507c082b01b0bcd2c6e2e9f0766"
             ],
             "index": "pypi",
-            "version": "==1.5.2"
+            "version": "==1.6.0"
         },
         "service-identity": {
             "hashes": [
