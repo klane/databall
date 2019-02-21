@@ -541,11 +541,12 @@
         },
         "hyperopt": {
             "hashes": [
-                "sha256:032cd3003acef914d239d7b1902612b0c3681ad5b2fdaa0c69b21787f9eb9259",
-                "sha256:7c1628bced9dbde4b1794468621ab872c0edbc1a41a5ceb6f8153d26cf89fb34"
+                "sha256:2832a9f321ae1167dbd39a7382721933c6885b682ea90165dd90cd64938aa226",
+                "sha256:d95ac8a8dd14a56a1d52c0b0e8501c16463e99d3a9571e297058a6909131878c",
+                "sha256:df8c48a62bc1614bdc37f5cc570064a93a4b81a16559621db9acee3f6536b658"
             ],
             "index": "pypi",
-            "version": "==0.1.1"
+            "version": "==0.1.2"
         },
         "ipykernel": {
             "hashes": [
@@ -1034,6 +1035,13 @@
                 "sha256:e5f2585afccbff22390cddac29849df463b252b711aa2ce7c5f3f342a5b3b444"
             ],
             "version": "==5.1.1"
+        },
+        "tqdm": {
+            "hashes": [
+                "sha256:d385c95361699e5cf7622485d9b9eae2d4864b21cd5a2374a9c381ffed701021",
+                "sha256:e22977e3ebe961f72362f6ddfb9197cc531c9737aaf5f607ef09740c849ecd05"
+            ],
+            "version": "==4.31.1"
         },
         "traitlets": {
             "hashes": [
