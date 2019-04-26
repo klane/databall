@@ -31,7 +31,7 @@ GEM
     ffi (1.10.0)
     ffi (1.10.0-x64-mingw32)
     forwardable-extended (2.6.0)
-    gemoji (3.0.0)
+    gemoji (3.0.1)
     github-pages (197)
       activesupport (= 4.2.10)
       github-pages-health-check (= 1.16.1)
