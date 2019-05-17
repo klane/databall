@@ -362,7 +362,6 @@
         },
         "scikit-learn": {
             "hashes": [
-                "sha256:0388b62e08d09544ffb16a0c416924f59c423d592b6545b2d12a77d995a41d10",
                 "sha256:1a6e69128d1fe413a5722404756c62aac21d2f8a523beb57912afffc3640a75f",
                 "sha256:2244785eb38f81c4c640d6e46594d950a92f6cc14351ba4926ed9351e6c16e3a",
                 "sha256:2ae8b0e40fb044844b02af9d348bc1a2254b3f7b94151cc197536e1211b9280b",
@@ -553,10 +552,11 @@
         },
         "ipykernel": {
             "hashes": [
-                "sha256:0aeb7ec277ac42cc2b59ae3d08b10909b2ec161dc6908096210527162b53675d",
-                "sha256:0fc0bf97920d454102168ec2008620066878848fcfca06c22b669696212e292f"
+                "sha256:346189536b88859937b5f4848a6fd85d1ad0729f01724a411de5cae9b618819c",
+                "sha256:f0e962052718068ad3b1d8bcc703794660858f58803c3798628817f492a8769c"
             ],
-            "version": "==5.1.0"
+            "index": "pypi",
+            "version": "==5.1.1"
         },
         "ipython": {
             "hashes": [
@@ -903,9 +903,9 @@
         },
         "pyrsistent": {
             "hashes": [
-                "sha256:5403d37f4d55ff4572b5b5676890589f367a9569529c6f728c11046c4ea4272b"
+                "sha256:16692ee739d42cf5e39cef8d27649a8c1fdb7aa99887098f1460057c5eb75c3a"
             ],
-            "version": "==0.15.1"
+            "version": "==0.15.2"
         },
         "python-dateutil": {
             "hashes": [
@@ -1041,10 +1041,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:d385c95361699e5cf7622485d9b9eae2d4864b21cd5a2374a9c381ffed701021",
-                "sha256:e22977e3ebe961f72362f6ddfb9197cc531c9737aaf5f607ef09740c849ecd05"
+                "sha256:0a860bf2683fdbb4812fe539a6c22ea3f1777843ea985cb8c3807db448a0f7ab",
+                "sha256:e288416eecd4df19d12407d0c913cbf77aa8009d7fddb18f632aded3bdbdda6b"
             ],
-            "version": "==4.31.1"
+            "version": "==4.32.1"
         },
         "traitlets": {
             "hashes": [
