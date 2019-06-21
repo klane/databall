@@ -200,7 +200,6 @@
                 "sha256:ef2d1fc370400e0aa755aab0b20cf4f1d0e934e7fd5244f3dd4869078e4942b9",
                 "sha256:f2fec194a49bfaef42a548ee657362af5c7a640da757f6f452a35da7dd9f923c"
             ],
-            "index": "pypi",
             "version": "==4.3.4"
         },
         "matplotlib": {
@@ -561,10 +560,10 @@
         },
         "jedi": {
             "hashes": [
-                "sha256:2bb0603e3506f708e792c7f4ad8fc2a7a9d9c2d292a358fbbd58da531695595b",
-                "sha256:2c6bcd9545c7d6440951b12b44d373479bf18123a401a52025cf98563fbd826c"
+                "sha256:49ccb782651bb6f7009810d17a3316f8867dde31654c750506970742e18b553d",
+                "sha256:79d0f6595f3846dffcbe667cc6dc821b96e5baa8add125176c31a3917eb19d58"
             ],
-            "version": "==0.13.3"
+            "version": "==0.14.0"
         },
         "jinja2": {
             "hashes": [
@@ -605,10 +604,10 @@
         },
         "jupyter-core": {
             "hashes": [
-                "sha256:927d713ffa616ea11972534411544589976b2493fc7e09ad946e010aa7eb9970",
-                "sha256:ba70754aa680300306c699790128f6fbd8c306ee5927976cbe48adacf240c0b7"
+                "sha256:2c6e7c1e9f2ac45b5c2ceea5730bc9008d92fe59d0725eac57b04c0edfba24f7",
+                "sha256:f4fa22d6cf25f34807c995f22d2923693575c70f02557bcbfbe59bd5ec8d8b84"
             ],
-            "version": "==4.4.0"
+            "version": "==4.5.0"
         },
         "kiwisolver": {
             "hashes": [
@@ -787,10 +786,11 @@
         },
         "parso": {
             "hashes": [
-                "sha256:17cc2d7a945eb42c3569d4564cdf49bde221bc2b552af3eca9c1aad517dcdd33",
-                "sha256:2e9574cb12e7112a87253e14e2c380ce312060269d04bd018478a3c92ea9a376"
+                "sha256:5052bb33be034cba784193e74b1cde6ebf29ae8b8c1e4ad94df0c4209bfc4826",
+                "sha256:db5881df1643bf3e66c097bfd8935cf03eae73f4cb61ae4433c9ea4fb6613446"
             ],
-            "version": "==0.4.0"
+            "index": "pypi",
+            "version": "==0.5.0"
         },
         "pexpect": {
             "hashes": [
@@ -809,9 +809,9 @@
         },
         "prometheus-client": {
             "hashes": [
-                "sha256:ee0c90350595e4a9f36591f291e6f9933246ea67d7cd7d1d6139a9781b14eaae"
+                "sha256:71cd24a2b3eb335cb800c7159f423df1bd4dcd5171b234be15e3f31ec9f622da"
             ],
-            "version": "==0.7.0"
+            "version": "==0.7.1"
         },
         "prompt-toolkit": {
             "hashes": [
@@ -1004,10 +1004,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:0a860bf2683fdbb4812fe539a6c22ea3f1777843ea985cb8c3807db448a0f7ab",
-                "sha256:e288416eecd4df19d12407d0c913cbf77aa8009d7fddb18f632aded3bdbdda6b"
+                "sha256:14a285392c32b6f8222ecfbcd217838f88e11630affe9006cd0e94c7eff3cb61",
+                "sha256:25d4c0ea02a305a688e7e9c2cdc8f862f989ef2a4701ab28ee963295f5b109ab"
             ],
-            "version": "==4.32.1"
+            "version": "==4.32.2"
         },
         "traitlets": {
             "hashes": [
