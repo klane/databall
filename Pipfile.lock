@@ -390,11 +390,11 @@
         },
         "scrapy": {
             "hashes": [
-                "sha256:4ec03552c9aed1e82a376488150e904e0213bdee3ca140225105e9b03d0de204",
-                "sha256:558dfd10ac53cb324ecd7eefd3eac412161c7507c082b01b0bcd2c6e2e9f0766"
+                "sha256:da8987d199092c3bb33d4d1d021507cd933aa67f5177e2d36f31343e8a6bd7f1",
+                "sha256:e600ab514c7234ae8f320a6dc31ae6fe500c9003c24d36fa51eced5a722262ba"
             ],
             "index": "pypi",
-            "version": "==1.6.0"
+            "version": "==1.7.1"
         },
         "service-identity": {
             "hashes": [
@@ -414,6 +414,7 @@
             "hashes": [
                 "sha256:fa2c04c2d68a9be7fc3975ba4947f653a57a656776f24be58ff0fe4b9aaf3e52"
             ],
+            "markers": "python_version != '3.4'",
             "version": "==19.2.1"
         },
         "w3lib": {
