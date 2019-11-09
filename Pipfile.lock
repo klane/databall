@@ -340,7 +340,6 @@
                 "sha256:4acadc9a2b96c19fe00932a38ca63e601180c39a189a696abce1eaab641447e1",
                 "sha256:61b5ed888beab19ddccab3478910e2076a6b5a0295dffc43021890e136edf764"
             ],
-            "index": "pypi",
             "version": "==2.4.4"
         },
         "python-dateutil": {
@@ -518,12 +517,6 @@
             ],
             "version": "==3.1.0"
         },
-        "bson": {
-            "hashes": [
-                "sha256:13fb1e5486a611374a06177663c2ab878f0c192c8fc8765a63dfef86859006c9"
-            ],
-            "version": "==0.5.8"
-        },
         "cloudpickle": {
             "hashes": [
                 "sha256:922401d7140e133253ff5fab4faa4a1166416066453a783b00b507dca93f8859",
@@ -567,12 +560,12 @@
         },
         "hyperopt": {
             "hashes": [
-                "sha256:04b3cf668b9ad6705282a191ee8b369b48ea1e281d1fb1d202dcf3ecfed8384d",
-                "sha256:8dcab5ec90ac1ba35f88078cd88c79ca0ebeed8abe9088b1ce241abddb91a51a",
-                "sha256:ae8e56011642ebdaf329fd46dc0f565f6afd7db75d509120b4e0c186c8394bed"
+                "sha256:8df0dfdce0d12e8412e902efbc6d372b0f166d6e9675bb59c273fc73883c7c0c",
+                "sha256:cb79b9877723be7b4cf0cb6911525ebaf36edbce5e09d09d672a43ff22fdc455",
+                "sha256:e56f46d67acade15b0708a2ee06ba70362e94697203bf6b5de9fc2edcf631bba"
             ],
             "index": "pypi",
-            "version": "==0.2.1"
+            "version": "==0.2.2"
         },
         "importlib-metadata": {
             "hashes": [
@@ -905,7 +898,6 @@
                 "sha256:4acadc9a2b96c19fe00932a38ca63e601180c39a189a696abce1eaab641447e1",
                 "sha256:61b5ed888beab19ddccab3478910e2076a6b5a0295dffc43021890e136edf764"
             ],
-            "index": "pypi",
             "version": "==2.4.4"
         },
         "pyrsistent": {
@@ -1037,10 +1029,10 @@
         },
         "tqdm": {
             "hashes": [
-                "sha256:94d2a64582150f503a294b3b8889413e7e56d6043473d6a5672d46185b043902",
-                "sha256:fca09992116d6dc3ad9789cf601a254081eb40d5c14c1863ab6cd10e15c2cb26"
+                "sha256:9de4722323451eb7818deb0161d9d5523465353a6707a9f500d97ee42919b902",
+                "sha256:c1d677f3a85fa291b34bdf8f770f877119b9754b32673699653556f85e2c2f13"
             ],
-            "version": "==4.37.0"
+            "version": "==4.38.0"
         },
         "traitlets": {
             "hashes": [
