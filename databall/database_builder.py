@@ -8,6 +8,7 @@ from nba_api.stats.static import teams as TEAMS
 from nba_api.stats.endpoints import leaguedashplayerstats
 from nba_api.stats.endpoints import teamgamelogs
 from nba_api.stats.endpoints import leaguedashteamstats
+import json
 
 
 def add_player_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):
@@ -68,7 +69,10 @@ def add_teams(conn, sleep=1):
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
     conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT)')
-    teams = TEAMS.get_teams()[0:30]
+    teamslist=teams.get_teams()[0:30]
+    teamsjson=json.dumps(teamslist)
+    teams = pd.read_json(teamsjson)
+    #teams = TEAMS.get_teams()[0:30]
     teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
     teams.rename(columns={'TEAM_ID': 'ID'}, inplace=True)
     teams['CITY'] = 'TEMP'
