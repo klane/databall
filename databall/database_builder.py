@@ -69,7 +69,7 @@ def add_teams(conn, sleep=1):
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
     conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT)')
-    teamslist=teams.get_teams()[0:30]
+    teamslist=TEAMS.get_teams()[0:30]
     teamsjson=json.dumps(teamslist)
     teams = pd.read_json(teamsjson)
     #teams = TEAMS.get_teams()[0:30]
