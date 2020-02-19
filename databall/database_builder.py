@@ -3,6 +3,7 @@ from nba_py.team import TeamDetails, TeamList
 import pandas as pd
 import sqlite3
 import time
+from nba_api.stats.endpoints import leaguegamefinder
 
 
 def add_player_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):
@@ -21,7 +22,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' player game stats')
-        table = GameLog(season=season_str(season), player_or_team='P').overall()
+        table = leaguegamefinder.LeagueGameFinder(season_nullable='2019-20')
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
@@ -92,7 +93,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' team game stats')
-        table = GameLog(season=season_str(season), player_or_team='T').overall()
+        table = leaguegamefinder.LeagueGameFinder(season_nullable='2019-20')
         table['SEASON'] = season
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
