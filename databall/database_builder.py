@@ -68,7 +68,7 @@ def add_teams(conn, sleep=1):
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
     conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT)')
-    teams = TEAMS.get_teams()[0:30].get_data_frames()[0]
+    teams = TEAMS.get_teams()[0:30]
     teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
     teams.rename(columns={'TEAM_ID': 'ID'}, inplace=True)
     teams['CITY'] = 'TEMP'
