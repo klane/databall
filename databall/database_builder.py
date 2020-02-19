@@ -4,6 +4,10 @@ import pandas as pd
 import sqlite3
 import time
 from nba_api.stats.endpoints import leaguegamefinder
+from nba_api.stats.static import teams
+from nba_api.stats.endpoints import leaguedashplayerstats
+from nba_api.stats.endpoints import teamgamelogs
+from nba_api.stats.endpoints import leaguedashteamstats
 
 
 def add_player_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):
@@ -22,7 +26,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' player game stats')
-        table = leaguegamefinder.LeagueGameFinder(season_nullable='2019-20')
+        table = leaguegamefinder.LeagueGameFinder(season_nullable='2019-20').get_data_frames[0]
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
@@ -51,7 +55,7 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' player season stats')
-        table = PlayerStats(season=season_str(season)).overall()
+        table = leaguedashplayerstats.LeagueDashPlayerStats(season='2019-20').get_data_frames()[0]
         table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['PLAYER_ID', 'TEAM_ID'], inplace=True)
         table['SEASON'] = season
@@ -64,7 +68,7 @@ def add_teams(conn, sleep=1):
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
     conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT)')
-    teams = TeamList().info()[0:30]
+    teams = teams.get_teams()[0:30].get_data_frames()[0]
     teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
     teams.rename(columns={'TEAM_ID': 'ID'}, inplace=True)
     teams['CITY'] = 'TEMP'
@@ -93,7 +97,7 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' team game stats')
-        table = leaguegamefinder.LeagueGameFinder(season_nullable='2019-20')
+        table = teamgamelogs.TeamGameLogs(season_nullable='2019-20').get_data_frames()[0]
         table['SEASON'] = season
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
@@ -144,7 +148,7 @@ def add_team_season_stats(conn, start_season, end_season, if_exists='append', sl
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' team season stats')
-        table = TeamStats(season=season_str(season)).overall()
+        table = leaguedashteamstats.LeagueDashTeamStats(season_nullable='2019-20').get_data_frames()[0]
         table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'RANK']), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['TEAM_ID'], inplace=True)
         table['SEASON'] = season
