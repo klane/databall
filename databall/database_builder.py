@@ -6,6 +6,7 @@ import time
 from nba_api.stats.endpoints import leaguegamefinder
 from nba_api.stats.endpoints import playergamelog
 from nba_api.stats.static import teams as TEAMS
+from nba_api.stats.static import players as PLAYERS
 from nba_api.stats.static.teams import find_team_name_by_id
 from nba_api.stats.endpoints import leaguedashplayerstats
 from nba_api.stats.endpoints import teamgamelogs
@@ -13,7 +14,7 @@ from nba_api.stats.endpoints import leaguedashteamstats
 import json
 
 
-def add_player_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):
+def add_player_game_stats(conn, start_season, end_season, if_exists='append', sleep=5):
     table_name = 'player_game_stats'
 
     if if_exists == 'replace':
@@ -29,13 +30,27 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' player game stats')
-        table = leaguegamefinder.LeagueGameFinder(season_nullable='2019-20').get_data_frames()[0]
-        table.to_sql('temp', conn, if_exists='append', index=False)
+        #table = leaguegamefinder.LeagueGameFinder(season_nullable='2019-20').get_data_frames()[0]
+        #table = leaguedashplayerstats.LeagueDashPlayerStats(season='2019-20').get_data_frames()[0]
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
-        table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
-        table.dropna(axis=0, how='any', subset=['GAME_ID', 'PLAYER_ID', 'TEAM_ID'], inplace=True)
-        table.to_sql(table_name, conn, if_exists='append', index=False)
-        time.sleep(sleep)
+        playerlist = PLAYERS.get_players()
+        playersjson = json.dumps(playerlist)
+        players = pd.read_json(playersjson)
+        for playerid in players['id']:
+        #table.to_sql('temp', conn, if_exists='append', index=False)
+            #print(playergamelog.PlayerGameLog(player_id=playerid).get_request_url())
+            print(playerid)
+            if playergamelog.PlayerGameLog(player_id=playerid, timeout=90).get_data_frames()[0].empty == True:
+                time.sleep(sleep)
+                continue
+            else:
+                table = playergamelog.PlayerGameLog(player_id=playerid, timeout=90).get_data_frames()[0]
+                table.to_sql('temp', conn, if_exists='append', index=False)
+                table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
+                table.dropna(axis=0, how='any', subset=['GAME_ID', 'PLAYER_ID', 'TEAM_ID'], inplace=True)
+                table.to_sql(table_name, conn, if_exists='append', index=False)
+                time.sleep(sleep)
+            time.sleep(sleep)
 
     query = 'SELECT DISTINCT PLAYER_ID AS ID, PLAYER_NAME AS NAME FROM temp ORDER BY ID'
     pd.read_sql(query, conn).to_sql('players', conn, if_exists='append', index=False)
