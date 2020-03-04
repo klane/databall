@@ -5,6 +5,7 @@ import sqlite3
 import time
 from nba_api.stats.endpoints import leaguegamefinder
 from nba_api.stats.static import teams as TEAMS
+from nba_api.stats.static.teams import find_team_name_by_id
 from nba_api.stats.endpoints import leaguedashplayerstats
 from nba_api.stats.endpoints import teamgamelogs
 from nba_api.stats.endpoints import leaguedashteamstats
@@ -68,18 +69,20 @@ def add_teams(conn, sleep=1):
     print('Reading team information')
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
-    conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT)')
+    conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT, full_name TEXT, nickname)')
     teamslist=TEAMS.get_teams()[0:30]
     teamsjson=json.dumps(teamslist)
     teams = pd.read_json(teamsjson)
     #teams = TEAMS.get_teams()[0:30]
-    teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
+    #teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
+    teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'year_founded', 'state']), axis=1, inplace=True)
     teams.rename(columns={'TEAM_ID': 'ID'}, inplace=True)
     teams['CITY'] = 'TEMP'
     teams['MASCOT'] = 'TEMP'
 
     for ID in teams.id:
-        teams.loc[teams.id == ID, ['CITY', 'MASCOT']] = TeamDetails(ID).background()[['CITY', 'NICKNAME']].values
+        #teams.loc[teams.id == ID, ['CITY', 'MASCOT']] = pd.DataFrame.from_dict([find_team_name_by_id(ID)])[['city', 'nickname']]
+        teams.rename(columns={'nickname': 'MASCOT'}, inplace=True)
         time.sleep(sleep)
 
     teams.to_sql('teams', conn, if_exists='append', index=False)
