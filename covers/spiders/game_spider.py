@@ -12,7 +12,7 @@ class GameSpider(Spider):
     name = 'games'
     allowed_domains = ['covers.com']
 
-    def __init__(self, teams, season='2016-2017', *args, **kwargs):
+    def __init__(self, teams, season='2019-2020', *args, **kwargs):
         super(GameSpider, self).__init__(*args, **kwargs)
 
         if '.json' in teams:
