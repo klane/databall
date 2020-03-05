@@ -1,15 +1,15 @@
-from nba_py.league import GameLog, PlayerStats, TeamStats
-from nba_py.team import TeamDetails, TeamList
+#from nba_py.league import GameLog, PlayerStats, TeamStats
+#from nba_py.team import TeamDetails, TeamList
 import pandas as pd
 import sqlite3
 import time
-from nba_api.stats.endpoints import leaguegamefinder
-from nba_api.stats.endpoints import playergamelog
-from nba_api.stats.static import teams as TEAMS
-from nba_api.stats.static import players as PLAYERS
+#from nba_api.stats.endpoints import leaguegamefinder
+#from nba_api.stats.endpoints import playergamelog
+#from nba_api.stats.static import teams as TEAMS
+#from nba_api.stats.static import players as PLAYERS
 from nba_api.stats.static.teams import find_team_name_by_id
 from nba_api.stats.endpoints import leaguedashplayerstats
-from nba_api.stats.endpoints import teamgamelogs
+#from nba_api.stats.endpoints import teamgamelogs
 from nba_api.stats.endpoints import leaguedashteamstats
 from nba_api.stats.endpoints import leaguegamelog
 import json
