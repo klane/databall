@@ -29,8 +29,8 @@ _site/
 report/build/
 
 # Databases
-*.db
-*.sqlite
+#*.db
+#*.sqlite
 
 # Scrapy output
 data/
