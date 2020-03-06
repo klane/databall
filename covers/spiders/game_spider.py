@@ -21,25 +21,25 @@ class GameSpider(Spider):
         else:
             teams = teams.split(',')
 
-        self.start_urls = [base_url + '/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/%s/%s.html' %
-                           (season, team) for team in teams]
+        self.start_urls = [base_url + '/sport/basketball/nba/teams/main/%s/%s' %
+                           (team, season) for team in teams]
 
     def parse(self, response):
-        for row in response.xpath('//tr[@class="datarow"]'):
+        for row in response.xpath('//table[@class="table covers-CoversMatchups-Table covers-CoversResults-Table"]/tbody/tr'):
             loader = GameLoader(item=Game(), selector=row)
             loader.add_xpath('date', 'td[1]/text()')
-            loader.add_xpath('location', 'td[2]/text()')
+            loader.add_xpath('location', 'td[2]/a/text()')
             loader.add_xpath('opponent', 'td[2]/a/text()')
-            loader.add_xpath('result', 'td[3]/text()')
+            loader.add_xpath('result', 'td[3]/a/text()')
             loader.add_xpath('score', 'td[3]/text()')
             loader.add_xpath('score', 'td[3]/a/text()')
             loader.add_xpath('opponent_score', 'td[3]/text()')
             loader.add_xpath('opponent_score', 'td[3]/a/text()')
             loader.add_xpath('season_type', 'td[4]/text()')
-            loader.add_xpath('spread_result', 'td[5]/text()')
-            loader.add_xpath('spread', 'td[5]/text()')
-            loader.add_xpath('over_under_result', 'td[6]/text()')
-            loader.add_xpath('over_under', 'td[6]/text()')
+            loader.add_xpath('spread_result', 'td[4]/span/text()')
+            loader.add_xpath('spread', 'td[4]/text()')
+            loader.add_xpath('over_under_result', 'td[5]/span/text()')
+            loader.add_xpath('over_under', 'td[5]/text()')
 
             # add missing fields
             item = loader.load_item()
