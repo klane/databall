@@ -1,32 +1,11 @@
 scrapy crawl teams
 scrapy crawl games -a teams=Atlanta-Hawks
-for i in Atlanta-Hawks
-Boston-Celtics
-Cleveland-Cavaliers
-New-Orleans-Pelicans
-Chicago-Bulls
-Dallas-Mavericks
-Denver-Nuggets
-Golden-State-Warriors
-Houston-Rockets
-Los-Angeles-Clippers
-Los-Angeles-Lakers
-Miami-Heat
-Milwaukee-Bucks
-Minnesota-Timberwolves
-Brooklyn-Nets
-New-York-Knicks
-Orlando-Magic
-Indiana-Pacers
-Philadelphia-76ers
-Phoenix-Suns
-Portland-Trail-Blazers
-Sacramento-Kings
-San-Antonio-Spurs
-Oklahoma-City-Thunder
-Toronto-Raptors
-Utah-Jazz
-Memphis-Grizzlies
-Washington-Wizards
-Detroit-Pistons
-Charlotte-Hornets; do scrapy crawl games -a teams=Charlotte-Hornets; done
+
+# The following is only going to work in bash but its a simple loop that can be used to scrape all team data
+for i in `cat full_name.txt`; do scrapy crawl games -a teams=$i; done
+
+
+# Notes
+# Settings.py will need to be modified with the database location
+#
+# If looking to scrape older seasons the season will need to be manually modified right now.
