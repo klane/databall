@@ -2,7 +2,6 @@ import pandas as pd
 import sqlite3
 import time
 from nba_api.stats.static import teams as TEAMS
-from nba_api.stats.static import players as PLAYERS
 from nba_api.stats.static.teams import find_team_name_by_id
 from nba_api.stats.endpoints import leaguedashplayerstats
 from nba_api.stats.endpoints import leaguedashteamstats
