@@ -14,6 +14,7 @@ scrapy = "*"
 nba-py = {git = "https://github.com/seemethere/nba_py.git"}
 nba-api = "*"
 requests-cache = "*"
+seaborn = "*"
 
 [dev-packages]
 jupyter = "*"
