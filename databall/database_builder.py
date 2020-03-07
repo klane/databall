@@ -1,15 +1,10 @@
-#from nba_py.league import GameLog, PlayerStats, TeamStats
-#from nba_py.team import TeamDetails, TeamList
 import pandas as pd
 import sqlite3
 import time
-#from nba_api.stats.endpoints import leaguegamefinder
-#from nba_api.stats.endpoints import playergamelog
 from nba_api.stats.static import teams as TEAMS
 from nba_api.stats.static import players as PLAYERS
 from nba_api.stats.static.teams import find_team_name_by_id
 from nba_api.stats.endpoints import leaguedashplayerstats
-#from nba_api.stats.endpoints import teamgamelogs
 from nba_api.stats.endpoints import leaguedashteamstats
 from nba_api.stats.endpoints import leaguegamelog
 import json
@@ -31,7 +26,6 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
 
     for season in range(start_season, end_season):
         print('Reading ' + season_str(season) + ' player game stats')
-        #table = GameLog(season=season_str(season), player_or_team='P').overall()
         table = leaguegamelog.LeagueGameLog(season=season_str(season), player_or_team_abbreviation='P').get_data_frames()[0]
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
@@ -77,15 +71,13 @@ def add_teams(conn, sleep=0):
     teamslist=TEAMS.get_teams()[0:30]
     teamsjson=json.dumps(teamslist)
     teams = pd.read_json(teamsjson)
-    #teams = TEAMS.get_teams()[0:30]
-    #teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'YEAR']), axis=1, inplace=True)
     teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'year_founded', 'state']), axis=1, inplace=True)
     teams.rename(columns={'TEAM_ID': 'ID'}, inplace=True)
     teams['CITY'] = 'TEMP'
     teams['MASCOT'] = 'TEMP'
 
     for ID in teams.id:
-        #teams.loc[teams.id == ID, ['CITY', 'MASCOT']] = pd.DataFrame.from_dict([find_team_name_by_id(ID)])[['city', 'nickname']]
+        teams.loc[teams.id == ID, ['CITY', 'MASCOT']] = pd.DataFrame.from_dict([find_team_name_by_id(ID)])[['city', 'nickname']]
         teams.rename(columns={'nickname': 'MASCOT'}, inplace=True)
         time.sleep(sleep)
 
@@ -108,7 +100,6 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
 
     for season in range(start_season, end_season):
         print('Reading ' + season_str(season) + ' team game stats')
-        #table = GameLog(season=season_str(season), player_or_team='T').overall()
         table = leaguegamelog.LeagueGameLog(season=season_str(season), player_or_team_abbreviation='T').get_data_frames()[0]
         table['SEASON'] = season
         table.to_sql('temp', conn, if_exists='append', index=False)

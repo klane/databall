@@ -8,9 +8,7 @@ class GamePipeline(object):
     def from_crawler(cls, crawler):
         settings = crawler.settings
         db = settings.get('DATABASE')
-        #db = settings.get('database')
         drop = settings.getbool('DROP')
-        #drop = settings.getbool('drop')
         return cls(db, drop)
 
     def __init__(self, db, drop):
@@ -20,9 +18,7 @@ class GamePipeline(object):
         self.cur = None
 
     def open_spider(self, spider):
-        #print(self.db)
         if spider.name == 'games' and self.db is not None:
-            #print(self.db)
             self.con = sqlite3.connect(self.db)
             self.cur = self.con.cursor()
 
@@ -48,7 +44,6 @@ class GamePipeline(object):
         opponent = item['opponent']
         date = item['date']
         location = item['location']
-        #print('PIPELINE COMPLETE')
         # covers.com has an error and lists a Houston @ Sacramento game as having taken place in Houston
         if opponent == 'Houston' and date == '04/04/95':
             location = 'vs'
@@ -115,7 +110,6 @@ class GamePipeline(object):
                 opponent = pattern.sub('', opponent)
                 self.cur.execute('SELECT ID FROM teams WHERE MASCOT IS "{}"'.format(opponent))
             else:
-                #self.cur.execute('SELECT ID FROM teams WHERE ABBREVIATION IS "{}"'.format(opponent))
                 #left this in for backwards compatibility
                 self.cur.execute('SELECT ID FROM teams WHERE CITY IS "{}"'.format(opponent))
 
