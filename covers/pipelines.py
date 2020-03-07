@@ -106,22 +106,18 @@ class GamePipeline(object):
                 opponent = 'NYK'
             elif opponent == 'NO':
                 opponent = 'NOP'
-            test = 0
 
             if pattern2.match(opponent):
                 self.cur.execute('SELECT ID FROM teams WHERE ABBREVIATION IS "{}"'.format(opponent))
                 #self.cur.execute('SELECT ID FROM teams WHERE CITY IS "{}"'.format(opponent))
-                test = 1
 
             elif pattern.match(opponent) is not None:
                 opponent = pattern.sub('', opponent)
                 self.cur.execute('SELECT ID FROM teams WHERE MASCOT IS "{}"'.format(opponent))
-                test = 2
             else:
                 #self.cur.execute('SELECT ID FROM teams WHERE ABBREVIATION IS "{}"'.format(opponent))
                 #left this in for backwards compatibility
                 self.cur.execute('SELECT ID FROM teams WHERE CITY IS "{}"'.format(opponent))
-                test = 3
 
             TEAM_ID = self.cur.fetchone()[0]
             self.cur.execute('SELECT ID FROM games WHERE AWAY_TEAM_ID == {} AND GAME_DATE IS "{}"'
@@ -133,7 +129,8 @@ class GamePipeline(object):
                                  .format(TEAM_ID, date.strftime('%Y-%m-%d')))
                 game_id = self.cur.fetchone()
                 if game_id is None:       
-                    raise ValueError('No game found',print(opponent), print(test))
+                    raise ValueError('No game found')
+#                raise ValueError('No game found',print(opponent))
 
             self.cur.execute('''INSERT INTO betting(GAME_ID, OVER_UNDER, OU_RESULT, HOME_SPREAD, HOME_SPREAD_WL)
                                 VALUES(?, ?, ?, ?, ?)''', (game_id[0], item['over_under'], item['over_under_result'],
