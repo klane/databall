@@ -52,9 +52,7 @@ class GamePipeline(object):
         if item['home']:
             date = datetime.strptime(date, '%b %d %Y')
 
-            # find team ID by mascot for the two LA teams and by city for all other teams
-            pattern = re.compile('L\.?A\.? ')
-            pattern2 = re.compile('[A-Z][A-Z][A-Z]')
+            # find opponent ID by abbreviation
             team_abbr = {
                 'BK': 'BKN',
                 'GS': 'GSW',
@@ -67,17 +65,7 @@ class GamePipeline(object):
             if opponent in team_abbr:
                 opponent = team_abbr[opponent]
 
-            if pattern2.match(opponent):
-                self.cur.execute('SELECT ID FROM teams WHERE ABBREVIATION IS "{}"'.format(opponent))
-                #self.cur.execute('SELECT ID FROM teams WHERE CITY IS "{}"'.format(opponent))
-
-            elif pattern.match(opponent) is not None:
-                opponent = pattern.sub('', opponent)
-                self.cur.execute('SELECT ID FROM teams WHERE MASCOT IS "{}"'.format(opponent))
-            else:
-                #left this in for backwards compatibility
-                self.cur.execute('SELECT ID FROM teams WHERE CITY IS "{}"'.format(opponent))
-
+            self.cur.execute(f'SELECT ID FROM teams WHERE ABBREVIATION IS "{opponent}"')
             TEAM_ID = self.cur.fetchone()[0]
             self.cur.execute('SELECT ID FROM games WHERE AWAY_TEAM_ID == {} AND GAME_DATE IS "{}"'
                              .format(TEAM_ID, date.strftime('%Y-%m-%d')))
