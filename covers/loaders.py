@@ -5,7 +5,7 @@ from scrapy.loader.processors import MapCompose, TakeFirst
 
 
 class GameLoader(ItemLoader):
-    default_input_processor = MapCompose(lambda string: string.strip())
+    default_input_processor = MapCompose(str.strip)
     default_output_processor = TakeFirst()
 
     location_in = MapCompose(str.strip, lambda x: x if len(x) > 0 else u'vs')
