@@ -43,9 +43,9 @@ def cross_val_precision_recall_curve(model, x, y, ax, k=10, random_state=8, labe
             pr_auc = average_precision_score(y[test], proba[:, 1])
             ax.plot(recall, precision, lw=1, label='Fold %d (Area = %0.2f)' % (i + 1, pr_auc))
 
-        ax.plot(mean_recall, mean_precision, 'k--', label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
+        ax.plot(mean_recall, mean_precision, 'k--', label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
     elif show_auc:
-        ax.plot(mean_recall, mean_precision, label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
+        ax.plot(mean_recall, mean_precision, label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
     else:
         ax.plot(mean_recall, mean_precision, label=label, lw=2)
 
@@ -71,9 +71,9 @@ def cross_val_roc_curve(model, x, y, ax, k=10, random_state=8, label='Mean', sho
             roc_auc = roc_auc_score(y[test], proba[:, 1])
             ax.plot(fpr, tpr, lw=1, label='Fold %d (Area = %0.2f)' % (i + 1, roc_auc))
 
-        ax.plot(mean_fpr, mean_tpr, 'k--', label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
+        ax.plot(mean_fpr, mean_tpr, 'k--', label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
     elif show_auc:
-        ax.plot(mean_fpr, mean_tpr, label='%s (Area = %0.2f)' % (label, mean_auc), lw=2)
+        ax.plot(mean_fpr, mean_tpr, label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
     else:
         ax.plot(mean_fpr, mean_tpr, label=label, lw=2)
 
@@ -147,14 +147,14 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
     label1 = '©Kevin Lane'
     label2 = 'Source: ' + source
 
-    if sig is 'line':
+    if sig == 'line':
         ax[0].text(x=xoff[0], y=yoff[0], s='  ' + '_' * n, color='grey', alpha=0.7, transform=ax[0].transAxes)
         ax[0].text(x=xoff[1], y=yoff[0], s='_' * n + '  ', color='grey', alpha=0.7, transform=ax[0].transAxes,
                    horizontalalignment='right')
         ax[0].text(x=xoff[0], y=yoff[1], s='  ' + label1, fontsize=14, color='grey', transform=ax[0].transAxes)
         ax[0].text(x=xoff[1], y=yoff[1], s=label2 + '  ', fontsize=14, color='grey', transform=ax[0].transAxes,
                    horizontalalignment='right')
-    elif sig is 'bar':
+    elif sig == 'bar':
         ax[0].text(x=xoff[0], y=-0.14, s='  ' + label1 + ' ' * n, fontsize=14, color='#f0f0f0', backgroundcolor='grey',
                    transform=ax[0].transAxes)
         ax[0].text(x=xoff[1], y=-0.14, s=' ' * n + label2 + '  ', fontsize=14, color='#f0f0f0', backgroundcolor='grey',

@@ -6,7 +6,7 @@ from itertools import product, starmap
 from databall import stats, team_stats
 
 
-class Database(object):
+class Database:
     def __init__(self, database):
         self.__conn = sqlite3.connect(database)
 

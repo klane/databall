@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime
 
 
-class GamePipeline(object):
+class GamePipeline:
     @classmethod
     def from_crawler(cls, crawler):
         settings = crawler.settings

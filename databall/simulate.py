@@ -40,7 +40,7 @@ def fit(model, x, y):
     model.fit(x, y)
 
 
-class HyperOptFit(object):
+class HyperOptFit:
     def __init__(self, space, max_evals=10, n_splits=10, scoring='roc_auc', random_state=8):
         self.space = space
         self.max_evals = max_evals
