@@ -44,14 +44,10 @@ class GamePipeline(object):
         opponent = item['opponent']
         date = item['date']
         response = item['response_url']
-        season_start = response.split('/')[9].split('-')[0]
-        season_end = response.split('/')[9].split('-')[1]
+        season_start, season_end = re.search(r'(\d+)-(\d+)', response).group(1, 2)
         start_of_season = ['Oct', 'Nov', 'Dec']
-        end_of_season = ['Jan', 'Feb', 'Mar', 'Apr', 'May']
-        if date[0].split()[0] in start_of_season:
-            date = date + ' ' + season_start
-        elif date[0].split()[0] in end_of_season:
-            date = date + ' ' + season_end
+        date += f' {season_start if date.split()[0] in start_of_season else season_end}'
+
         # only store home games to avoid duplicating data
         if item['home']:
             date = datetime.strptime(date, '%b %d %Y')
