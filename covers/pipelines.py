@@ -57,21 +57,11 @@ class GamePipeline(object):
             location='away'
         season_type = item['season_type']
         season_type = 'Regular Season'
-        if 'Oct' in date:
+        start_of_season = ['Oct', 'Nov', 'Dec']
+        end_of_season = ['Jan', 'Feb', 'Mar', 'Apr', 'May']
+        if date[0].split()[0] in start_of_season:
             date = date + ' ' + season_start
-        if 'Nov' in date:
-            date = date + ' ' + season_start
-        if 'Dec' in date:
-            date = date + ' ' + season_start
-        if 'Jan' in date:
-            date = date + ' ' + season_end
-        if 'Feb' in date:
-            date = date + ' ' + season_end
-        if 'Mar' in date:
-            date = date + ' ' + season_end
-        if 'Apr' in date:
-            date = date + ' ' + season_end
-        if 'May' in date:
+        elif date[0].split()[0] in end_of_season:
             date = date + ' ' + season_end
         # only store regular season home games to avoid duplicating games
         #if item['season_type'] == 'Regular Season' and location == 'vs':
