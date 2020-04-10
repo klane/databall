@@ -51,7 +51,7 @@ class GamePipeline(object):
         if '@' in location:
             location='vs'
         else:
-            location='vs'
+            location='away'
         season_type = item['season_type']
         season_type = 'Regular Season'
         if 'Oct' in date:
