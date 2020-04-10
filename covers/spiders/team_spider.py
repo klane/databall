@@ -6,7 +6,7 @@ from covers.loaders import TeamLoader
 class TeamSpider(Spider):
     name = 'teams'
     allowed_domains = ['covers.com']
-    start_urls = ['http://www.covers.com/pageLoader/pageLoader.aspx?page=/data/nba/teams/teams.html']
+    start_urls = ['https://www.covers.com/sport/basketball/nba/teams']
 
     def parse(self, response):
         for row in response.xpath('//td/a'):
