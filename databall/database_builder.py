@@ -59,24 +59,16 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
         time.sleep(sleep)
 
 
-def add_teams(conn, sleep=0):
+def add_teams(conn):
     print('Reading team information')
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
-    conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT, full_name TEXT, nickname)')
-    teamslist=TEAMS.get_teams()[0:30]
-    teamsjson=json.dumps(teamslist)
-    teams = pd.read_json(teamsjson)
-    teams.drop(labels_to_drop(teams.columns, ['LEAGUE_ID', 'year_founded', 'state']), axis=1, inplace=True)
-    teams.rename(columns={'TEAM_ID': 'ID'}, inplace=True)
-    teams['CITY'] = 'TEMP'
-    teams['MASCOT'] = 'TEMP'
-
-    for ID in teams.id:
-        teams.loc[teams.id == ID, ['CITY', 'MASCOT']] = pd.DataFrame.from_dict([TEAMS.find_team_name_by_id(ID)])[['city', 'nickname']]
-        teams.rename(columns={'nickname': 'MASCOT'}, inplace=True)
-        time.sleep(sleep)
-
+    conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT, NAME TEXT)')
+    teams = TEAMS.get_teams()
+    teams = json.dumps(teams)
+    teams = pd.read_json(teams)
+    teams.drop(labels_to_drop(teams.columns, ['state', 'year_founded']), axis=1, inplace=True)
+    teams.rename(columns={'full_name': 'NAME', 'nickname': 'MASCOT'}, inplace=True)
     teams.to_sql('teams', conn, if_exists='append', index=False)
 
 
@@ -159,7 +151,7 @@ def build_database(database, start_season, end_season, if_exists='replace', slee
     conn = sqlite3.connect(database)
 
     if if_exists == 'replace':
-        add_teams(conn, sleep)
+        add_teams(conn)
 
     add_player_game_stats(conn, start_season, end_season, if_exists, sleep)
     add_player_season_stats(conn, start_season, end_season, if_exists, sleep)
