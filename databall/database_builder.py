@@ -2,10 +2,7 @@ import pandas as pd
 import sqlite3
 import time
 from nba_api.stats.static import teams as TEAMS
-from nba_api.stats.static.teams import find_team_name_by_id
-from nba_api.stats.endpoints import leaguedashplayerstats
-from nba_api.stats.endpoints import leaguedashteamstats
-from nba_api.stats.endpoints import leaguegamelog
+from nba_api.stats.endpoints import leaguedashplayerstats, leaguedashteamstats, leaguegamelog
 import json
 
 
@@ -76,7 +73,7 @@ def add_teams(conn, sleep=0):
     teams['MASCOT'] = 'TEMP'
 
     for ID in teams.id:
-        teams.loc[teams.id == ID, ['CITY', 'MASCOT']] = pd.DataFrame.from_dict([find_team_name_by_id(ID)])[['city', 'nickname']]
+        teams.loc[teams.id == ID, ['CITY', 'MASCOT']] = pd.DataFrame.from_dict([TEAMS.find_team_name_by_id(ID)])[['city', 'nickname']]
         teams.rename(columns={'nickname': 'MASCOT'}, inplace=True)
         time.sleep(sleep)
 
