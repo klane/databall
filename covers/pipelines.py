@@ -7,8 +7,8 @@ class GamePipeline(object):
     @classmethod
     def from_crawler(cls, crawler):
         settings = crawler.settings
-        db = settings.get('database')
-        drop = settings.getbool('drop')
+        db = settings.get('DATABASE')
+        drop = settings.getbool('DROP')
         return cls(db, drop)
 
     def __init__(self, db, drop):
@@ -25,8 +25,8 @@ class GamePipeline(object):
             if self.drop:
                 self.cur.executescript('''
                     DROP TABLE IF EXISTS betting;
-                    CREATE TABLE betting(GAME_ID TEXT, OVER_UNDER REAL, OU_RESULT TEXT,
-                                         HOME_SPREAD REAL, HOME_SPREAD_WL TEXT);
+                    CREATE TABLE betting(GAME_ID TEXT, HOME_SPREAD REAL, HOME_SPREAD_WL TEXT,
+                                         OVER_UNDER REAL, OU_RESULT TEXT);
                     ''')
 
     def close_spider(self, spider):
@@ -41,44 +41,50 @@ class GamePipeline(object):
         return item
 
     def store_item(self, item):
-        opponent = item['opponent']
-        date = item['date']
-        location = item['location']
+        # only store home games to avoid duplicating data
+        if item['home']:
+            # map team abbreviations to those in the database
+            team_abbr = {
+                'BK': 'BKN',
+                'CHAR': 'CHA',
+                'GS': 'GSW',
+                'NETS': 'BKN',
+                'NJ': 'BKN',
+                'NO': 'NOP',
+                'NY': 'NYK',
+                'PHO': 'PHX',
+                'SA': 'SAS'
+            }
 
-        # covers.com has an error and lists a Houston @ Sacramento game as having taken place in Houston
-        if opponent == 'Houston' and date == '04/04/95':
-            location = 'vs'
+            opponent = item['opponent'].upper()
 
-        # only store regular season home games to avoid duplicating games
-        if item['season_type'] == 'Regular Season' and location == 'vs':
-            date = datetime.strptime(date, '%m/%d/%y')
+            if opponent in team_abbr:
+                opponent = team_abbr[opponent]
 
-            '''
-            Covers.com list old Hornets games as New Orleans, but the database has them as Charlotte. The opponent needs
-            to be changed to Charlotte for games prior to the 02-03 season in order to find the game ID.
-            '''
-            diff = date - datetime(2002, 8, 1)
+            # find opponent ID by abbreviation
+            self.cur.execute(f'SELECT ID FROM teams WHERE ABBREVIATION IS "{opponent}"')
+            opp_id = self.cur.fetchone()[0]
 
-            if opponent == 'New Orleans' and diff.days < 0:
-                opponent = 'Charlotte'
+            # format game date to match games table
+            response = item['response_url']
+            start_year, end_year = re.search(r'(\d+)-(\d+)', response).group(1, 2)
+            start_months = ['Oct', 'Nov', 'Dec']
 
-            # find team ID by mascot for the two LA teams and by city for all other teams
-            pattern = re.compile('L\.?A\.? ')
+            date = item['date']
+            year = start_year if date.split()[0] in start_months else end_year
+            date = datetime.strptime(f'{date} {year}', '%b %d %Y')
+            date = date.strftime('%Y-%m-%d')
 
-            if pattern.match(opponent) is not None:
-                opponent = pattern.sub('', opponent)
-                self.cur.execute('SELECT ID FROM teams WHERE MASCOT IS "{}"'.format(opponent))
-            else:
-                self.cur.execute('SELECT ID FROM teams WHERE CITY IS "{}"'.format(opponent))
-
-            self.cur.execute('SELECT ID FROM games WHERE AWAY_TEAM_ID == {} AND GAME_DATE IS "{}"'
-                             .format(self.cur.fetchone()[0], date.strftime('%Y-%m-%d')))
+            # find game by opponent and date
+            self.cur.execute(f'SELECT ID FROM games WHERE AWAY_TEAM_ID == {opp_id} AND GAME_DATE IS "{date}"')
             game_id = self.cur.fetchone()
 
+            # raise exception if no matching game found
             if game_id is None:
                 raise ValueError('No game found')
 
-            self.cur.execute('''INSERT INTO betting(GAME_ID, OVER_UNDER, OU_RESULT, HOME_SPREAD, HOME_SPREAD_WL)
-                                VALUES(?, ?, ?, ?, ?)''', (game_id[0], item['over_under'], item['over_under_result'],
-                                                           item['spread'], item['spread_result']))
+            # insert row into database
+            values = (game_id[0], item['spread'], item['spread_result'], item['over_under'], item['over_under_result'])
+            self.cur.execute('''INSERT INTO betting(GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT)
+                                VALUES(?, ?, ?, ?, ?)''', values)
             self.con.commit()

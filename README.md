@@ -13,3 +13,5 @@ Contents:
 -   [docs](https://github.com/klane/databall/tree/master/docs): Code required to build the GitHub Pages [site](https://klane.github.io/databall/) for this project
 -   [notebooks](https://github.com/klane/databall/tree/master/notebooks): Jupyter notebooks of all analyses
 -   [report](https://github.com/klane/databall/tree/master/report): LaTeX files for report and slides
+
+Link to a test database with data from 1990 - March 2020 [test nba.db file](https://drive.google.com/file/d/10CBcCLv2N_neFL39ThykcudUVUv5xqLB/view?usp=sharing)

@@ -5,41 +5,40 @@ from scrapy import Spider, Request
 from covers.items import Game
 from covers.loaders import GameLoader
 
-base_url = 'http://www.covers.com'
+base_url = 'https://www.covers.com'
 
 
 class GameSpider(Spider):
     name = 'games'
     allowed_domains = ['covers.com']
 
-    def __init__(self, teams, season='2016-2017', *args, **kwargs):
+    def __init__(self, teams, season='2019-2020', *args, **kwargs):
         super(GameSpider, self).__init__(*args, **kwargs)
 
         if '.json' in teams:
             teams = pd.read_json(teams)
-            teams = [re.search('team\d+', url).group(0) for url in teams.url]
+            teams = [re.search(r'main/(?P<name>.+)/\d+', url).group('name') for url in teams.url]
         else:
             teams = teams.split(',')
 
-        self.start_urls = [base_url + '/pageLoader/pageLoader.aspx?page=/data/nba/teams/pastresults/%s/%s.html' %
-                           (season, team) for team in teams]
+        self.start_urls = [base_url + f'/sport/basketball/nba/teams/main/{team}/{season}' for team in teams]
 
     def parse(self, response):
-        for row in response.xpath('//tr[@class="datarow"]'):
+        for row in response.xpath('//table[@class="table covers-CoversMatchups-Table covers-CoversResults-Table"]/tbody/tr'):
             loader = GameLoader(item=Game(), selector=row)
             loader.add_xpath('date', 'td[1]/text()')
-            loader.add_xpath('location', 'td[2]/text()')
+            loader.add_xpath('home', 'td[2]/a/text()')
             loader.add_xpath('opponent', 'td[2]/a/text()')
-            loader.add_xpath('result', 'td[3]/text()')
+            loader.add_xpath('result', 'td[3]/a/text()')
             loader.add_xpath('score', 'td[3]/text()')
             loader.add_xpath('score', 'td[3]/a/text()')
             loader.add_xpath('opponent_score', 'td[3]/text()')
             loader.add_xpath('opponent_score', 'td[3]/a/text()')
-            loader.add_xpath('season_type', 'td[4]/text()')
-            loader.add_xpath('spread_result', 'td[5]/text()')
-            loader.add_xpath('spread', 'td[5]/text()')
-            loader.add_xpath('over_under_result', 'td[6]/text()')
-            loader.add_xpath('over_under', 'td[6]/text()')
+            loader.add_xpath('spread_result', 'td[4]/span/text()')
+            loader.add_xpath('spread', 'td[4]/text()')
+            loader.add_xpath('over_under_result', 'td[5]/span/text()')
+            loader.add_xpath('over_under', 'td[5]/text()')
+            loader.add_value('response_url', response._url)
 
             # add missing fields
             item = loader.load_item()

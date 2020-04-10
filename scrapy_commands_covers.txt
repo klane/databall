@@ -1,0 +1,11 @@
+scrapy crawl teams
+scrapy crawl games -a teams=Atlanta-Hawks
+
+# The following is only going to work in bash but its a simple loop that can be used to scrape all team data
+for i in `cat full_name.txt`; do scrapy crawl games -a teams=$i; done
+
+
+# Notes
+# Settings.py will need to be modified with the database location
+#
+# If looking to scrape older seasons the season will need to be manually modified right now.

@@ -3,16 +3,16 @@ from scrapy import Field, Item
 
 class Game(Item):
     date = Field()
-    location = Field()
+    home = Field()
     opponent = Field()
     score = Field()
     opponent_score = Field()
     result = Field()
-    season_type = Field()
     spread = Field()
     spread_result = Field()
     over_under = Field()
     over_under_result = Field()
+    response_url = Field()
 
 
 class Team(Item):
