@@ -57,7 +57,7 @@ class GamePipeline(object):
             location='away'
         season_type = item['season_type']
         season_type = 'Regular Season'
-       if 'Oct' in date:
+        if 'Oct' in date:
             date = date + ' ' + season_start
         if 'Nov' in date:
             date = date + ' ' + season_start
