@@ -89,18 +89,17 @@ class GamePipeline(object):
             pattern2 = re.compile('[A-Z][A-Z][A-Z]')
             #opponent = opponent.strip('@ ')
             opponent = opponent.replace('@ ', '')
-            if opponent == 'BK':
-                opponent = 'BKN'
-            elif opponent == 'GS':
-                opponent = 'GSW'
-            elif opponent == 'SA':
-                opponent = 'SAS'
-            elif opponent == 'PHO':
-                opponent = 'PHX'
-            elif opponent == 'NY':
-                opponent = 'NYK'
-            elif opponent == 'NO':
-                opponent = 'NOP'
+            team_abbr = {
+                'BK': 'BKN',
+                'GS': 'GSW',
+                'SA': 'SAS',
+                'PHO': 'PHX',
+                'NY': 'NYK',
+                'NO': 'NOP'
+            }
+
+            if opponent in team_abbr:
+                opponent = team_abbr[opponent]
 
             if pattern2.match(opponent):
                 self.cur.execute('SELECT ID FROM teams WHERE ABBREVIATION IS "{}"'.format(opponent))
