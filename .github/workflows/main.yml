@@ -1,0 +1,46 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - '*'
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+
+jobs:
+  Safety:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Python
+        uses: actions/setup-python@v1
+      - name: Install Pipenv
+        uses: dschep/install-pipenv-action@v1
+      - name: Check dependencies
+        run: pipenv check
+
+  Linting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Set up Python
+        uses: actions/setup-python@v1
+      - name: Hash Python version
+        id: hash
+        run: echo ::set-output name=hash::$(python --version | sha256sum | cut -d' ' -f1)
+      - name: Restore cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit|${{ steps.hash.outputs.hash }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Run pre-commit
+        uses: pre-commit/action@v1.0.0
