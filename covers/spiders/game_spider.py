@@ -34,7 +34,6 @@ class GameSpider(Spider):
             loader.add_xpath('score', 'td[3]/a/text()')
             loader.add_xpath('opponent_score', 'td[3]/text()')
             loader.add_xpath('opponent_score', 'td[3]/a/text()')
-            loader.add_xpath('season_type', 'td[4]/text()')
             loader.add_xpath('spread_result', 'td[4]/span/text()')
             loader.add_xpath('spread', 'td[4]/text()')
             loader.add_xpath('over_under_result', 'td[5]/span/text()')

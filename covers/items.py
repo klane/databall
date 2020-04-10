@@ -8,7 +8,6 @@ class Game(Item):
     score = Field()
     opponent_score = Field()
     result = Field()
-    season_type = Field()
     spread = Field()
     spread_result = Field()
     over_under = Field()
