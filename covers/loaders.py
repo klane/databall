@@ -13,8 +13,8 @@ class GameLoader(ItemLoader):
     result_in = MapCompose(str.strip, str.split)
     score_in = MapCompose(partial(re.findall, u'\d+-\d+'), lambda x: x.split(u'-'), int)
     opponent_score_in = MapCompose(partial(re.findall, u'\d+-\d+'), lambda x: x.split(u'-')[1], int)
-    spread_in = MapCompose(lambda x: x.strip().split()[0], lambda x: 0 if x == u'PK' else x, lambda x: float(x) if x != u'-' else None)
-    over_under_in = spread_in
+    spread_in = MapCompose(str.strip, lambda x: 0 if x == 'PK' else x, float)
+    over_under_in = MapCompose(str.strip, float)
 
 
 class TeamLoader(ItemLoader):
