@@ -55,7 +55,6 @@ class GamePipeline(object):
             location='vs'
         else:
             location='away'
-        season_type = item['season_type']
         season_type = 'Regular Season'
         start_of_season = ['Oct', 'Nov', 'Dec']
         end_of_season = ['Jan', 'Feb', 'Mar', 'Apr', 'May']
