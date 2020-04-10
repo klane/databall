@@ -23,7 +23,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
 
     conn.execute('CREATE TABLE IF NOT EXISTS players (ID INTEGER, NAME TEXT)')
 
-    for season in range(start_season, end_season):
+    for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' player game stats')
         table = leaguegamelog.LeagueGameLog(season=season_str(season), player_or_team_abbreviation='P').get_data_frames()[0]
         table.to_sql('temp', conn, if_exists='append', index=False)
