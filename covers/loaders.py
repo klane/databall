@@ -8,7 +8,7 @@ class GameLoader(ItemLoader):
     default_input_processor = MapCompose(str.strip)
     default_output_processor = TakeFirst()
 
-    location_in = MapCompose(str.strip, lambda x: x if len(x) > 0 else u'vs')
+    home_in = MapCompose(lambda x: '@' not in x)
     result_in = MapCompose(str.strip, str.split)
     score_in = MapCompose(partial(re.findall, u'\d+-\d+'), lambda x: x.split(u'-'), int)
     opponent_score_in = MapCompose(partial(re.findall, u'\d+-\d+'), lambda x: x.split(u'-')[1], int)

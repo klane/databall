@@ -43,25 +43,17 @@ class GamePipeline(object):
     def store_item(self, item):
         opponent = item['opponent']
         date = item['date']
-        location = item['location']
         response = item['response_url']
         season_start = response.split('/')[9].split('-')[0]
         season_end = response.split('/')[9].split('-')[1]
-        #apparently this data is needed to log it to the database?
-        if '@' in location:
-            location='vs'
-        else:
-            location='away'
-        season_type = 'Regular Season'
         start_of_season = ['Oct', 'Nov', 'Dec']
         end_of_season = ['Jan', 'Feb', 'Mar', 'Apr', 'May']
         if date[0].split()[0] in start_of_season:
             date = date + ' ' + season_start
         elif date[0].split()[0] in end_of_season:
             date = date + ' ' + season_end
-        # only store regular season home games to avoid duplicating games
-        #if item['season_type'] == 'Regular Season' and location == 'vs':
-        if season_type == 'Regular Season' and location == 'vs':
+        # only store home games to avoid duplicating data
+        if item['home']:
             date = datetime.strptime(date, '%b %d %Y')
 
             # find team ID by mascot for the two LA teams and by city for all other teams

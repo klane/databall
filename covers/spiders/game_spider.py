@@ -27,7 +27,7 @@ class GameSpider(Spider):
         for row in response.xpath('//table[@class="table covers-CoversMatchups-Table covers-CoversResults-Table"]/tbody/tr'):
             loader = GameLoader(item=Game(), selector=row)
             loader.add_xpath('date', 'td[1]/text()')
-            loader.add_xpath('location', 'td[2]/a/text()')
+            loader.add_xpath('home', 'td[2]/a/text()')
             loader.add_xpath('opponent', 'td[2]/a/text()')
             loader.add_xpath('result', 'td[3]/a/text()')
             loader.add_xpath('score', 'td[3]/text()')

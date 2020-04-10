@@ -3,7 +3,7 @@ from scrapy import Field, Item
 
 class Game(Item):
     date = Field()
-    location = Field()
+    home = Field()
     opponent = Field()
     score = Field()
     opponent_score = Field()
