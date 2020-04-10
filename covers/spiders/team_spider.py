@@ -9,7 +9,7 @@ class TeamSpider(Spider):
     start_urls = ['http://www.covers.com/pageLoader/pageLoader.aspx?page=/data/nba/teams/teams.html']
 
     def parse(self, response):
-        for row in response.xpath('//td[@class="datacell"]/a'):
+        for row in response.xpath('//td/a'):
             loader = TeamLoader(item=Team(), selector=row)
             loader.add_xpath('city', 'text()')
             loader.add_xpath('url', '@href')
