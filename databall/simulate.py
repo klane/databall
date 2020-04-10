@@ -1,6 +1,6 @@
+from hyperopt import fmin, space_eval, tpe
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.preprocessing import LabelEncoder
-from hyperopt import fmin, space_eval, tpe
 
 
 def simulate(model, data, season, predictors, output, build=None, evolve=False, freq=1):

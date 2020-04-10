@@ -1,9 +1,11 @@
-import pandas as pd
 from functools import partial
+
+import pandas as pd
+from hyperopt import Trials, fmin, space_eval, tpe
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer, LabelEncoder
-from hyperopt import fmin, tpe, space_eval, Trials
+
 from databall.util import select_columns, stat_names
 
 

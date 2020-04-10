@@ -1,7 +1,9 @@
 import re
-import pandas as pd
 from collections import deque
-from scrapy import Spider, Request
+
+import pandas as pd
+from scrapy import Request, Spider
+
 from covers.items import Game
 from covers.loaders import GameLoader
 

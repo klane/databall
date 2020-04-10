@@ -1,4 +1,5 @@
 from scrapy import Spider
+
 from covers.items import Team
 from covers.loaders import TeamLoader
 

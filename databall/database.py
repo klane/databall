@@ -1,8 +1,10 @@
 import sqlite3
-import numpy as np
-import pandas as pd
 from collections import namedtuple
 from itertools import product, starmap
+
+import numpy as np
+import pandas as pd
+
 from databall import stats, team_stats
 
 

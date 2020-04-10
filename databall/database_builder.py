@@ -1,11 +1,12 @@
-import pandas as pd
+import json
 import sqlite3
 import time
+
+import pandas as pd
 from nba_api.stats.endpoints.leaguedashplayerstats import LeagueDashPlayerStats
 from nba_api.stats.endpoints.leaguedashteamstats import LeagueDashTeamStats
 from nba_api.stats.endpoints.leaguegamelog import LeagueGameLog
 from nba_api.stats.static import teams as TEAMS
-import json
 
 
 def add_player_game_stats(conn, start_season, end_season, if_exists='append', sleep=1):

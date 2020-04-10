@@ -1,5 +1,6 @@
 import re
 from functools import partial
+
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import MapCompose, TakeFirst
 

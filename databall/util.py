@@ -1,4 +1,4 @@
-from IPython.display import display, HTML
+from IPython.display import HTML, display
 
 
 def print_df(df):

@@ -1,9 +1,15 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from itertools import product
+
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+from sklearn.metrics import (
+    average_precision_score,
+    precision_recall_curve,
+    roc_auc_score,
+    roc_curve,
+)
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
-from sklearn.metrics import roc_curve, roc_auc_score, precision_recall_curve, average_precision_score
 
 
 def cross_val_curves(model, x, y, k=10, figsize=(16, 6), legend=True):
