@@ -14,4 +14,4 @@ Contents:
 -   [notebooks](https://github.com/klane/databall/tree/master/notebooks): Jupyter notebooks of all analyses
 -   [report](https://github.com/klane/databall/tree/master/report): LaTeX files for report and slides
 
-Link to a test database with data from 1990 - March 2020 [test nba.db file](https://drive.google.com/open?id=13S2NhUTDvsbuiGtXnuQUMZ1Hucjy2Vuw)
+Link to a test database with data from 1990 - March 2020 [test nba.db file](https://drive.google.com/file/d/10CBcCLv2N_neFL39ThykcudUVUv5xqLB/view?usp=sharing)
