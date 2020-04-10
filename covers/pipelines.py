@@ -47,9 +47,6 @@ class GamePipeline(object):
         response = item['response_url']
         season_start = response.split('/')[9].split('-')[0]
         season_end = response.split('/')[9].split('-')[1]
-        # covers.com has an error and lists a Houston @ Sacramento game as having taken place in Houston
-        if opponent == 'Houston' and date == '04/04/95':
-            location = 'vs'
         #apparently this data is needed to log it to the database?
         if '@' in location:
             location='vs'
@@ -66,15 +63,6 @@ class GamePipeline(object):
         #if item['season_type'] == 'Regular Season' and location == 'vs':
         if season_type == 'Regular Season' and location == 'vs':
             date = datetime.strptime(date, '%b %d %Y')
-
-            '''
-            Covers.com list old Hornets games as New Orleans, but the database has them as Charlotte. The opponent needs
-            to be changed to Charlotte for games prior to the 02-03 season in order to find the game ID.
-            '''
-            diff = date - datetime(2002, 8, 1)
-
-            if opponent == 'New Orleans' and diff.days < 0:
-                opponent = 'Charlotte'
 
             # find team ID by mascot for the two LA teams and by city for all other teams
             pattern = re.compile('L\.?A\.? ')
