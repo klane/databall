@@ -41,19 +41,22 @@ class GamePipeline(object):
         return item
 
     def store_item(self, item):
-        opponent = item['opponent']
-
         # only store home games to avoid duplicating data
         if item['home']:
             # map team abbreviations to those in the database
             team_abbr = {
                 'BK': 'BKN',
+                'CHAR': 'CHA',
                 'GS': 'GSW',
-                'SA': 'SAS',
-                'PHO': 'PHX',
+                'NETS': 'BKN',
+                'NJ': 'BKN',
+                'NO': 'NOP',
                 'NY': 'NYK',
-                'NO': 'NOP'
+                'PHO': 'PHX',
+                'SA': 'SAS'
             }
+
+            opponent = item['opponent'].upper()
 
             if opponent in team_abbr:
                 opponent = team_abbr[opponent]
