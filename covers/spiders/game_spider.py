@@ -5,7 +5,7 @@ from scrapy import Spider, Request
 from covers.items import Game
 from covers.loaders import GameLoader
 
-base_url = 'http://www.covers.com'
+base_url = 'https://www.covers.com'
 
 
 class GameSpider(Spider):
@@ -21,8 +21,7 @@ class GameSpider(Spider):
         else:
             teams = teams.split(',')
 
-        self.start_urls = [base_url + '/sport/basketball/nba/teams/main/%s/%s' %
-                           (team, season) for team in teams]
+        self.start_urls = [base_url + f'/sport/basketball/nba/teams/main/{team}/{season}' for team in teams]
 
     def parse(self, response):
         for row in response.xpath('//table[@class="table covers-CoversMatchups-Table covers-CoversResults-Table"]/tbody/tr'):
