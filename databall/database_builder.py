@@ -1,8 +1,10 @@
 import pandas as pd
 import sqlite3
 import time
+from nba_api.stats.endpoints.leaguedashplayerstats import LeagueDashPlayerStats
+from nba_api.stats.endpoints.leaguedashteamstats import LeagueDashTeamStats
+from nba_api.stats.endpoints.leaguegamelog import LeagueGameLog
 from nba_api.stats.static import teams as TEAMS
-from nba_api.stats.endpoints import leaguedashplayerstats, leaguedashteamstats, leaguegamelog
 import json
 
 
@@ -22,7 +24,7 @@ def add_player_game_stats(conn, start_season, end_season, if_exists='append', sl
 
     for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' player game stats')
-        table = leaguegamelog.LeagueGameLog(season=season_str(season), player_or_team_abbreviation='P').get_data_frames()[0]
+        table = LeagueGameLog(season=season_str(season), player_or_team_abbreviation='P').get_data_frames()[0]
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
         table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
@@ -49,10 +51,11 @@ def add_player_season_stats(conn, start_season, end_season, if_exists='append', 
         BLK REAL, BLKA REAL, PF REAL, PFD REAL, PTS REAL, PLUS_MINUS REAL, DD2 INTEGER, TD3 INTEGER)'''
                  .format(table_name))
 
-    for season in range(start_season, end_season):
+    for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' player season stats')
-        table = leaguedashplayerstats.LeagueDashPlayerStats(season=season_str(season)).get_data_frames()[0]
-        table.drop(labels_to_drop(table.columns, ['ABBREV', 'CF', 'NAME', 'RANK', 'NBA_FANTASY_PTS', 'GP_RANK', 'W_RANK', 'L_RANK', 'W_PCT_RANK', 'MIN_RANK', 'FGM_RANK', 'FGA_RANK', 'FG_PCT_RANK', 'FG3M_RANK', 'FG3A_RANK', 'FG3_PCT_RANK', 'FTM_RANK', 'FTA_RANK', 'FT_PCT_RANK', 'OREB_RANK', 'DREB_RANK', 'REB_RANK', 'AST_RANK', 'TOV_RANK', 'STL_RANK', 'BLK_RANK', 'BLKA_RANK', 'PF_RANK', 'PFD_RANK', 'PTS_RANK', 'PLUS_MINUS_RANK', 'NBA_FANTASY_PTS_RANK', 'DD2_RANK', 'TD3_RANK']), axis=1, inplace=True)
+        table = LeagueDashPlayerStats(season=season_str(season)).get_data_frames()[0]
+        labels = ['ABBREV', 'CF', 'NAME', 'NBA_FANTASY_PTS', 'RANK']
+        table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['PLAYER_ID', 'TEAM_ID'], inplace=True)
         table['SEASON'] = season
         table.to_sql(table_name, conn, if_exists='append', index=False)
@@ -85,9 +88,9 @@ def add_team_game_stats(conn, start_season, end_season, if_exists='append', slee
     conn.execute('''CREATE TABLE IF NOT EXISTS games (SEASON INTEGER, ID TEXT, HOME_TEAM_ID INTEGER,
         AWAY_TEAM_ID INTEGER, GAME_DATE TEXT, MATCHUP TEXT, HOME_WL TEXT)''')
 
-    for season in range(start_season, end_season):
+    for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' team game stats')
-        table = leaguegamelog.LeagueGameLog(season=season_str(season), player_or_team_abbreviation='T').get_data_frames()[0]
+        table = LeagueGameLog(season=season_str(season), player_or_team_abbreviation='T').get_data_frames()[0]
         table['SEASON'] = season
         table.to_sql('temp', conn, if_exists='append', index=False)
         labels = ['ABBREV', 'DATE', 'MATCHUP', 'NAME', 'PCT', 'SEASON', 'VIDEO', 'WL']
@@ -136,10 +139,11 @@ def add_team_season_stats(conn, start_season, end_season, if_exists='append', sl
         FT_PCT REAL, OREB REAL, DREB REAL, REB REAL, AST REAL, TOV REAL, STL REAL, BLK REAL, BLKA REAL, PF REAL,
         PFD REAL, PTS REAL, PLUS_MINUS REAL)'''.format(table_name))
 
-    for season in range(start_season, end_season):
+    for season in range(start_season, end_season + 1):
         print('Reading ' + season_str(season) + ' team season stats')
-        table = leaguedashteamstats.LeagueDashTeamStats(season=season_str(season)).get_data_frames()[0]
-        table.drop(labels_to_drop(table.columns, ['CF', 'NAME', 'RANK']), axis=1, inplace=True)
+        table = LeagueDashTeamStats(season=season_str(season)).get_data_frames()[0]
+        labels = ['CF', 'NAME', 'RANK']
+        table.drop(labels_to_drop(table.columns, labels), axis=1, inplace=True)
         table.dropna(axis=0, how='any', subset=['TEAM_ID'], inplace=True)
         table['SEASON'] = season
         table.to_sql(table_name, conn, if_exists='append', index=False)
