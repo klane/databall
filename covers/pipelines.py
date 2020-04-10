@@ -84,12 +84,7 @@ class GamePipeline(object):
             game_id = self.cur.fetchone()
 
             if game_id is None:
-                self.cur.execute('SELECT ID FROM games WHERE HOME_TEAM_ID == {} AND GAME_DATE IS "{}"'
-                                 .format(TEAM_ID, date.strftime('%Y-%m-%d')))
-                game_id = self.cur.fetchone()
-                if game_id is None:       
-                    raise ValueError('No game found')
-#                raise ValueError('No game found',print(opponent))
+                raise ValueError('No game found')
 
             values = (game_id[0], item['spread'], item['spread_result'], item['over_under'], item['over_under_result'])
             self.cur.execute('''INSERT INTO betting(GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT)
