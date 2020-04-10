@@ -17,7 +17,7 @@ class GameSpider(Spider):
 
         if '.json' in teams:
             teams = pd.read_json(teams)
-            teams = [re.search('team\d+', url).group(0) for url in teams.url]
+            teams = [re.search(r'main/(?P<name>.+)/\d+', url).group('name') for url in teams.url]
         else:
             teams = teams.split(',')
 
