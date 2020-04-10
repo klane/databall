@@ -44,6 +44,9 @@ class GamePipeline(object):
         opponent = item['opponent']
         date = item['date']
         location = item['location']
+        response = item['response_url']
+        season_start = response.split('/')[9].split('-')[0]
+        season_end = response.split('/')[9].split('-')[1]
         # covers.com has an error and lists a Houston @ Sacramento game as having taken place in Houston
         if opponent == 'Houston' and date == '04/04/95':
             location = 'vs'
@@ -54,22 +57,22 @@ class GamePipeline(object):
             location='away'
         season_type = item['season_type']
         season_type = 'Regular Season'
-        if 'Oct' in date:
-            date = date + ' 2019'
+       if 'Oct' in date:
+            date = date + ' ' + season_start
         if 'Nov' in date:
-            date = date + ' 2019'
+            date = date + ' ' + season_start
         if 'Dec' in date:
-            date = date + ' 2019'
+            date = date + ' ' + season_start
         if 'Jan' in date:
-            date = date + ' 2020'
+            date = date + ' ' + season_end
         if 'Feb' in date:
-            date = date + ' 2020'
+            date = date + ' ' + season_end
         if 'Mar' in date:
-            date = date + ' 2020'
+            date = date + ' ' + season_end
         if 'Apr' in date:
-            date = date + ' 2020'
+            date = date + ' ' + season_end
         if 'May' in date:
-            date = date + ' 2020'
+            date = date + ' ' + season_end
         # only store regular season home games to avoid duplicating games
         #if item['season_type'] == 'Regular Season' and location == 'vs':
         if season_type == 'Regular Season' and location == 'vs':
