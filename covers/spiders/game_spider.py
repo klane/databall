@@ -40,6 +40,7 @@ class GameSpider(Spider):
             loader.add_xpath('spread', 'td[4]/text()')
             loader.add_xpath('over_under_result', 'td[5]/span/text()')
             loader.add_xpath('over_under', 'td[5]/text()')
+            loader.add_value('response_url', response._url)
 
             # add missing fields
             item = loader.load_item()
