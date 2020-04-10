@@ -55,8 +55,6 @@ class GamePipeline(object):
             # find team ID by mascot for the two LA teams and by city for all other teams
             pattern = re.compile('L\.?A\.? ')
             pattern2 = re.compile('[A-Z][A-Z][A-Z]')
-            #opponent = opponent.strip('@ ')
-            opponent = opponent.replace('@ ', '')
             team_abbr = {
                 'BK': 'BKN',
                 'GS': 'GSW',

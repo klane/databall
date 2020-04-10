@@ -9,6 +9,7 @@ class GameLoader(ItemLoader):
     default_output_processor = TakeFirst()
 
     home_in = MapCompose(lambda x: '@' not in x)
+    opponent_in = MapCompose(lambda x: x.replace('@', ''), str.strip)
     result_in = MapCompose(str.strip, str.split)
     score_in = MapCompose(partial(re.findall, u'\d+-\d+'), lambda x: x.split(u'-'), int)
     opponent_score_in = MapCompose(partial(re.findall, u'\d+-\d+'), lambda x: x.split(u'-')[1], int)
