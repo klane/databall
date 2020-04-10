@@ -66,9 +66,9 @@ class GamePipeline(object):
                 opponent = team_abbr[opponent]
 
             self.cur.execute(f'SELECT ID FROM teams WHERE ABBREVIATION IS "{opponent}"')
-            TEAM_ID = self.cur.fetchone()[0]
+            opp_id = self.cur.fetchone()[0]
             self.cur.execute('SELECT ID FROM games WHERE AWAY_TEAM_ID == {} AND GAME_DATE IS "{}"'
-                             .format(TEAM_ID, date.strftime('%Y-%m-%d')))
+                             .format(opp_id, date.strftime('%Y-%m-%d')))
             game_id = self.cur.fetchone()
 
             if game_id is None:
