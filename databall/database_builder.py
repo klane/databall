@@ -63,12 +63,11 @@ def add_teams(conn):
     print('Reading team information')
     conn.execute('DROP TABLE IF EXISTS teams')
     conn.execute('VACUUM')
-    conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, CITY TEXT, MASCOT TEXT, NAME TEXT)')
+    conn.execute('CREATE TABLE teams (ID INTEGER, ABBREVIATION TEXT, MASCOT TEXT, NAME TEXT, CITY TEXT, STATE TEXT, YEAR INTEGER)')
     teams = TEAMS.get_teams()
     teams = json.dumps(teams)
     teams = pd.read_json(teams)
-    teams.drop(labels_to_drop(teams.columns, ['state', 'year_founded']), axis=1, inplace=True)
-    teams.rename(columns={'full_name': 'NAME', 'nickname': 'MASCOT'}, inplace=True)
+    teams.rename(columns={'full_name': 'NAME', 'nickname': 'MASCOT', 'year_founded': 'YEAR'}, inplace=True)
     teams.to_sql('teams', conn, if_exists='append', index=False)
 
 
