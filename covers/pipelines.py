@@ -42,16 +42,9 @@ class GamePipeline(object):
 
     def store_item(self, item):
         opponent = item['opponent']
-        date = item['date']
-        response = item['response_url']
-        season_start, season_end = re.search(r'(\d+)-(\d+)', response).group(1, 2)
-        start_of_season = ['Oct', 'Nov', 'Dec']
-        date += f' {season_start if date.split()[0] in start_of_season else season_end}'
 
         # only store home games to avoid duplicating data
         if item['home']:
-            date = datetime.strptime(date, '%b %d %Y')
-
             # find opponent ID by abbreviation
             team_abbr = {
                 'BK': 'BKN',
@@ -67,8 +60,18 @@ class GamePipeline(object):
 
             self.cur.execute(f'SELECT ID FROM teams WHERE ABBREVIATION IS "{opponent}"')
             opp_id = self.cur.fetchone()[0]
-            self.cur.execute('SELECT ID FROM games WHERE AWAY_TEAM_ID == {} AND GAME_DATE IS "{}"'
-                             .format(opp_id, date.strftime('%Y-%m-%d')))
+
+            # format game date to match games table
+            response = item['response_url']
+            start_year, end_year = re.search(r'(\d+)-(\d+)', response).group(1, 2)
+            start_months = ['Oct', 'Nov', 'Dec']
+
+            date = item['date']
+            year = start_year if date.split()[0] in start_months else end_year
+            date = datetime.strptime(f'{date} {year}', '%b %d %Y')
+            date = date.strftime('%Y-%m-%d')
+
+            self.cur.execute(f'SELECT ID FROM games WHERE AWAY_TEAM_ID == {opp_id} AND GAME_DATE IS "{date}"')
             game_id = self.cur.fetchone()
 
             if game_id is None:
