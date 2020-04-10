@@ -55,7 +55,7 @@ data = pd.read_sql('''
     SELECT
         SEASON,
         100.0 * SUM(CASE WHEN HOME_WL = 'W' THEN 1 ELSE 0 END) / COUNT(HOME_WL) AS HomeWinPct,
-        100.0 * SUM(CASE WHEN HOME_SPREAD_WL = 'W' THEN 1 ELSE 0 END) / 
+        100.0 * SUM(CASE WHEN HOME_SPREAD_WL = 'W' THEN 1 ELSE 0 END) /
                 COUNT(HOME_SPREAD_WL) AS HomeWinPctATS,
         100.0 * SUM(CASE WHEN OU_RESULT = 'O' THEN 1 ELSE 0 END) / COUNT(OU_RESULT) AS OverPct,
         AVG(OVER_UNDER) AS AVG_OVER_UNDER,
@@ -82,7 +82,7 @@ I first wanted to look at the rise of three-point shooting in the NBA. As discus
 ```python
 fig = plt.figure(figsize=(12, 8))
 plt.plot(data.SEASON, data.AVG3)
-plt.annotate('3-Point line extended', xy=(1997, 12.5), xytext=(2000, 10.2), fontsize=16, 
+plt.annotate('3-Point line extended', xy=(1997, 12.5), xytext=(2000, 10.2), fontsize=16,
              arrowprops=dict(facecolor='black'))
 plt.ylim(-1)
 title = 'Teams are shooting more threes than ever'
@@ -1131,7 +1131,7 @@ The next step is to look at games in terms of home and away team stats. The code
 seasons = season_stats.filter(regex='SEASON|TEAM')
 games = pd.read_sql('SELECT * FROM games JOIN betting ON games.ID is betting.GAME_ID', conn)
 games = games.merge(seasons, left_on=['SEASON', 'HOME_TEAM_ID'], right_on=['SEASON', 'TEAM_ID'])
-games = games.merge(seasons, left_on=['SEASON', 'AWAY_TEAM_ID'], right_on=['SEASON', 'TEAM_ID'], 
+games = games.merge(seasons, left_on=['SEASON', 'AWAY_TEAM_ID'], right_on=['SEASON', 'TEAM_ID'],
                     suffixes=('', '_AWAY'))
 ```
 
@@ -1420,7 +1420,7 @@ ax = sns.jointplot(x='NET_RTG', y='HOME_SPREAD', data=games, kind='kde',
                   shade_lowest=False, stat_func=None, xlim=(-15, 15), ylim=(-15, 15), size=8)
 ax.set_axis_labels(xlabel='Net Rating Difference', ylabel='Home Point Spread')
 ax.ax_joint.plot(mean_net_rtg, mu, 'or', markersize=10)
-ax.ax_joint.annotate('Average of data', xy=(mean_net_rtg, mu+0.25), xytext=(2.5, 7), fontsize=16, 
+ax.ax_joint.annotate('Average of data', xy=(mean_net_rtg, mu+0.25), xytext=(2.5, 7), fontsize=16,
                      arrowprops=dict(facecolor='black'))
 plt.ylim(-21)
 
@@ -1609,4 +1609,3 @@ print_df(bets.tail())
     </tr>
   </tbody>
 </table>
-

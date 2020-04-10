@@ -144,7 +144,7 @@ title = 'Predicting winners against the spread is much harder'
 subtitle = '''Cumulative prediction accuracy and subsequent profit from placing $100 bets
 on the point spread favorite for every game throughout the 2016 season'''
 format_538(fig, 'NBA Stats & Covers.com', ax=(ax1, ax2), title=title, subtitle=subtitle,
-           xoff=(-0.1, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08), 
+           xoff=(-0.1, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08),
            prefix = (' ', '$'), suffix=('%', 'k'), suffix_offset=(3, 1), n=80)
 plt.show()
 ```
@@ -187,7 +187,7 @@ title = 'Predicting winners against the spread is much harder'
 subtitle = '''Cumulative prediction accuracy and subsequent profit from placing $100 bets
 on every game throughout the 2016 season using different betting strategies'''
 format_538(fig, 'NBA Stats & Covers.com', ax=(ax1, ax2), title=title, subtitle=subtitle,
-           xoff=(-0.1, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08), 
+           xoff=(-0.1, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08),
            prefix = (' ', '$'), suffix=('%', 'k'), suffix_offset=(3, 1), n=80)
 plt.show()
 ```
@@ -400,7 +400,7 @@ ax1 = plt.subplot(121)
 for (a, l) in zip(attributes, labels):
     # Make transformer that selects the desired attributes from the DataFrame
     selector = FunctionTransformer(partial(select_columns, attributes=a, columns=x_train.columns))
-    
+
     # Make a pipeline that selects the desired attributes prior to the classifier
     model = make_pipeline(selector, LogisticRegression())
     cross_val_roc_curve(model, x_train, y_train, ax1, label=l, show_folds=False)
@@ -413,7 +413,7 @@ ax2 = plt.subplot(122)
 for (a, l) in zip(attributes, labels):
     # Make transformer that selects the desired attributes from the DataFrame
     selector = FunctionTransformer(partial(select_columns, attributes=a, columns=x_train.columns))
-    
+
     # Make a pipeline that selects the desired attributes prior to the classifier
     model = make_pipeline(selector, LogisticRegression())
     cross_val_precision_recall_curve(model, x_train, y_train, ax2, label=l, show_folds=False)
@@ -458,7 +458,7 @@ title = 'Predicting winners against the spread is much harder'
 subtitle = '''Cumulative prediction accuracy and subsequent profit from placing $100 bets
 on every game throughout the 2016 season using different betting strategies'''
 format_538(fig, 'NBA Stats & Covers.com', ax=(ax1, ax2), title=title, subtitle=subtitle,
-           xoff=(-0.12, 1.01), yoff=(-1.38, -1.45), toff=(-.1, 1.28), soff=(-0.1, 1.08), 
+           xoff=(-0.12, 1.01), yoff=(-1.38, -1.45), toff=(-.1, 1.28), soff=(-0.1, 1.08),
            prefix = (' ', '$'), suffix=('%', 'k'), suffix_offset=(3, 1), n=80)
 plt.show()
 ```

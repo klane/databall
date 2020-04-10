@@ -100,14 +100,14 @@ print('Correctly predicted {:.2f}% of games'
 
     ____________________________________________________
                  precision    recall  f1-score   support
-    
+
            Loss      0.516     0.426     0.467       594
             Win      0.528     0.617     0.569       618
-    
+
     avg / total      0.522     0.523     0.519      1212
-    
+
     Correctly predicted 52.31% of games
-    
+
 
 # Support Vector Machine
 
@@ -144,14 +144,14 @@ print('Correctly predicted {:.2f}% of games'
 
     ____________________________________________________
                  precision    recall  f1-score   support
-    
+
            Loss      0.504     0.584     0.541       594
             Win      0.529     0.448     0.485       618
-    
+
     avg / total      0.517     0.515     0.513      1212
-    
+
     Correctly predicted 51.49% of games
-    
+
 
 # Random Forest
 
@@ -188,14 +188,14 @@ print('Correctly predicted {:.2f}% of games'
 
     ____________________________________________________
                  precision    recall  f1-score   support
-    
+
            Loss      0.515     0.564     0.539       594
             Win      0.539     0.490     0.514       618
-    
+
     avg / total      0.528     0.526     0.526      1212
-    
+
     Correctly predicted 52.64% of games
-    
+
 
 # Neural Network
 
@@ -232,14 +232,14 @@ print('Correctly predicted {:.2f}% of games'
 
     ____________________________________________________
                  precision    recall  f1-score   support
-    
+
            Loss      0.524     0.646     0.579       594
             Win      0.562     0.435     0.490       618
-    
+
     avg / total      0.543     0.539     0.534      1212
-    
+
     Correctly predicted 53.88% of games
-    
+
 
 # Model Comparison
 
@@ -272,7 +272,7 @@ title = 'Not all of the models generalize well'
 subtitle = '''Cumulative prediction accuracy and subsequent profit from placing $100 bets
 on every game throughout the 2016 season using different betting strategies'''
 format_538(fig, 'NBA Stats & Covers.com', ax=(ax1, ax2), title=title, subtitle=subtitle,
-           xoff=(-0.1, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08), 
+           xoff=(-0.1, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08),
            prefix = (' ', '$'), suffix=('%', 'k'), suffix_offset=(3, 1), n=80)
 plt.show()
 ```
@@ -322,7 +322,7 @@ title = 'Optimizing parameters hurt logistic regression accuracy'
 subtitle = '''Cumulative prediction accuracy and subsequent profit from placing $100 bets
 on every game throughout the 2016 season using different betting strategies'''
 format_538(fig, 'NBA Stats & Covers.com', ax=(ax1, ax2), title=title, subtitle=subtitle,
-           xoff=(-0.12, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08), 
+           xoff=(-0.12, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08),
            prefix = (' ', '$'), suffix=('%', 'k'), suffix_offset=(3, 1), n=80)
 plt.show()
 ```
@@ -368,7 +368,7 @@ title = 'Retraining models in-season can be detrimental'
 subtitle = '''Cumulative prediction accuracy and subsequent profit from placing $100 bets
 on every game throughout the 2016 season using different betting strategies'''
 format_538(fig, 'NBA Stats & Covers.com', ax=(ax1, ax2), title=title, subtitle=subtitle,
-           xoff=(-0.12, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08), 
+           xoff=(-0.12, 1.01), yoff=(-1.38, -1.45), toff=(-.09, 1.28), soff=(-0.09, 1.08),
            prefix = (' ', '$'), suffix=('%', 'k'), suffix_offset=(3, 1), n=80)
 plt.show()
 ```
