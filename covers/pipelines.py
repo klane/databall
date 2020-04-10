@@ -25,8 +25,8 @@ class GamePipeline(object):
             if self.drop:
                 self.cur.executescript('''
                     DROP TABLE IF EXISTS betting;
-                    CREATE TABLE betting(GAME_ID TEXT, OVER_UNDER REAL, OU_RESULT TEXT,
-                                         HOME_SPREAD REAL, HOME_SPREAD_WL TEXT);
+                    CREATE TABLE betting(GAME_ID TEXT, HOME_SPREAD REAL, HOME_SPREAD_WL TEXT,
+                                         OVER_UNDER REAL, OU_RESULT TEXT);
                     ''')
 
     def close_spider(self, spider):
@@ -117,7 +117,7 @@ class GamePipeline(object):
                     raise ValueError('No game found')
 #                raise ValueError('No game found',print(opponent))
 
-            self.cur.execute('''INSERT INTO betting(GAME_ID, OVER_UNDER, OU_RESULT, HOME_SPREAD, HOME_SPREAD_WL)
-                                VALUES(?, ?, ?, ?, ?)''', (game_id[0], item['over_under'], item['over_under_result'],
-                                                           item['spread'], item['spread_result']))
+            values = (game_id[0], item['spread'], item['spread_result'], item['over_under'], item['over_under_result'])
+            self.cur.execute('''INSERT INTO betting(GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT)
+                                VALUES(?, ?, ?, ?, ?)''', values)
             self.con.commit()
