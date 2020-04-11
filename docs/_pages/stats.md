@@ -51,10 +51,10 @@ This writes the stats to the database in a table named player_game_stats. The `i
 
 The process for generating a database of NBA stats consists of four steps:
 
-1.  Open a SQLite database connection.
-2.  Query the NBA stats website with nba_py.
-3.  Write the stats DataFrame to the database.
-4.  Close the database connection.
+1. Open a SQLite database connection.
+2. Query the NBA stats website with nba_py.
+3. Write the stats DataFrame to the database.
+4. Close the database connection.
 
 Steps 2 and 3 can be wrapped in a loop to store stats for different seasons. I used this process to create a database with player and team stats for full seasons since the 1996-97 season and for individual games going back to the 1989-90 season. The season stats start later because the NBA stats website only includes [season stats](http://stats.nba.com/teams/traditional/) since the 1996-97 season, something I did not realize initially, but [box scores](http://stats.nba.com/teams/boxscores/) go back much further. All season stats moving forward are actually averaged from box scores to permit analysis of seasons prior to 1996. The code used to generate the database is located [here](https://github.com/klane/databall/blob/master/databall/database_builder.py).
 
