@@ -12,6 +12,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+      - name: Install JekyllNB
+        run: pip install jekyllnb
+      - name: Convert Notebooks
+        run: jupyter jekyllnb --site-dir docs --page-dir _pages --image-dir assets/images notebooks/*.ipynb
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
