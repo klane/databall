@@ -25,3 +25,4 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docs
           SINGLE_COMMIT: true
+          CLEAN: true
