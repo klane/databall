@@ -34,3 +34,6 @@ report/build/
 
 # Scrapy output
 data/
+
+# Bundler install directory
+vendor/
