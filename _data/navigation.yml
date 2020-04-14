@@ -1,0 +1,29 @@
+- title: Introduction
+  pages:
+  - title: Background
+    url: /introduction/background/
+  - title: Outline
+    url: /introduction/outline/
+
+- title: Data
+  pages:
+  - title: Stats
+    url: /data/stats/
+  - title: Covers
+    url: /data/covers/
+  - title: Data Exploration
+    url: /data/explore/
+
+- title: Model Selection
+  pages:
+  - title: Feature Selection
+    url: /model/features/
+  - title: Parameter Tuning
+    url: /model/parameters/
+
+- title: Results & Future Work
+  pages:
+  - title: Model Performance
+    url: /results/performance/
+  - title: Future Work
+    url: /results/future-work/

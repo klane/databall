@@ -1,0 +1,8 @@
+baseurl: /databall
+title: DataBall
+description: Betting on the NBA with data
+
+include:
+  - _pages
+exclude:
+  - README.md

@@ -1,0 +1,20 @@
+{% for section in site.data.navigation %}
+  {% for link in section.pages %}
+    {% if current %}
+      <div style="float: right;">
+        <a href="{{ site.baseurl }}{{ link.url }}">Next Page</a> &gt;
+      </div>
+      {% assign current = false %}
+      {% break %}
+    {% endif %}
+    {% if page.url == link.url %}
+      {% assign current = true %}
+      {% if previous %}
+        <div style="float: left;">
+          &lt; <a href="{{ site.baseurl }}{{ previous.url }}">Previous Page</a>
+        </div>
+      {% endif %}
+    {% endif %}
+    {% assign previous = link %}
+  {% endfor %}
+{% endfor %}
