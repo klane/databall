@@ -11,7 +11,7 @@ update_configs:
           dependency_type: "all"
           update_type: "all"
   - package_manager: "ruby:bundler"
-    directory: "/docs"
+    directory: "/"
     update_schedule: "weekly"
     default_labels:
       - "dependencies"
