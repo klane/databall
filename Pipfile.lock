@@ -625,12 +625,11 @@
         },
         "hyperopt": {
             "hashes": [
-                "sha256:52f4534e101f139b074ae626e0b7dc8410854b9410475d3e7f10c429393bb1a2",
-                "sha256:8caf0094fe824502932d949ee57bd3c92fe512dbbd93b7b7a78cd0761fa1a78f",
-                "sha256:df450eadfc9541086921bf863a5842e7009faef472b08630fd2cab13cdcfe0e6"
+                "sha256:6e72089a42eb70cf84b0567d4552a908adff7cfc5cf6b1c38add41adc775d9c6",
+                "sha256:9e443c4da031b1d2280ee5140e524e209bae0cd6d59a0401f2ab23a144c89edb"
             ],
             "index": "pypi",
-            "version": "==0.2.3"
+            "version": "==0.2.4"
         },
         "identify": {
             "hashes": [
@@ -829,9 +828,10 @@
         },
         "networkx": {
             "hashes": [
-                "sha256:45e56f7ab6fe81652fb4bc9f44faddb0e9025f469f602df14e3b2551c2ea5c8b"
+                "sha256:cdfbf698749a5014bf2ed9db4a07a5295df1d3a53bf80bf3cbd61edf9df05fa1",
+                "sha256:f8f4ff0b6f96e4f9b16af6b84622597b5334bf9cae8cf9b2e42e7985d5c95c64"
             ],
-            "version": "==2.2"
+            "version": "==2.4"
         },
         "nodeenv": {
             "hashes": [
