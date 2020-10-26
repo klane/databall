@@ -47,4 +47,4 @@ jobs:
           path: ~/.cache/pre-commit
           key: pre-commit|${{ steps.hash.outputs.hash }}|${{ hashFiles('.pre-commit-config.yaml') }}
       - name: Run pre-commit
-        uses: pre-commit/action@v1.0.0
+        uses: pre-commit/action@v2.0.0
