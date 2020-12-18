@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Python
-        uses: actions/setup-python@v2.1.4
+        uses: actions/setup-python@v2.2.0
       - name: Install JekyllNB
         run: pip install jekyllnb
       - name: Convert Notebooks
