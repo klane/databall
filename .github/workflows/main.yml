@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Python
-        uses: actions/setup-python@v2.2.0
+        uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.7
       - name: Install Pipenv
@@ -37,7 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Python
-        uses: actions/setup-python@v2.2.0
+        uses: actions/setup-python@v2.2.1
       - name: Hash Python version
         id: hash
         run: echo ::set-output name=hash::$(python --version | sha256sum | cut -d' ' -f1)
