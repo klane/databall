@@ -3,8 +3,7 @@ updates:
   - package-ecosystem: bundler
     directory: "/"
     schedule:
-      interval: weekly
-      day: friday
+      interval: monthly
       time: "00:00"
       timezone: America/Los_Angeles
     open-pull-requests-limit: 99
@@ -16,7 +15,7 @@ updates:
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: daily
+      interval: monthly
       time: "00:00"
       timezone: America/Los_Angeles
     open-pull-requests-limit: 99
@@ -28,8 +27,7 @@ updates:
   - package-ecosystem: pip
     directory: "/"
     schedule:
-      interval: weekly
-      day: friday
+      interval: monthly
       time: "00:00"
       timezone: America/Los_Angeles
     open-pull-requests-limit: 99
