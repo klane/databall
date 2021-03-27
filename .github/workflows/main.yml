@@ -28,7 +28,7 @@ jobs:
       - name: Install Safety
         run: pip install safety
       - name: Check dependencies
-        run: pipenv lock --dev --requirements | safety check --stdin --ignore=39462
+        run: pipenv lock --dev --requirements | safety check --stdin
 
   Linting:
     runs-on: ubuntu-latest
