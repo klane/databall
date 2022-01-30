@@ -2,9 +2,4 @@
 line-length = 88
 
 [tool.isort]
-known_third_party = ["IPython", "hyperopt", "matplotlib", "nba_api", "numpy", "pandas", "scrapy", "seaborn", "sklearn"]
-line_length = 88
-multi_line_output = 3
-force_grid_wrap = 0
-include_trailing_comma = "True"
-use_parentheses = "True"
+profile = "black"
