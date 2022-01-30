@@ -91,7 +91,7 @@ where 240 is the number of team minutes in a regulation-length game and $$MIN$$ 
 
 ### Simple Rating System
 
-Another stat that models team strength is Sports-Reference.com's [Simple Rating System](http://www.sports-reference.com/blog/2015/03/srs-calculation-details/) (SRS), which was first introduced by [Pro-Football-Reference.com](http://www.pro-football-reference.com/blog/index4837.html?p=37). It if a measure of team strength relative to an average opponent. A team with an SRS of 5 is considered 5 points better than an average team. It is calculated as average margin of victory adjusted for strength of schedule. It must be calculated iteratively because each team's rating depends on those of its opponents. The equation is:
+Another stat that models team strength is Sports-Reference.com's [Simple Rating System](http://www.sports-reference.com/blog/2015/03/srs-calculation-details/) (SRS), which was first introduced by [Pro-Football-Reference.com](http://www.pro-football-reference.com/blog/index4837.html?p=37). It is a measure of team strength relative to an average opponent. A team with an SRS of 5 is considered 5 points better than an average team. It is calculated as average margin of victory adjusted for strength of schedule. It must be calculated iteratively because each team's rating depends on those of its opponents. The equation is:
 
 $$\begin{align}
 \vec{SRS}_i & =\vec{PD}+\mathbf{S}\times\vec{SRS}_{i-1} \\
