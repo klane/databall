@@ -13,12 +13,12 @@ def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
     # Initialize list of results
     results = [[]]
 
-    # Make transformer that selects the desired attributes from the DataFrame
+    # Create transformer that selects desired attributes from the DataFrame
     selector = FunctionTransformer(partial(select_columns, attributes=attributes, columns=x.columns))
 
     for i in range(len(models)):
         for param in param_vec:
-            # Make a pipeline that selects the desired attributes prior to the classifier
+            # Create pipeline that selects desired attributes prior to the classifier
             model = make_pipeline(selector, models[i](**{param_name: param}))
             metrics = cross_val_scoring(model, x, y, k)
 
