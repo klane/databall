@@ -31,7 +31,7 @@ def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
     return results
 
 
-def cross_val_scoring(model, x, y, k=6, random_state=8):
+def cross_val_scoring(model, x, y, k=6, random_state=None):
     # Define metrics
     scoring = ['accuracy', 'precision', 'recall', 'roc_auc', 'average_precision']
 
@@ -42,7 +42,7 @@ def cross_val_scoring(model, x, y, k=6, random_state=8):
     return [cross_val_score(model, x, y, cv=kfold, scoring=score).mean() for score in scoring]
 
 
-def objective(params, model, x, y, attributes, k=6, random_state=8):
+def objective(params, model, x, y, attributes, k=6, random_state=None):
     model.set_params(**params)
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
     score = cross_val_score(model, x[attributes], y, cv=kfold, scoring='accuracy')
