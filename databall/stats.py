@@ -39,8 +39,12 @@ def ft_rate(data, group=''):
 
 
 def tov_pct(data, group=''):
-    return data[group + 'TOV'] / (data[group + 'FGA'] + 0.44 * data[group + 'FTA'] + data[group + 'TOV'])
+    return data[group + 'TOV'] / (
+        data[group + 'FGA'] + 0.44 * data[group + 'FTA'] + data[group + 'TOV']
+    )
 
 
 def ts_pct(data, group=''):
-    return data[group + 'PTS'] / (2 * (data[group + 'FGA'] + 0.44 * data[group + 'FTA']))
+    return data[group + 'PTS'] / (
+        2 * (data[group + 'FGA'] + 0.44 * data[group + 'FTA'])
+    )

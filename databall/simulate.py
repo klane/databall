@@ -41,7 +41,9 @@ def fit(model, x, y):
 
 
 class HyperOptFit:
-    def __init__(self, space, max_evals=10, n_splits=10, scoring='roc_auc', random_state=None):
+    def __init__(
+        self, space, max_evals=10, n_splits=10, scoring='roc_auc', random_state=None
+    ):
         self.space = space
         self.max_evals = max_evals
         self.n_splits = n_splits
@@ -49,8 +51,12 @@ class HyperOptFit:
         self.random_state = random_state
 
     def fit(self, model, x, y):
-        best = fmin(lambda params: self.objective(model, params, x, y),
-                    self.space, algo=tpe.suggest, max_evals=self.max_evals)
+        best = fmin(
+            lambda params: self.objective(model, params, x, y),
+            self.space,
+            algo=tpe.suggest,
+            max_evals=self.max_evals,
+        )
         best_params = space_eval(self.space, best)
         model.set_params(**best_params)
         model.fit(x, y)

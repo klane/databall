@@ -23,11 +23,18 @@ class GamePipeline:
             self.cur = self.con.cursor()
 
             if self.drop:
-                self.cur.executescript('''
+                self.cur.executescript(
+                    '''
                     DROP TABLE IF EXISTS betting;
-                    CREATE TABLE betting(GAME_ID TEXT, HOME_SPREAD REAL, HOME_SPREAD_WL TEXT,
-                                         OVER_UNDER REAL, OU_RESULT TEXT);
-                    ''')
+                    CREATE TABLE betting(
+                        GAME_ID TEXT,
+                        HOME_SPREAD REAL,
+                        HOME_SPREAD_WL TEXT,
+                        OVER_UNDER REAL,
+                        OU_RESULT TEXT
+                    );
+                    '''
+                )
 
     def close_spider(self, spider):
         if spider.name == 'games' and self.db is not None:
@@ -53,7 +60,7 @@ class GamePipeline:
                 'NO': 'NOP',
                 'NY': 'NYK',
                 'PHO': 'PHX',
-                'SA': 'SAS'
+                'SA': 'SAS',
             }
 
             opponent = item['opponent'].upper()
@@ -76,7 +83,12 @@ class GamePipeline:
             date = date.strftime('%Y-%m-%d')
 
             # find game by opponent and date
-            self.cur.execute(f'SELECT ID FROM games WHERE AWAY_TEAM_ID == {opp_id} AND GAME_DATE IS "{date}"')
+            self.cur.execute(
+                f'''
+                SELECT ID FROM games
+                WHERE AWAY_TEAM_ID == {opp_id} AND GAME_DATE IS "{date}"
+                '''
+            )
             game_id = self.cur.fetchone()
 
             # raise exception if no matching game found
@@ -84,7 +96,20 @@ class GamePipeline:
                 raise ValueError('No game found')
 
             # insert row into database
-            values = (game_id[0], item['spread'], item['spread_result'], item['over_under'], item['over_under_result'])
-            self.cur.execute('''INSERT INTO betting(GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT)
-                                VALUES(?, ?, ?, ?, ?)''', values)
+            values = (
+                game_id[0],
+                item['spread'],
+                item['spread_result'],
+                item['over_under'],
+                item['over_under_result'],
+            )
+            self.cur.execute(
+                '''
+                INSERT INTO betting(
+                    GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT
+                )
+                VALUES(?, ?, ?, ?, ?)
+                ''',
+                values,
+            )
             self.con.commit()

@@ -33,10 +33,20 @@ def pace(data):
 
 
 def possessions(data):
-    return (data.TEAM_FGA + 0.4 * data.TEAM_FTA + data.TEAM_TOV -
-            1.07 * (data.TEAM_OREB / (data.TEAM_OREB + data.OPP_DREB)) * (data.TEAM_FGA - data.TEAM_FGM) +
-            data.OPP_FGA + 0.4 * data.OPP_FTA + data.OPP_TOV -
-            1.07 * (data.OPP_OREB / (data.OPP_OREB + data.TEAM_DREB)) * (data.OPP_FGA - data.OPP_FGM)) / 2
+    return (
+        data.TEAM_FGA
+        + 0.4 * data.TEAM_FTA
+        + data.TEAM_TOV
+        - 1.07
+        * (data.TEAM_OREB / (data.TEAM_OREB + data.OPP_DREB))
+        * (data.TEAM_FGA - data.TEAM_FGM)
+        + data.OPP_FGA
+        + 0.4 * data.OPP_FTA
+        + data.OPP_TOV
+        - 1.07
+        * (data.OPP_OREB / (data.OPP_OREB + data.TEAM_DREB))
+        * (data.OPP_FGA - data.OPP_FGM)
+    ) / 2
 
 
 def reb_pct(data):

@@ -14,7 +14,9 @@ def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
     results = [[]]
 
     # Create transformer that selects desired attributes from the DataFrame
-    selector = FunctionTransformer(partial(select_columns, attributes=attributes, columns=x.columns))
+    selector = FunctionTransformer(
+        partial(select_columns, attributes=attributes, columns=x.columns)
+    )
 
     for i in range(len(models)):
         for param in param_vec:
@@ -39,7 +41,10 @@ def cross_val_scoring(model, x, y, k=6, random_state=None):
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
 
     # Calculate metrics
-    return [cross_val_score(model, x, y, cv=kfold, scoring=score).mean() for score in scoring]
+    return [
+        cross_val_score(model, x, y, cv=kfold, scoring=score).mean()
+        for score in scoring
+    ]
 
 
 def objective(params, model, x, y, attributes, k=6, random_state=None):
@@ -49,13 +54,23 @@ def objective(params, model, x, y, attributes, k=6, random_state=None):
     return 1 - score.mean()
 
 
-def optimize_params(model, x, y, attributes, space, k=6, max_evals=100, eval_space=False):
+def optimize_params(
+    model, x, y, attributes, space, k=6, max_evals=100, eval_space=False
+):
     trials = Trials()
-    best = fmin(partial(objective, model=model, x=x, y=y, attributes=attributes, k=k),
-                space, algo=tpe.suggest, max_evals=max_evals, trials=trials)
+    best = fmin(
+        partial(objective, model=model, x=x, y=y, attributes=attributes, k=k),
+        space,
+        algo=tpe.suggest,
+        max_evals=max_evals,
+        trials=trials,
+    )
 
     param_values = [t['misc']['vals'] for t in trials.trials]
-    param_values = [{key: value for key in params for value in params[key]} for params in param_values]
+    param_values = [
+        {key: value for key in params for value in params[key]}
+        for params in param_values
+    ]
 
     if eval_space:
         param_values = [space_eval(space, params) for params in param_values]
@@ -65,7 +80,14 @@ def optimize_params(model, x, y, attributes, space, k=6, max_evals=100, eval_spa
     return space_eval(space, best), param_df
 
 
-def train_test_split(data, start_season, end_season, test_season_start=None, xlabels=None, ylabel='HOME_SPREAD_WL'):
+def train_test_split(
+    data,
+    start_season,
+    end_season,
+    test_season_start=None,
+    xlabels=None,
+    ylabel='HOME_SPREAD_WL',
+):
     if test_season_start is None:
         test_season_start = end_season
 
@@ -78,8 +100,12 @@ def train_test_split(data, start_season, end_season, test_season_start=None, xla
         data = data[xlabels + ['SEASON', ylabel]].dropna()
 
     x, y = data[xlabels], LabelEncoder().fit_transform(data[ylabel])
-    x_train = x[(start_season <= data.SEASON) & (data.SEASON < test_season_start)].copy()
-    y_train = y[(start_season <= data.SEASON) & (data.SEASON < test_season_start)].copy()
+    x_train = x[
+        (start_season <= data.SEASON) & (data.SEASON < test_season_start)
+    ].copy()
+    y_train = y[
+        (start_season <= data.SEASON) & (data.SEASON < test_season_start)
+    ].copy()
     x_test = x[(test_season_start <= data.SEASON) & (data.SEASON <= end_season)].copy()
     y_test = y[(test_season_start <= data.SEASON) & (data.SEASON <= end_season)].copy()
     return x_train, y_train, x_test, y_test

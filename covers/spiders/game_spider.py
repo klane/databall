@@ -19,14 +19,22 @@ class GameSpider(Spider):
 
         if '.json' in teams:
             teams = pd.read_json(teams)
-            teams = [re.search(r'main/(?P<name>.+)/\d+', url).group('name') for url in teams.url]
+            teams = [
+                re.search(r'main/(?P<name>.+)/\d+', url).group('name')
+                for url in teams.url
+            ]
         else:
             teams = teams.split(',')
 
-        self.start_urls = [base_url + f'/sport/basketball/nba/teams/main/{team}/{season}' for team in teams]
+        self.start_urls = [
+            base_url + f'/sport/basketball/nba/teams/main/{team}/{season}'
+            for team in teams
+        ]
 
     def parse(self, response):
-        for row in response.xpath('//table[@class="table covers-CoversMatchups-Table covers-CoversResults-Table"]/tbody/tr'):
+        table_class = 'table covers-CoversMatchups-Table covers-CoversResults-Table'
+
+        for row in response.xpath(f'//table[@class="{table_class}"]/tbody/tr'):
             loader = GameLoader(item=Game(), selector=row)
             loader.add_xpath('date', 'td[1]/text()')
             loader.add_xpath('home', 'td[2]/a/text()')
@@ -44,7 +52,8 @@ class GameSpider(Spider):
 
             # add missing fields
             item = loader.load_item()
-            fields = [f for f in ['spread_result', 'spread', 'over_under_result', 'over_under'] if f not in item]
+            fields = ['spread_result', 'spread', 'over_under_result', 'over_under']
+            fields = list(filter(lambda f: f not in item, fields))
 
             for f in fields:
                 item[f] = None

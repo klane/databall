@@ -11,6 +11,8 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
+DEFAULT_CMAP = plt.get_cmap('Blues')
+
 
 def cross_val_curves(model, x, y, k=10, figsize=(16, 6), legend=True):
     fig = plt.figure(figsize=figsize)
@@ -21,7 +23,9 @@ def cross_val_curves(model, x, y, k=10, figsize=(16, 6), legend=True):
 
     # Plot precision/recall curve
     ax2 = plt.subplot(122)
-    cross_val_precision_recall_curve(model, x, y, ax2, k=k, label='Mean', show_folds=True)
+    cross_val_precision_recall_curve(
+        model, x, y, ax2, k=k, label='Mean', show_folds=True
+    )
 
     if legend:
         ax1.legend()
@@ -30,8 +34,17 @@ def cross_val_curves(model, x, y, k=10, figsize=(16, 6), legend=True):
     return fig, ax1, ax2
 
 
-def cross_val_precision_recall_curve(model, x, y, ax, k=10, random_state=None, label='Mean',
-                                     show_auc=True, show_folds=False):
+def cross_val_precision_recall_curve(
+    model,
+    x,
+    y,
+    ax,
+    k=10,
+    random_state=None,
+    label='Mean',
+    show_auc=True,
+    show_folds=False,
+):
     # Compute cross-validated precision/recall curve and area under the curve
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
     proba = cross_val_predict(model, x, y, cv=kfold, method='predict_proba')
@@ -47,11 +60,24 @@ def cross_val_precision_recall_curve(model, x, y, ax, k=10, random_state=None, l
             # Compute precision/recall curve and area under the curve
             precision, recall, thresholds = precision_recall_curve(y[test], proba[:, 1])
             pr_auc = average_precision_score(y[test], proba[:, 1])
-            ax.plot(recall, precision, lw=1, label='Fold %d (Area = %0.2f)' % (i + 1, pr_auc))
+            ax.plot(
+                recall,
+                precision,
+                lw=1,
+                label='Fold %d (Area = %0.2f)' % (i + 1, pr_auc),
+            )
 
-        ax.plot(mean_recall, mean_precision, 'k--', label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
+        ax.plot(
+            mean_recall,
+            mean_precision,
+            'k--',
+            label=f'{label} (Area = {mean_auc:0.2f})',
+            lw=2,
+        )
     elif show_auc:
-        ax.plot(mean_recall, mean_precision, label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
+        ax.plot(
+            mean_recall, mean_precision, label=f'{label} (Area = {mean_auc:0.2f})', lw=2
+        )
     else:
         ax.plot(mean_recall, mean_precision, label=label, lw=2)
 
@@ -59,7 +85,17 @@ def cross_val_precision_recall_curve(model, x, y, ax, k=10, random_state=None, l
     ax.set_ylabel('Precision')
 
 
-def cross_val_roc_curve(model, x, y, ax, k=10, random_state=None, label='Mean', show_auc=True, show_folds=False):
+def cross_val_roc_curve(
+    model,
+    x,
+    y,
+    ax,
+    k=10,
+    random_state=None,
+    label='Mean',
+    show_auc=True,
+    show_folds=False,
+):
     # Compute cross-validated ROC curve and area under the curve
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
     proba = cross_val_predict(model, x, y, cv=kfold, method='predict_proba')
@@ -77,7 +113,9 @@ def cross_val_roc_curve(model, x, y, ax, k=10, random_state=None, label='Mean', 
             roc_auc = roc_auc_score(y[test], proba[:, 1])
             ax.plot(fpr, tpr, lw=1, label='Fold %d (Area = %0.2f)' % (i + 1, roc_auc))
 
-        ax.plot(mean_fpr, mean_tpr, 'k--', label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
+        ax.plot(
+            mean_fpr, mean_tpr, 'k--', label=f'{label} (Area = {mean_auc:0.2f})', lw=2
+        )
     elif show_auc:
         ax.plot(mean_fpr, mean_tpr, label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
     else:
@@ -87,9 +125,25 @@ def cross_val_roc_curve(model, x, y, ax, k=10, random_state=None, label='Mean', 
     ax.set_ylabel('True Positive Rate')
 
 
-def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subtitle=None, bottomtick=0, sig='line',
-               n=75, xoff=(-0.075, 1.01), yoff=(-0.1, -0.15), toff=(-0.07, 1.15), soff=(-0.07, 1.05),
-               prefix='', suffix='', suffix_offset=0):
+def format_538(
+    fig,
+    source,
+    ax=None,
+    xlabel=None,
+    ylabel=None,
+    title=None,
+    subtitle=None,
+    bottomtick=0,
+    sig='line',
+    n=75,
+    xoff=(-0.075, 1.01),
+    yoff=(-0.1, -0.15),
+    toff=(-0.07, 1.15),
+    soff=(-0.07, 1.05),
+    prefix='',
+    suffix='',
+    suffix_offset=0,
+):
     plt.style.use('fivethirtyeight')
 
     if ax is None:
@@ -117,7 +171,10 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
 
     # Customize ticks
     [a.tick_params(axis='both', which='major', labelsize=16) for a in ax]
-    [a.axhline(y=btick, color='black', linewidth=1.3, alpha=0.7) for a, btick in zip(ax, bottomtick)]
+    [
+        a.axhline(y=btick, color='black', linewidth=1.3, alpha=0.7)
+        for a, btick in zip(ax, bottomtick)
+    ]
     fig.canvas.draw()
     [t.set_alpha(0.5) for a in ax for t in a.get_xticklabels()]
     [t.set_alpha(0.5) for a in ax for t in a.get_yticklabels()]
@@ -145,8 +202,23 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
         a.set_yticklabels(ticks)
 
     # Add title and subtitle
-    ax[0].text(x=toff[0], y=toff[1], s=title, fontsize=26, weight='bold', alpha=0.75, transform=ax[0].transAxes)
-    ax[0].text(x=soff[0], y=soff[1], s=subtitle, fontsize=20, alpha=0.85, transform=ax[0].transAxes)
+    ax[0].text(
+        x=toff[0],
+        y=toff[1],
+        s=title,
+        fontsize=26,
+        weight='bold',
+        alpha=0.75,
+        transform=ax[0].transAxes,
+    )
+    ax[0].text(
+        x=soff[0],
+        y=soff[1],
+        s=subtitle,
+        fontsize=20,
+        alpha=0.85,
+        transform=ax[0].transAxes,
+    )
     [a.set_title(a.get_title(), fontsize=20, weight='bold') for a in ax]
 
     # Add signature bar
@@ -154,32 +226,90 @@ def format_538(fig, source, ax=None, xlabel=None, ylabel=None, title=None, subti
     label2 = 'Source: ' + source
 
     if sig == 'line':
-        ax[0].text(x=xoff[0], y=yoff[0], s='  ' + '_' * n, color='grey', alpha=0.7, transform=ax[0].transAxes)
-        ax[0].text(x=xoff[1], y=yoff[0], s='_' * n + '  ', color='grey', alpha=0.7, transform=ax[0].transAxes,
-                   horizontalalignment='right')
-        ax[0].text(x=xoff[0], y=yoff[1], s='  ' + label1, fontsize=14, color='grey', transform=ax[0].transAxes)
-        ax[0].text(x=xoff[1], y=yoff[1], s=label2 + '  ', fontsize=14, color='grey', transform=ax[0].transAxes,
-                   horizontalalignment='right')
+        ax[0].text(
+            x=xoff[0],
+            y=yoff[0],
+            s='  ' + '_' * n,
+            color='grey',
+            alpha=0.7,
+            transform=ax[0].transAxes,
+        )
+        ax[0].text(
+            x=xoff[1],
+            y=yoff[0],
+            s='_' * n + '  ',
+            color='grey',
+            alpha=0.7,
+            transform=ax[0].transAxes,
+            horizontalalignment='right',
+        )
+        ax[0].text(
+            x=xoff[0],
+            y=yoff[1],
+            s='  ' + label1,
+            fontsize=14,
+            color='grey',
+            transform=ax[0].transAxes,
+        )
+        ax[0].text(
+            x=xoff[1],
+            y=yoff[1],
+            s=label2 + '  ',
+            fontsize=14,
+            color='grey',
+            transform=ax[0].transAxes,
+            horizontalalignment='right',
+        )
     elif sig == 'bar':
-        ax[0].text(x=xoff[0], y=-0.14, s='  ' + label1 + ' ' * n, fontsize=14, color='#f0f0f0', backgroundcolor='grey',
-                   transform=ax[0].transAxes)
-        ax[0].text(x=xoff[1], y=-0.14, s=' ' * n + label2 + '  ', fontsize=14, color='#f0f0f0', backgroundcolor='grey',
-                   transform=ax[0].transAxes, horizontalalignment='right')
+        ax[0].text(
+            x=xoff[0],
+            y=-0.14,
+            s='  ' + label1 + ' ' * n,
+            fontsize=14,
+            color='#f0f0f0',
+            backgroundcolor='grey',
+            transform=ax[0].transAxes,
+        )
+        ax[0].text(
+            x=xoff[1],
+            y=-0.14,
+            s=' ' * n + label2 + '  ',
+            fontsize=14,
+            color='#f0f0f0',
+            backgroundcolor='grey',
+            transform=ax[0].transAxes,
+            horizontalalignment='right',
+        )
 
 
 def kde(data, stat, label, title, ax):
     stat = 'TEAM_' + stat
-    sns.kdeplot(data[stat], data[stat + '_AWAY'], cmap='Blues', shade=True, shade_lowest=False, ax=ax)
+    sns.kdeplot(
+        data[stat],
+        data[stat + '_AWAY'],
+        cmap='Blues',
+        shade=True,
+        shade_lowest=False,
+        ax=ax,
+    )
     ax.plot(0, 0, 'or', markersize=10)
     ax.set_xlabel('Home Team ' + label)
     ax.set_ylabel('Away Team ' + label)
     ax.set_title(title)
     ax.set_xlim(-13, 12)
     ax.set_ylim(-16, 12)
-    ax.annotate('Average teams', xy=(-0.25, -0.25), xytext=(-13, -13), fontsize=16, arrowprops=dict(facecolor='black'))
+    ax.annotate(
+        'Average teams',
+        xy=(-0.25, -0.25),
+        xytext=(-13, -13),
+        fontsize=16,
+        arrowprops=dict(facecolor='black'),
+    )
 
 
-def plot_confusion_matrix(cm, classes, fig=None, title='Confusion Matrix', cmap=plt.get_cmap('Blues')):
+def plot_confusion_matrix(
+    cm, classes, fig=None, title='Confusion Matrix', cmap=DEFAULT_CMAP
+):
     # This function prints and plots the confusion matrix.
     if fig is None:
         fig = plt.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -197,8 +327,13 @@ def plot_confusion_matrix(cm, classes, fig=None, title='Confusion Matrix', cmap=
     thresh = (cm.max() + cm.min()) / 2
 
     for i, j in product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, '%d\n%.2f%%' % (cm[i, j], cm_norm[i, j] * 100),
-                 horizontalalignment='center', color='white' if cm[i, j] > thresh else 'black')
+        plt.text(
+            j,
+            i,
+            '%d\n%.2f%%' % (cm[i, j], cm_norm[i, j] * 100),
+            horizontalalignment='center',
+            color='white' if cm[i, j] > thresh else 'black',
+        )
 
     plt.tight_layout()
     plt.ylabel('True Label')
@@ -207,7 +342,18 @@ def plot_confusion_matrix(cm, classes, fig=None, title='Confusion Matrix', cmap=
     return fig
 
 
-def plot_matrix(x, y, xlabel, ylabel, rows, cols, figsize=(16, 8), logx=False, logy=False, markersize=5):
+def plot_matrix(
+    x,
+    y,
+    xlabel,
+    ylabel,
+    rows,
+    cols,
+    figsize=(16, 8),
+    logx=False,
+    logy=False,
+    markersize=5,
+):
     fig = plt.figure(figsize=figsize)
     ax = []
     n = len(ylabel)
