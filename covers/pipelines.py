@@ -7,8 +7,8 @@ class GamePipeline:
     @classmethod
     def from_crawler(cls, crawler):
         settings = crawler.settings
-        db = settings.get('DATABASE')
-        drop = settings.getbool('DROP')
+        db = settings.get('DATABASE', ':memory:')
+        drop = settings.getbool('DROP', False)
         return cls(db, drop)
 
     def __init__(self, db, drop):
