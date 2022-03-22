@@ -40,72 +40,73 @@ class GamePipeline:
         self.con.close()
 
     def process_item(self, item, spider):
-        self.store_item(item)
+        # only store home games to avoid duplicating data
+        if item['home']:
+            self.store_item(item)
+
         return item
 
     def store_item(self, item):
-        # only store home games to avoid duplicating data
-        if item['home']:
-            # map team abbreviations to those in the database
-            team_abbr = {
-                'BK': 'BKN',
-                'CHAR': 'CHA',
-                'GS': 'GSW',
-                'NETS': 'BKN',
-                'NJ': 'BKN',
-                'NO': 'NOP',
-                'NY': 'NYK',
-                'PHO': 'PHX',
-                'SA': 'SAS',
-            }
+        # map team abbreviations to those in the database
+        team_abbr = {
+            'BK': 'BKN',
+            'CHAR': 'CHA',
+            'GS': 'GSW',
+            'NETS': 'BKN',
+            'NJ': 'BKN',
+            'NO': 'NOP',
+            'NY': 'NYK',
+            'PHO': 'PHX',
+            'SA': 'SAS',
+        }
 
-            opponent = item['opponent'].upper()
+        opponent = item['opponent'].upper()
 
-            if opponent in team_abbr:
-                opponent = team_abbr[opponent]
+        if opponent in team_abbr:
+            opponent = team_abbr[opponent]
 
-            # find opponent ID by abbreviation
-            self.cur.execute(f'SELECT ID FROM teams WHERE ABBREVIATION IS "{opponent}"')
-            opp_id = self.cur.fetchone()[0]
+        # find opponent ID by abbreviation
+        self.cur.execute(f'SELECT ID FROM teams WHERE ABBREVIATION IS "{opponent}"')
+        opp_id = self.cur.fetchone()[0]
 
-            # format game date to match games table
-            response = item['response_url']
-            start_year, end_year = re.search(r'(\d+)-(\d+)', response).group(1, 2)
-            start_months = ['Oct', 'Nov', 'Dec']
+        # format game date to match games table
+        response = item['response_url']
+        start_year, end_year = re.search(r'(\d+)-(\d+)', response).group(1, 2)
+        start_months = ['Oct', 'Nov', 'Dec']
 
-            date = item['date']
-            year = start_year if date.split()[0] in start_months else end_year
-            date = datetime.strptime(f'{date} {year}', '%b %d %Y')
-            date = date.strftime('%Y-%m-%d')
+        date = item['date']
+        year = start_year if date.split()[0] in start_months else end_year
+        date = datetime.strptime(f'{date} {year}', '%b %d %Y')
+        date = date.strftime('%Y-%m-%d')
 
-            # find game by opponent and date
-            self.cur.execute(
-                f'''
-                SELECT ID FROM games
-                WHERE AWAY_TEAM_ID == {opp_id} AND GAME_DATE IS "{date}"
-                '''
+        # find game by opponent and date
+        self.cur.execute(
+            f'''
+            SELECT ID FROM games
+            WHERE AWAY_TEAM_ID == {opp_id} AND GAME_DATE IS "{date}"
+            '''
+        )
+        game_id = self.cur.fetchone()
+
+        # raise exception if no matching game found
+        if game_id is None:
+            raise ValueError('No game found')
+
+        # insert row into database
+        values = (
+            game_id[0],
+            item['spread'],
+            item['spread_result'],
+            item['over_under'],
+            item['over_under_result'],
+        )
+        self.cur.execute(
+            '''
+            INSERT INTO betting(
+                GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT
             )
-            game_id = self.cur.fetchone()
-
-            # raise exception if no matching game found
-            if game_id is None:
-                raise ValueError('No game found')
-
-            # insert row into database
-            values = (
-                game_id[0],
-                item['spread'],
-                item['spread_result'],
-                item['over_under'],
-                item['over_under_result'],
-            )
-            self.cur.execute(
-                '''
-                INSERT INTO betting(
-                    GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT
-                )
-                VALUES(?, ?, ?, ?, ?)
-                ''',
-                values,
-            )
-            self.con.commit()
+            VALUES(?, ?, ?, ?, ?)
+            ''',
+            values,
+        )
+        self.con.commit()
