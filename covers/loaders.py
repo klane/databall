@@ -1,8 +1,8 @@
 import re
 from functools import partial
 
+from itemloaders.processors import MapCompose, TakeFirst
 from scrapy.loader import ItemLoader
-from scrapy.loader.processors import MapCompose, TakeFirst
 
 
 def get_score(score, group):
