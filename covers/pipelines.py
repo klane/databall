@@ -18,33 +18,29 @@ class GamePipeline:
         self.cur = None
 
     def open_spider(self, spider):
-        if spider.name == 'games' and self.db is not None:
-            self.con = sqlite3.connect(self.db)
-            self.cur = self.con.cursor()
+        self.con = sqlite3.connect(self.db)
+        self.cur = self.con.cursor()
 
-            if self.drop:
-                self.cur.executescript(
-                    '''
-                    DROP TABLE IF EXISTS betting;
-                    CREATE TABLE betting(
-                        GAME_ID TEXT,
-                        HOME_SPREAD REAL,
-                        HOME_SPREAD_WL TEXT,
-                        OVER_UNDER REAL,
-                        OU_RESULT TEXT
-                    );
-                    '''
-                )
+        if self.drop:
+            self.cur.executescript(
+                '''
+                DROP TABLE IF EXISTS betting;
+                CREATE TABLE betting(
+                    GAME_ID TEXT,
+                    HOME_SPREAD REAL,
+                    HOME_SPREAD_WL TEXT,
+                    OVER_UNDER REAL,
+                    OU_RESULT TEXT
+                );
+                '''
+            )
 
     def close_spider(self, spider):
-        if spider.name == 'games' and self.db is not None:
-            self.cur.execute('VACUUM')
-            self.con.close()
+        self.cur.execute('VACUUM')
+        self.con.close()
 
     def process_item(self, item, spider):
-        if spider.name == 'games' and self.db is not None:
-            self.store_item(item)
-
+        self.store_item(item)
         return item
 
     def store_item(self, item):

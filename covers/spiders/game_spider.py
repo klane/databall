@@ -13,6 +13,9 @@ base_url = 'https://www.covers.com'
 class GameSpider(Spider):
     name = 'games'
     allowed_domains = ['covers.com']
+    custom_settings = {
+        'ITEM_PIPELINES': {'covers.pipelines.GamePipeline': 400},
+    }
 
     def __init__(self, teams, season='2019-2020', *args, **kwargs):
         super().__init__(*args, **kwargs)
