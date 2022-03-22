@@ -30,7 +30,7 @@ class GameSpider(Spider):
             teams = teams.split(',')
 
         self.start_urls = [
-            base_url + f'/sport/basketball/nba/teams/main/{team}/{season}'
+            f'{base_url}/sport/basketball/nba/teams/main/{team}/{season}'
             for team in teams
         ]
 
