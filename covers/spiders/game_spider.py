@@ -19,8 +19,16 @@ class GameSpider(Spider):
         'ITEM_PIPELINES': {'covers.pipelines.GamePipeline': 400},
     }
 
-    def __init__(self, teams, season='2019-2020', *args, **kwargs):
+    def __init__(
+        self,
+        teams,
+        season='2019-2020',
+        multiple_seasons=False,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
+        self.multiple_seasons = multiple_seasons
 
         if '.json' in teams:
             teams = pd.read_json(teams)
@@ -65,18 +73,19 @@ class GameSpider(Spider):
 
             yield item
 
-        # find selected season
-        season = response.xpath(f'{past_results}//span[@id="TP-Season-Select"]')
-        season = get_text(season)
+        if self.multiple_seasons:
+            # find selected season
+            season = response.xpath(f'{past_results}//span[@id="TP-Season-Select"]')
+            season = get_text(season)
 
-        # get other seasons for the current team
-        history = response.xpath(f'{past_results}//div[@id="TP-Season-Drop"]/li/a')
+            # get other seasons for the current team
+            history = response.xpath(f'{past_results}//div[@id="TP-Season-Drop"]/li/a')
 
-        # get seasons prior to the selected season
-        history = SelectorList(row for row in history if get_text(row) < season)
+            # get seasons prior to the selected season
+            history = SelectorList(row for row in history if get_text(row) < season)
 
-        # scrape previous season if one exists
-        url = history.xpath('@href').get()
+            # scrape previous season if one exists
+            url = history.xpath('@href').get()
 
-        if url is not None:
-            yield Request(response.urljoin(url), callback=self.parse)
+            if url is not None:
+                yield Request(response.urljoin(url), callback=self.parse)
