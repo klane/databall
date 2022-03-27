@@ -19,14 +19,7 @@ class GameSpider(Spider):
         'ITEM_PIPELINES': {'covers.pipelines.GamePipeline': 400},
     }
 
-    def __init__(
-        self,
-        teams,
-        season='2019-2020',
-        multiple_seasons=False,
-        *args,
-        **kwargs,
-    ):
+    def __init__(self, teams, season='', multiple_seasons=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.multiple_seasons = multiple_seasons
 
