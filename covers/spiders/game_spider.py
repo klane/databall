@@ -1,6 +1,7 @@
 import re
 
 import pandas as pd
+from nba_api.stats.static.teams import get_teams
 from scrapy import Request, Spider
 from scrapy.selector import SelectorList
 
@@ -19,11 +20,15 @@ class GameSpider(Spider):
         'ITEM_PIPELINES': {'covers.pipelines.GamePipeline': 400},
     }
 
-    def __init__(self, teams, season='', multiple_seasons=False, *args, **kwargs):
+    def __init__(self, teams=None, season='', multiple_seasons=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.multiple_seasons = multiple_seasons
 
-        if '.json' in teams:
+        if teams is None:
+            teams = [
+                team['full_name'].replace(' ', '-').lower() for team in get_teams()
+            ]
+        elif '.json' in teams:
             teams = pd.read_json(teams)
             teams = [
                 re.search(r'main/(?P<name>[^/]+)', url).group('name')
