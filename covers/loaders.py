@@ -24,4 +24,5 @@ class GameLoader(ItemLoader):
 
 
 class TeamLoader(ItemLoader):
+    default_input_processor = MapCompose(str.strip)
     default_output_processor = TakeFirst()
