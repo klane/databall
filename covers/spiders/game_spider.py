@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 import pandas as pd
 from nba_api.stats.static.teams import get_teams
@@ -44,6 +45,8 @@ class GameSpider(Spider):
 
     def parse(self, response):
         past_results = '//div[@id="TP_pastResults"]'
+        start_year, year = re.search(r'(\d+)-(\d+)', response.url).group(1, 2)
+        date = ''
 
         for row in response.xpath(f'{past_results}//table/tbody/tr'):
             loader = GameLoader(item=Game(), selector=row)
@@ -59,7 +62,6 @@ class GameSpider(Spider):
             loader.add_xpath('spread', 'td[4]/text()')
             loader.add_xpath('over_under_result', 'td[5]/span/text()')
             loader.add_xpath('over_under', 'td[5]/text()')
-            loader.add_value('response_url', response.url)
 
             # add missing fields
             item = loader.load_item()
@@ -68,6 +70,14 @@ class GameSpider(Spider):
 
             for f in fields:
                 item[f] = None
+
+            # format game date to match games table
+            if 'Jan' in date and 'Jan' not in item['date']:
+                year = start_year
+
+            date = item['date']
+            item['date'] = datetime.strptime(f'{date} {year}', '%b %d %Y')
+            item['date'] = item['date'].strftime('%Y-%m-%d')
 
             yield item
 

@@ -12,7 +12,6 @@ class Game(Item):
     spread_result = Field()
     over_under = Field()
     over_under_result = Field()
-    response_url = Field()
 
 
 class Team(Item):
