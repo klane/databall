@@ -60,7 +60,7 @@ class GamePipeline:
             'SA': 'SAS',
         }
 
-        opponent = item['opponent'].upper()
+        opponent = item['opponent']
 
         if opponent in team_abbr:
             opponent = team_abbr[opponent]

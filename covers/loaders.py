@@ -15,11 +15,13 @@ class GameLoader(ItemLoader):
     default_output_processor = TakeFirst()
 
     home_in = MapCompose(lambda x: '@' not in x)
-    opponent_in = MapCompose(lambda x: x.replace('@', ''), str.strip)
-    result_in = MapCompose(str.strip, str.split)
+    opponent_in = MapCompose(lambda x: x.replace('@', ''), str.strip, str.upper)
+    result_in = MapCompose(str.strip, str.upper, str.split)
     score_in = MapCompose(partial(get_score, group=1), int)
     opponent_score_in = MapCompose(partial(get_score, group=2), int)
+    spread_result_in = MapCompose(str.strip, str.upper)
     spread_in = MapCompose(str.strip, lambda x: 0 if x == 'PK' else x, float)
+    over_under_result_in = MapCompose(str.strip, str.upper)
     over_under_in = MapCompose(str.strip, float)
 
 
