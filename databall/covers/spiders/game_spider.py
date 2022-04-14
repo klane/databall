@@ -6,8 +6,8 @@ from nba_api.stats.static.teams import get_teams
 from scrapy import Request, Spider
 from scrapy.selector import SelectorList
 
-from covers.items import Game
-from covers.loaders import GameLoader
+from databall.covers.items import Game
+from databall.covers.loaders import GameLoader
 
 
 def get_text(response):
@@ -18,7 +18,7 @@ class GameSpider(Spider):
     name = 'games'
     allowed_domains = ['covers.com']
     custom_settings = {
-        'ITEM_PIPELINES': {'covers.pipelines.GamePipeline': 400},
+        'ITEM_PIPELINES': {'databall.covers.pipelines.GamePipeline': 400},
     }
 
     def __init__(self, teams=None, season='', multiple_seasons=False, *args, **kwargs):

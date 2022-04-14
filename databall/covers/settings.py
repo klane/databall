@@ -1,7 +1,7 @@
 BOT_NAME = 'covers'
 
-SPIDER_MODULES = ['covers.spiders']
-NEWSPIDER_MODULE = 'covers.spiders'
+SPIDER_MODULES = ['databall.covers.spiders']
+NEWSPIDER_MODULE = 'databall.covers.spiders'
 DATABASE = 'nba.db'
 DROP = True
 

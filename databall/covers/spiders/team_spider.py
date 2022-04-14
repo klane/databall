@@ -1,7 +1,7 @@
 from scrapy import Spider
 
-from covers.items import Team
-from covers.loaders import TeamLoader
+from databall.covers.items import Team
+from databall.covers.loaders import TeamLoader
 
 
 class TeamSpider(Spider):
