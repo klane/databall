@@ -9,6 +9,7 @@ scikit-learn = "*"
 matplotlib = "*"
 scrapy = "*"
 nba-api = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 jupyter = "*"
