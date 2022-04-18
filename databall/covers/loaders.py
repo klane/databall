@@ -4,6 +4,18 @@ from functools import partial
 from itemloaders.processors import MapCompose, TakeFirst
 from scrapy.loader import ItemLoader
 
+# map team abbreviations to those in the database
+TEAM_ABBREVIATIONS = {
+    'BK': 'BKN',
+    'CHAR': 'CHA',
+    'GS': 'GSW',
+    'NJ': 'BKN',
+    'NO': 'NOP',
+    'NY': 'NYK',
+    'PHO': 'PHX',
+    'SA': 'SAS',
+}
+
 
 def get_score(score, group):
     match = re.search(r'(\d+)-(\d+)', score)
@@ -15,7 +27,12 @@ class GameLoader(ItemLoader):
     default_output_processor = TakeFirst()
 
     home_in = MapCompose(lambda x: '@' not in x)
-    opponent_in = MapCompose(lambda x: x.replace('@', ''), str.strip, str.upper)
+    opponent_in = MapCompose(
+        lambda x: x.replace('@', ''),
+        str.strip,
+        str.upper,
+        lambda team: TEAM_ABBREVIATIONS.get(team, team),
+    )
     result_in = MapCompose(str.strip, str.upper, str.split)
     score_in = MapCompose(partial(get_score, group=1), int)
     opponent_score_in = MapCompose(partial(get_score, group=2), int)

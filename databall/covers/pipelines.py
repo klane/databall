@@ -37,27 +37,9 @@ class GamePipeline:
         return item
 
     def store_item(self, item):
-        # map team abbreviations to those in the database
-        team_abbr = {
-            'BK': 'BKN',
-            'CHAR': 'CHA',
-            'GS': 'GSW',
-            'NETS': 'BKN',
-            'NJ': 'BKN',
-            'NO': 'NOP',
-            'NY': 'NYK',
-            'PHO': 'PHX',
-            'SA': 'SAS',
-        }
-
-        opponent = item['opponent']
-
-        if opponent in team_abbr:
-            opponent = team_abbr[opponent]
-
         # find game by opponent and date or raise exception if not found
         query = select(Games.id).join(Teams, Teams.id == Games.away_team_id).where(
-            (Teams.abbreviation == opponent) &
+            (Teams.abbreviation == item['opponent']) &
             (Games.game_date == item['date'])
         )
         game_id = self.session.execute(query).scalars().one()
