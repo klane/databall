@@ -1,4 +1,7 @@
-import sqlite3
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+
+from databall.db import Covers, Games, Teams
 
 
 class GamePipeline:
@@ -12,30 +15,19 @@ class GamePipeline:
     def __init__(self, db, drop):
         self.db = db
         self.drop = drop
-        self.con = None
-        self.cur = None
+        self.session = None
 
     def open_spider(self, spider):
-        self.con = sqlite3.connect(self.db)
-        self.cur = self.con.cursor()
+        engine = create_engine(f'sqlite:///{self.db}')
+        self.session = Session(bind=engine, future=True)
 
         if self.drop:
-            self.cur.executescript(
-                '''
-                DROP TABLE IF EXISTS betting;
-                CREATE TABLE betting(
-                    GAME_ID TEXT,
-                    HOME_SPREAD REAL,
-                    HOME_SPREAD_WL TEXT,
-                    OVER_UNDER REAL,
-                    OU_RESULT TEXT
-                );
-                '''
-            )
+            Covers.__table__.drop(engine)
+            Covers.__table__.create(engine)
 
     def close_spider(self, spider):
-        self.cur.execute('VACUUM')
-        self.con.close()
+        self.session.commit()
+        self.session.close()
 
     def process_item(self, item, spider):
         # only store home games to avoid duplicating data
@@ -63,38 +55,19 @@ class GamePipeline:
         if opponent in team_abbr:
             opponent = team_abbr[opponent]
 
-        # find opponent ID by abbreviation
-        self.cur.execute(f'SELECT ID FROM teams WHERE ABBREVIATION IS "{opponent}"')
-        opp_id = self.cur.fetchone()[0]
-
-        # find game by opponent and date
-        self.cur.execute(
-            f'''
-            SELECT ID FROM games
-            WHERE AWAY_TEAM_ID == {opp_id} AND GAME_DATE IS "{item['date']}"
-            '''
+        # find game by opponent and date or raise exception if not found
+        query = select(Games.id).join(Teams, Teams.id == Games.away_team_id).where(
+            (Teams.abbreviation == opponent) &
+            (Games.game_date == item['date'])
         )
-        game_id = self.cur.fetchone()
-
-        # raise exception if no matching game found
-        if game_id is None:
-            raise ValueError('No game found')
+        game_id = self.session.execute(query).scalars().one()
 
         # insert row into database
-        values = (
-            game_id[0],
-            item['spread'],
-            item['spread_result'],
-            item['over_under'],
-            item['over_under_result'],
+        row = Covers(
+            game_id=game_id,
+            home_spread=item['spread'],
+            home_spread_result=item['spread_result'],
+            over_under=item['over_under'],
+            over_under_result=item['over_under_result'],
         )
-        self.cur.execute(
-            '''
-            INSERT INTO betting(
-                GAME_ID, HOME_SPREAD, HOME_SPREAD_WL, OVER_UNDER, OU_RESULT
-            )
-            VALUES(?, ?, ?, ?, ?)
-            ''',
-            values,
-        )
-        self.con.commit()
+        self.session.add(row)
