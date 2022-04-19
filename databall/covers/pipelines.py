@@ -38,9 +38,13 @@ class GamePipeline:
 
     def store_item(self, item):
         # find game by opponent and date or raise exception if not found
-        query = select(Games.id).join(Teams, Teams.id == Games.away_team_id).where(
-            (Teams.abbreviation == item['opponent']) &
-            (Games.game_date == item['date'])
+        query = (
+            select(Games.id)
+            .join(Teams, Teams.id == Games.away_team_id)
+            .where(
+                (Teams.abbreviation == item['opponent'])
+                & (Games.game_date == item['date'])
+            )
         )
         game_id = self.session.execute(query).scalars().one()
 
