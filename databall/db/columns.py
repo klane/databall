@@ -2,7 +2,7 @@ from sqlalchemy import CheckConstraint, Column, ForeignKey
 
 
 def foreign_key(column, *args, **kwargs):
-    return Column(column.type, ForeignKey(column), *args, **kwargs)
+    return Column(*args, column.type, ForeignKey(column), **kwargs)
 
 
 def positive_column(column_name, column_type, *args, **kwargs):
