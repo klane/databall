@@ -1,6 +1,9 @@
+from functools import partial
+
 from sqlalchemy import Column, Integer, String
 
-from databall.db.base import Base, ForeignID
+from databall.db import columns
+from databall.db.base import Base
 
 
 class Players(Base):
@@ -8,6 +11,4 @@ class Players(Base):
     name = Column(String(100), nullable=False)
 
 
-class PlayerID(ForeignID):
-    __table__ = Players
-    inherit_cache = True
+PlayerID = partial(columns.foreign_key, Players.id)

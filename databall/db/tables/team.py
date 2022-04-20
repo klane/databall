@@ -1,6 +1,9 @@
+from functools import partial
+
 from sqlalchemy import Column, Integer, String
 
-from databall.db.base import Base, ForeignID
+from databall.db import columns
+from databall.db.base import Base
 
 
 class Teams(Base):
@@ -9,6 +12,4 @@ class Teams(Base):
     abbreviation = Column(String(3), nullable=False, unique=True)
 
 
-class TeamID(ForeignID):
-    __table__ = Teams
-    inherit_cache = True
+TeamID = partial(columns.foreign_key, Teams.id)
