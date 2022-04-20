@@ -1,6 +1,6 @@
 import re
 
-from sqlalchemy import CheckConstraint, Column
+from sqlalchemy import CheckConstraint, Column, ForeignKey
 from sqlalchemy.orm import as_declarative, declared_attr
 
 
@@ -16,6 +16,15 @@ class Base:
         columns_to_drop = set(df.columns) - columns
         df_save = df.drop(columns_to_drop, axis=1)
         df_save.to_sql(cls.__tablename__, engine, if_exists='append', index=False)
+
+
+class ForeignID(Column):
+    __table__ = None
+
+    def __init__(self, *args, **kwargs):
+        column = self.__table__.id
+        args += (column.type, ForeignKey(column),)
+        super().__init__(*args, **kwargs)
 
 
 class PositiveColumn(Column):

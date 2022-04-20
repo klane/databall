@@ -1,9 +1,9 @@
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, Integer
 
 from databall.db.base import Base, PositiveColumn, PriorityColumn
-from databall.db.tables.game import GAME_ID
-from databall.db.tables.player import PLAYER_ID
-from databall.db.tables.team import TEAM_ID
+from databall.db.tables.game import GameID
+from databall.db.tables.player import PlayerID
+from databall.db.tables.team import TeamID
 
 
 class Stats:
@@ -27,11 +27,11 @@ class Stats:
 
 
 class PlayerStats(Base, Stats):
-    player_id = PriorityColumn(1, PLAYER_ID, ForeignKey('players.id'), primary_key=True)
-    team_id = PriorityColumn(2, TEAM_ID, ForeignKey('teams.id'), primary_key=True)
-    game_id = PriorityColumn(3, GAME_ID, ForeignKey('games.id'), primary_key=True)
+    player_id = PlayerID(primary_key=True)
+    team_id = TeamID(primary_key=True)
+    game_id = GameID(primary_key=True)
 
 
 class TeamStats(Base, Stats):
-    team_id = PriorityColumn(1, TEAM_ID, ForeignKey('teams.id'), primary_key=True)
-    game_id = PriorityColumn(2, GAME_ID, ForeignKey('games.id'), primary_key=True)
+    team_id = TeamID(primary_key=True)
+    game_id = GameID(primary_key=True)
