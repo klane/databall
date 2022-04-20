@@ -1,28 +1,29 @@
 from sqlalchemy import Column, Integer
 
-from databall.db.base import Base, PositiveColumn, PriorityColumn
+from databall.db import columns
+from databall.db.base import Base, PriorityColumn
 from databall.db.tables.game import GameID
 from databall.db.tables.player import PlayerID
 from databall.db.tables.team import TeamID
 
 
 class Stats:
-    min = PositiveColumn('min', Integer)
-    fgm = PositiveColumn('fgm', Integer)
-    fga = PositiveColumn('fga', Integer)
-    fg3m = PositiveColumn('fg3m', Integer)
-    fg3a = PositiveColumn('fg3a', Integer)
-    ftm = PositiveColumn('ftm', Integer)
-    fta = PositiveColumn('fta', Integer)
-    oreb = PositiveColumn('oreb', Integer)
-    dreb = PositiveColumn('dreb', Integer)
-    reb = PositiveColumn('reb', Integer)
-    ast = PositiveColumn('ast', Integer)
-    stl = PositiveColumn('stl', Integer)
-    blk = PositiveColumn('blk', Integer)
-    tov = PositiveColumn('tov', Integer)
-    pf = PositiveColumn('pf', Integer)
-    pts = PositiveColumn('pts', Integer)
+    min = columns.positive_column('min', Integer)
+    fgm = columns.positive_column('fgm', Integer)
+    fga = columns.positive_column('fga', Integer)
+    fg3m = columns.positive_column('fg3m', Integer)
+    fg3a = columns.positive_column('fg3a', Integer)
+    ftm = columns.positive_column('ftm', Integer)
+    fta = columns.positive_column('fta', Integer)
+    oreb = columns.positive_column('oreb', Integer)
+    dreb = columns.positive_column('dreb', Integer)
+    reb = columns.positive_column('reb', Integer)
+    ast = columns.positive_column('ast', Integer)
+    stl = columns.positive_column('stl', Integer)
+    blk = columns.positive_column('blk', Integer)
+    tov = columns.positive_column('tov', Integer)
+    pf = columns.positive_column('pf', Integer)
+    pts = columns.positive_column('pts', Integer)
     plus_minus = Column(Integer)
 
 
