@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer
+from sqlalchemy.orm import declarative_mixin
 
 from databall.db import columns
 from databall.db.base import Base, PriorityColumn
@@ -7,6 +8,7 @@ from databall.db.tables.player import PlayerID
 from databall.db.tables.team import TeamID
 
 
+@declarative_mixin
 class Stats:
     min = columns.positive_column('min', Integer)
     fgm = columns.positive_column('fgm', Integer)
