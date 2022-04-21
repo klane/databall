@@ -1,8 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_mixin
+from sqlalchemy.orm import declarative_mixin, declared_attr
 
 from databall.db.base import Base
-from databall.db.columns import priority_column
+from databall.db.columns import PriorityColumn
 
 
 class Teams(Base):
@@ -13,6 +13,6 @@ class Teams(Base):
 
 @declarative_mixin
 class TeamID:
-    @priority_column
+    @declared_attr
     def team_id(cls):
-        return Column(ForeignKey(Teams.id), primary_key=True)
+        return PriorityColumn(ForeignKey(Teams.id), primary_key=True)
