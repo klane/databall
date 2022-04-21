@@ -1,6 +1,5 @@
 import re
 
-from sqlalchemy import Column
 from sqlalchemy.orm import as_declarative, declared_attr
 
 
@@ -16,9 +15,3 @@ class Base:
         columns_to_drop = set(df.columns) - columns
         df_save = df.drop(columns_to_drop, axis=1)
         df_save.to_sql(cls.__tablename__, engine, if_exists='append', index=False)
-
-
-class PriorityColumn(Column):
-    def __init__(self, creation_order=1, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._creation_order = creation_order

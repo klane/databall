@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer
 from sqlalchemy.orm import declarative_mixin
 
 from databall.db import columns
-from databall.db.base import Base, PriorityColumn
+from databall.db.base import Base
 from databall.db.tables.game import GameID
 from databall.db.tables.player import PlayerID
 from databall.db.tables.team import TeamID
@@ -30,11 +30,24 @@ class Stats:
 
 
 class PlayerStats(Base, Stats):
-    player_id = PlayerID(primary_key=True)
-    team_id = TeamID(primary_key=True)
-    game_id = GameID(primary_key=True)
+    @columns.priority_column
+    def player_id(cls):
+        return PlayerID(primary_key=True)
+
+    @columns.priority_column
+    def team_id(cls):
+        return TeamID(primary_key=True)
+
+    @columns.priority_column
+    def game_id(cls):
+        return GameID(primary_key=True)
 
 
 class TeamStats(Base, Stats):
-    team_id = TeamID(primary_key=True)
-    game_id = GameID(primary_key=True)
+    @columns.priority_column
+    def team_id(cls):
+        return TeamID(primary_key=True)
+
+    @columns.priority_column
+    def game_id(cls):
+        return GameID(primary_key=True)
