@@ -29,25 +29,9 @@ class Stats:
     plus_minus = Column(Integer)
 
 
-class PlayerStats(Base, Stats):
-    @columns.priority_column
-    def player_id(cls):
-        return PlayerID(primary_key=True)
-
-    @columns.priority_column
-    def team_id(cls):
-        return TeamID(primary_key=True)
-
-    @columns.priority_column
-    def game_id(cls):
-        return GameID(primary_key=True)
+class PlayerStats(Base, PlayerID, TeamID, GameID, Stats):
+    pass
 
 
-class TeamStats(Base, Stats):
-    @columns.priority_column
-    def team_id(cls):
-        return TeamID(primary_key=True)
-
-    @columns.priority_column
-    def game_id(cls):
-        return GameID(primary_key=True)
+class TeamStats(Base, TeamID, GameID, Stats):
+    pass

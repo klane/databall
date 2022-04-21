@@ -1,11 +1,7 @@
 from functools import wraps
 
-from sqlalchemy import CheckConstraint, Column, ForeignKey
+from sqlalchemy import CheckConstraint, Column
 from sqlalchemy.orm import declared_attr
-
-
-def foreign_key(column, *args, **kwargs):
-    return Column(*args, column.type, ForeignKey(column), **kwargs)
 
 
 def positive_column(column_name, column_type, *args, **kwargs):

@@ -1,9 +1,8 @@
-from functools import partial
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_mixin
 
-from sqlalchemy import Column, Integer, String
-
-from databall.db import columns
 from databall.db.base import Base
+from databall.db.columns import priority_column
 
 
 class Players(Base):
@@ -11,4 +10,8 @@ class Players(Base):
     name = Column(String(100), nullable=False)
 
 
-PlayerID = partial(columns.foreign_key, Players.id)
+@declarative_mixin
+class PlayerID:
+    @priority_column
+    def player_id(cls):
+        return Column(ForeignKey(Players.id), primary_key=True)
