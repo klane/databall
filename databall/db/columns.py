@@ -1,9 +1,23 @@
 from sqlalchemy import CheckConstraint, Column
 
 
-def positive_column(column_name, column_type, *args, **kwargs):
-    constraint = CheckConstraint(f'{column_name} >= 0')
-    return Column(column_name, column_type, constraint, *args, **kwargs)
+class PositiveColumn(Column):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._constraints = set()
+
+    @property
+    def constraints(self):
+        if self.name is not None and len(self._constraints) == 0:
+            constraint = CheckConstraint(f'{self.name} >= 0')
+            self._constraints.add(constraint)
+            constraint._set_parent(self)
+
+        return self._constraints
+
+    @constraints.setter
+    def constraints(self, constraints):
+        self._constraints = constraints
 
 
 _priority_order = 1
