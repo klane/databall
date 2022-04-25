@@ -45,7 +45,7 @@ class GameSpider(Spider):
 
     def parse(self, response):
         past_results = '//div[@id="TP_pastResults"]'
-        start_year, year = re.search(r'(\d+)-(\d+)', response.url).group(1, 2)
+        start_year, year = re.search(r'(\d+)-(\d+)', response.url).groups()
         date = ''
 
         for row in response.xpath(f'{past_results}//table/tbody/tr'):
