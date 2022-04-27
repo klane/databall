@@ -26,6 +26,7 @@ class GamePipeline:
     def close_spider(self, spider):
         self.session.commit()
         self.session.close()
+        self.session = None
 
     def process_item(self, item, spider):
         # only store home games to avoid duplicating data
