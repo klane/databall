@@ -1,25 +1,23 @@
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from databall.db import Covers, Games, Teams
+from databall.db.session import Session
 
 
 class GamePipeline:
     @classmethod
     def from_crawler(cls, crawler):
         settings = crawler.settings
-        db = settings.get('DATABASE', ':memory:')
         drop = settings.getbool('DROP', False)
-        return cls(db, drop)
+        return cls(drop)
 
-    def __init__(self, db, drop):
-        self.db = db
+    def __init__(self, drop):
         self.drop = drop
         self.session = None
 
     def open_spider(self, spider):
-        engine = create_engine(f'sqlite:///{self.db}')
-        self.session = Session(bind=engine, future=True)
+        self.session = Session()
+        engine = self.session.get_bind()
 
         if self.drop:
             Covers.__table__.drop(engine)
