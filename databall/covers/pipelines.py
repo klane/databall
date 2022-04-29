@@ -5,23 +5,11 @@ from databall.db.session import Session
 
 
 class GamePipeline:
-    @classmethod
-    def from_crawler(cls, crawler):
-        settings = crawler.settings
-        drop = settings.getbool('DROP', False)
-        return cls(drop)
-
-    def __init__(self, drop):
-        self.drop = drop
+    def __init__(self):
         self.session = None
 
     def open_spider(self, spider):
         self.session = Session()
-        engine = self.session.get_bind()
-
-        if self.drop:
-            Covers.__table__.drop(engine)
-            Covers.__table__.create(engine)
 
     def close_spider(self, spider):
         self.session.commit()
@@ -32,6 +20,7 @@ class GamePipeline:
         # only store home games to avoid duplicating data
         if item['home']:
             self.store_item(item)
+            spider.crawler.stats.inc_value('games')
 
         return item
 

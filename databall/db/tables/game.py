@@ -1,6 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_mixin, declared_attr
 
+from databall.data import get_games
 from databall.db.base import Base
 from databall.db.columns import PriorityColumn
 from databall.db.tables.team import Teams
@@ -14,6 +15,11 @@ class Games(Base):
     game_date = Column(String(10))
     matchup = Column(String(11))
     home_wl = Column(String(1))
+
+    @classmethod
+    def populate(cls, season, **kwargs):
+        games = get_games(season, **kwargs)
+        cls.save_df(games)
 
 
 @declarative_mixin

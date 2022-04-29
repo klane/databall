@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import declarative_mixin
 
+from databall.data import get_player_stats, get_team_stats
 from databall.db.base import Base
 from databall.db.columns import PositiveColumn
 from databall.db.tables.game import GameID
@@ -30,8 +31,14 @@ class Stats:
 
 
 class PlayerStats(Base, PlayerID, TeamID, GameID, Stats):
-    pass
+    @classmethod
+    def populate(cls, season, **kwargs):
+        stats = get_player_stats(season, **kwargs)
+        cls.save_df(stats)
 
 
 class TeamStats(Base, TeamID, GameID, Stats):
-    pass
+    @classmethod
+    def populate(cls, season, **kwargs):
+        stats = get_team_stats(season, **kwargs)
+        cls.save_df(stats)
