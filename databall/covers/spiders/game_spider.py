@@ -38,6 +38,9 @@ class GameSpider(Spider):
         else:
             teams = teams.split(',')
 
+        if isinstance(season, int):
+            season = f'{season}-{season+1}'
+
         self.start_urls = [
             f'https://www.covers.com/sport/basketball/nba/teams/main/{team}/{season}'
             for team in teams
