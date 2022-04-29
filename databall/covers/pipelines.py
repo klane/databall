@@ -19,12 +19,11 @@ class GamePipeline:
     def process_item(self, item, spider):
         # only store home games to avoid duplicating data
         if item['home']:
-            self.store_item(item)
-            spider.crawler.stats.inc_value('games')
+            self.store_item(item, spider)
 
         return item
 
-    def store_item(self, item):
+    def store_item(self, item, spider):
         # find game by opponent and date or raise exception if not found
         query = (
             select(Games.id)
@@ -36,12 +35,14 @@ class GamePipeline:
         )
         game_id = self.session.execute(query).scalars().one()
 
-        # insert row into database
-        row = Covers(
-            game_id=game_id,
-            home_spread=item['spread'],
-            home_spread_result=item['spread_result'],
-            over_under=item['over_under'],
-            over_under_result=item['over_under_result'],
-        )
-        self.session.add(row)
+        # insert row into database if not present
+        if game_id not in Covers.primary_keys.values:
+            row = Covers(
+                game_id=game_id,
+                home_spread=item['spread'],
+                home_spread_result=item['spread_result'],
+                over_under=item['over_under'],
+                over_under_result=item['over_under_result'],
+            )
+            self.session.add(row)
+            spider.crawler.stats.inc_value('games')
