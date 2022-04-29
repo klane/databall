@@ -2,8 +2,7 @@ from enum import Enum
 from functools import cache
 
 import pandas as pd
-from nba_api.stats.endpoints.commonallplayers import CommonAllPlayers
-from nba_api.stats.endpoints.leaguegamelog import LeagueGameLog
+from nba_api.stats.endpoints import CommonAllPlayers, LeagueGameLog
 from nba_api.stats.library.parameters import PlayerOrTeamAbbreviation
 from nba_api.stats.static.teams import get_teams as get_teams_static
 
