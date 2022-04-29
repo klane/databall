@@ -17,8 +17,8 @@ class Games(Base):
     home_wl = Column(String(1))
 
     @classmethod
-    def populate(cls, season, **kwargs):
-        games = get_games(season, **kwargs)
+    def populate(cls, season, season_type, **kwargs):
+        games = get_games(season, season_type, **kwargs)
         cls.save_df(games)
 
 

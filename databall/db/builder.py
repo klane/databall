@@ -1,4 +1,5 @@
 import databall.db.settings as settings
+from databall.data import SeasonType
 from databall.db import Covers, Games, Players, PlayerStats, Teams, TeamStats
 from databall.db.base import Base
 from databall.db.session import Session
@@ -19,7 +20,9 @@ def init():
 
 
 def populate(season):
-    Games.populate(season)
-    TeamStats.populate(season)
-    PlayerStats.populate(season)
+    for season_type in SeasonType:
+        Games.populate(season, season_type)
+        TeamStats.populate(season, season_type)
+        PlayerStats.populate(season, season_type)
+
     Covers.populate(season)

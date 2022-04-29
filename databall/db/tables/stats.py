@@ -32,13 +32,13 @@ class Stats:
 
 class PlayerStats(Base, PlayerID, TeamID, GameID, Stats):
     @classmethod
-    def populate(cls, season, **kwargs):
-        stats = get_player_stats(season, **kwargs)
+    def populate(cls, season, season_type, **kwargs):
+        stats = get_player_stats(season, season_type, **kwargs)
         cls.save_df(stats)
 
 
 class TeamStats(Base, TeamID, GameID, Stats):
     @classmethod
-    def populate(cls, season, **kwargs):
-        stats = get_team_stats(season, **kwargs)
+    def populate(cls, season, season_type, **kwargs):
+        stats = get_team_stats(season, season_type, **kwargs)
         cls.save_df(stats)

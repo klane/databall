@@ -3,8 +3,16 @@ from functools import cache
 
 import pandas as pd
 from nba_api.stats.endpoints import CommonAllPlayers, LeagueGameLog
-from nba_api.stats.library.parameters import PlayerOrTeamAbbreviation
+from nba_api.stats.library.parameters import (
+    PlayerOrTeamAbbreviation,
+    SeasonTypePlayoffs,
+)
 from nba_api.stats.static.teams import get_teams as get_teams_static
+
+
+class SeasonType(Enum):
+    REGULAR = SeasonTypePlayoffs.regular
+    PLAYOFFS = SeasonTypePlayoffs.playoffs
 
 
 class StatsType(Enum):
@@ -12,8 +20,8 @@ class StatsType(Enum):
     TEAM = PlayerOrTeamAbbreviation.team
 
 
-def get_games(season, **kwargs):
-    team_stats = get_team_stats(season, **kwargs)
+def get_games(season, season_type, **kwargs):
+    team_stats = get_team_stats(season, season_type, **kwargs)
     away_index = team_stats.MATCHUP.str.contains('@')
 
     home = team_stats[~away_index].copy()
@@ -41,15 +49,19 @@ def get_players(**kwargs):
     return players
 
 
-def get_player_stats(season, **kwargs):
-    return get_stats(season, StatsType.PLAYER, **kwargs)
+def get_player_stats(season, season_type, **kwargs):
+    return get_stats(season, season_type, StatsType.PLAYER, **kwargs)
 
 
 @cache
-def get_stats(season, stats_type, **kwargs):
-    print(f'Downloading {season} {stats_type.name.lower()} stats')
+def get_stats(season, season_type, stats_type, **kwargs):
+    season_str = f'{season} {season_type.value.lower()}'
+    print(f'Downloading {season_str} {stats_type.name.lower()} stats')
     stats = LeagueGameLog(
-        season=season, player_or_team_abbreviation=stats_type.value, **kwargs
+        season=season,
+        season_type_all_star=season_type.value,
+        player_or_team_abbreviation=stats_type.value,
+        **kwargs,
     )
     return stats.get_data_frames()[0]
 
@@ -62,5 +74,5 @@ def get_teams():
     return teams
 
 
-def get_team_stats(season, **kwargs):
-    return get_stats(season, StatsType.TEAM, **kwargs)
+def get_team_stats(season, season_type, **kwargs):
+    return get_stats(season, season_type, StatsType.TEAM, **kwargs)
