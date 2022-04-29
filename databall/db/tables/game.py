@@ -12,6 +12,7 @@ class Games(Base):
     home_team_id = Column(ForeignKey(Teams.id), nullable=False)
     away_team_id = Column(ForeignKey(Teams.id), nullable=False)
     season = Column(Integer)
+    season_type = Column(String(8))
     game_date = Column(String(10))
     matchup = Column(String(11))
     home_wl = Column(String(1))

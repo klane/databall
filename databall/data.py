@@ -63,7 +63,9 @@ def get_stats(season, season_type, stats_type, **kwargs):
         player_or_team_abbreviation=stats_type.value,
         **kwargs,
     )
-    return stats.get_data_frames()[0]
+    stats = stats.get_data_frames()[0]
+    stats['SEASON_TYPE'] = season_type.name
+    return stats
 
 
 def get_teams():
