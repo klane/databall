@@ -4,12 +4,13 @@ from functools import cache
 import pandas as pd
 from nba_api.stats.endpoints.commonallplayers import CommonAllPlayers
 from nba_api.stats.endpoints.leaguegamelog import LeagueGameLog
+from nba_api.stats.library.parameters import PlayerOrTeamAbbreviation
 from nba_api.stats.static.teams import get_teams as get_teams_static
 
 
 class StatsType(Enum):
-    PLAYER = 'P'
-    TEAM = 'T'
+    PLAYER = PlayerOrTeamAbbreviation.player
+    TEAM = PlayerOrTeamAbbreviation.team
 
 
 def get_games(season, **kwargs):
