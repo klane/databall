@@ -4,14 +4,9 @@ from datetime import datetime
 import pandas as pd
 from nba_api.stats.static.teams import get_teams
 from scrapy import Request, Spider
-from scrapy.selector import SelectorList
 
 from databall.covers.items import Game
 from databall.covers.loaders import GameLoader
-
-
-def get_text(response):
-    return response.xpath('text()').get().strip()
 
 
 class GameSpider(Spider):
@@ -21,9 +16,8 @@ class GameSpider(Spider):
         'ITEM_PIPELINES': {'databall.covers.pipelines.GamePipeline': 400},
     }
 
-    def __init__(self, teams=None, season='', multiple_seasons=False, *args, **kwargs):
+    def __init__(self, teams=None, season='', stop_season=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.multiple_seasons = multiple_seasons
 
         if teams is None:
             teams = [
@@ -40,6 +34,11 @@ class GameSpider(Spider):
 
         if isinstance(season, int):
             season = f'{season}-{season+1}'
+
+        if isinstance(stop_season, int):
+            self.stop_season = f'{stop_season}-{stop_season+1}'
+        else:
+            self.stop_season = stop_season
 
         self.start_urls = [
             f'https://www.covers.com/sport/basketball/nba/teams/main/{team}/{season}'
@@ -84,19 +83,20 @@ class GameSpider(Spider):
 
             yield item
 
-        if self.multiple_seasons:
+        if self.stop_season is not None:
             # find selected season
-            season = response.xpath(f'{past_results}//span[@id="TP-Season-Select"]')
-            season = get_text(season)
+            xpath = f'{past_results}//span[@id="TP-Season-Select"]/text()'
+            selected_season = response.xpath(xpath).get().strip()
 
             # get other seasons for the current team
-            history = response.xpath(f'{past_results}//div[@id="TP-Season-Drop"]/li/a')
+            xpath = f'{past_results}//div[@id="TP-Season-Drop"]/li/a/text()'
+            seasons = [s.strip() for s in response.xpath(xpath).getall()]
 
-            # get seasons prior to the selected season
-            history = SelectorList(row for row in history if get_text(row) < season)
+            # get next season between the selected and stop seasons
+            seasons = [s for s in seasons if selected_season < s <= self.stop_season]
+            next_season = min(seasons, default=None)
 
-            # scrape previous season if one exists
-            url = history.xpath('@href').get()
-
-            if url is not None:
-                yield Request(response.urljoin(url), callback=self.parse)
+            # scrape next season if one exists
+            if next_season is not None:
+                url = response.url.replace(selected_season, next_season)
+                yield Request(url, callback=self.parse)
