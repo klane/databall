@@ -1,23 +1,32 @@
-import enum
+from enum import Enum
 
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from sqlalchemy import Column, Enum, Float
+from sqlalchemy import Column, Float
 
 from databall.covers import GameSpider
 from databall.db.base import Base
-from databall.db.columns import PositiveColumn
+from databall.db.columns import PositiveColumn, ValuesEnum
 from databall.db.tables.game import GameID
 
-SpreadResult = enum.Enum('SpreadResult', 'W L P')
-OverUnderResult = enum.Enum('OverUnderResult', 'O U P')
+
+class SpreadResult(Enum):
+    WIN = 'W'
+    LOSS = 'L'
+    PUSH = 'P'
+
+
+class OverUnderResult(Enum):
+    OVER = 'O'
+    UNDER = 'U'
+    PUSH = 'P'
 
 
 class Covers(Base, GameID):
     home_spread = Column(Float(precision=1))
-    home_spread_result = Column(Enum(SpreadResult, create_constraint=True))
+    home_spread_result = Column(ValuesEnum(SpreadResult, create_constraint=True))
     over_under = PositiveColumn(Float(precision=1))
-    over_under_result = Column(Enum(OverUnderResult, create_constraint=True))
+    over_under_result = Column(ValuesEnum(OverUnderResult, create_constraint=True))
 
     @classmethod
     def populate(cls, season, *args, **kwargs):

@@ -1,4 +1,4 @@
-from sqlalchemy import CheckConstraint, Column
+from sqlalchemy import CheckConstraint, Column, Enum
 
 
 class PositiveColumn(Column):
@@ -29,3 +29,9 @@ class PriorityColumn(Column):
         super().__init__(*args, **kwargs)
         self._creation_order = _priority_order
         _priority_order += 1
+
+
+class ValuesEnum(Enum):
+    def __init__(self, *enums, **kwargs):
+        kwargs['values_callable'] = lambda enum: [e.value for e in enum]
+        super().__init__(*enums, **kwargs)

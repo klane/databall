@@ -5,10 +5,13 @@ from sqlalchemy.orm import declarative_mixin, declared_attr
 
 from databall.data import SeasonType, get_games
 from databall.db.base import Base
-from databall.db.columns import PriorityColumn
+from databall.db.columns import PriorityColumn, ValuesEnum
 from databall.db.tables.team import Teams
 
-GameResult = enum.Enum('GameResult', 'W L')
+
+class GameResult(enum.Enum):
+    WIN = 'W'
+    LOSS = 'L'
 
 
 class Games(Base):
@@ -19,7 +22,7 @@ class Games(Base):
     season_type = Column(Enum(SeasonType, create_constraint=True))
     game_date = Column(String(10))
     matchup = Column(String(11))
-    home_wl = Column(Enum(GameResult, create_constraint=True))
+    home_wl = Column(ValuesEnum(GameResult, create_constraint=True))
 
     @classmethod
     def populate(cls, season, season_type, **kwargs):

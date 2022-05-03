@@ -47,7 +47,7 @@ class GamePipeline:
                 raise ValueError(f'Scraped {team} team score does not match database')
 
         # check that scraped result matches database
-        if item['result'] != game.home_wl.name:
+        if item['result'] != game.home_wl:
             raise ValueError('Scraped result does not match database')
 
         # insert row into database if not present
