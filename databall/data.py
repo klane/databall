@@ -10,12 +10,12 @@ from nba_api.stats.library.parameters import (
 from nba_api.stats.static.teams import get_teams as get_teams_static
 
 
-class SeasonType(Enum):
+class SeasonType(str, Enum):
     REGULAR = SeasonTypePlayoffs.regular
     PLAYOFFS = SeasonTypePlayoffs.playoffs
 
 
-class StatsType(Enum):
+class StatsType(str, Enum):
     PLAYER = PlayerOrTeamAbbreviation.player
     TEAM = PlayerOrTeamAbbreviation.team
 

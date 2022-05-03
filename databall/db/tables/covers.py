@@ -10,13 +10,13 @@ from databall.db.columns import PositiveColumn, ValuesEnum
 from databall.db.tables.game import GameID
 
 
-class SpreadResult(Enum):
+class SpreadResult(str, Enum):
     WIN = 'W'
     LOSS = 'L'
     PUSH = 'P'
 
 
-class OverUnderResult(Enum):
+class OverUnderResult(str, Enum):
     OVER = 'O'
     UNDER = 'U'
     PUSH = 'P'

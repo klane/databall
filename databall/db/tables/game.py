@@ -9,7 +9,7 @@ from databall.db.columns import PriorityColumn, ValuesEnum
 from databall.db.tables.team import Teams
 
 
-class GameResult(enum.Enum):
+class GameResult(str, enum.Enum):
     WIN = 'W'
     LOSS = 'L'
 
