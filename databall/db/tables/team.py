@@ -14,6 +14,7 @@ class Teams(Base):
     @classmethod
     def populate(cls):
         teams = get_teams()
+        teams.rename(columns={'full_name': 'name'}, inplace=True)
         cls.save_df(teams)
 
 

@@ -31,19 +31,14 @@ class Base:
 
     @classmethod
     def save_df(cls, df):
-        df_primary = cls.primary_keys
-        df_primary.columns = df_primary.columns.str.upper()
-
-        columns = list(df_primary.columns)
-        df_save = df.merge(df_primary, how='left', on=columns, indicator=True)
+        df_save = df.merge(cls.primary_keys, how='left', indicator=True)
         df_save = df_save[df_save._merge == 'left_only']
 
         if df_save.empty:
             print(f'All primary keys already in {cls.__tablename__}')
             return
 
-        columns = {column.upper() for column in cls.__table__.columns.keys()}
-        columns_to_drop = set(df_save.columns) - columns
+        columns_to_drop = set(df_save.columns) - set(cls.__table__.columns.keys())
         df_save = df_save.drop(columns_to_drop, axis=1)
 
         with Session() as session:

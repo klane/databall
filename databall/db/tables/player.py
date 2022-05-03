@@ -13,6 +13,10 @@ class Players(Base):
     @classmethod
     def populate(cls, **kwargs):
         players = get_players(**kwargs)
+        players.rename(
+            columns={'person_id': 'id', 'display_first_last': 'name'},
+            inplace=True,
+        )
         cls.save_df(players)
 
 
