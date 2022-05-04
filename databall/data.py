@@ -27,7 +27,7 @@ def get_players(**kwargs):
     return players
 
 
-def get_player_stats(season, season_type, **kwargs):
+def get_player_stats(season, season_type=SeasonType.REGULAR, **kwargs):
     return get_stats(season, season_type, StatsType.PLAYER, **kwargs)
 
 
@@ -51,5 +51,5 @@ def get_teams():
     return pd.DataFrame(get_teams_static())
 
 
-def get_team_stats(season, season_type, **kwargs):
+def get_team_stats(season, season_type=SeasonType.REGULAR, **kwargs):
     return get_stats(season, season_type, StatsType.TEAM, **kwargs)
