@@ -1,17 +1,11 @@
-import enum
-
 from sqlalchemy import Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_mixin, declared_attr
 
-from databall.data import SeasonType, get_team_stats
+from databall.data import get_team_stats
 from databall.db.base import Base
 from databall.db.columns import PriorityColumn, ValuesEnum
 from databall.db.tables.team import Teams
-
-
-class GameResult(str, enum.Enum):
-    WIN = 'W'
-    LOSS = 'L'
+from databall.types import GameResult, SeasonType
 
 
 class Games(Base):

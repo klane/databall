@@ -1,23 +1,10 @@
-from enum import Enum
 from functools import cache
 
 import pandas as pd
 from nba_api.stats.endpoints import CommonAllPlayers, LeagueGameLog
-from nba_api.stats.library.parameters import (
-    PlayerOrTeamAbbreviation,
-    SeasonTypePlayoffs,
-)
 from nba_api.stats.static.teams import get_teams as get_teams_static
 
-
-class SeasonType(str, Enum):
-    REGULAR = SeasonTypePlayoffs.regular
-    PLAYOFFS = SeasonTypePlayoffs.playoffs
-
-
-class StatsType(str, Enum):
-    PLAYER = PlayerOrTeamAbbreviation.player
-    TEAM = PlayerOrTeamAbbreviation.team
+from databall.types import SeasonType, StatsType
 
 
 @cache

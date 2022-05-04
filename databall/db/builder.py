@@ -5,10 +5,10 @@ from nba_api.stats.library.parameters import Season
 
 import databall.covers.settings as scrapy_settings
 import databall.db.settings as settings
-from databall.data import SeasonType
 from databall.db import Covers, Games, Players, PlayerStats, Teams, TeamStats
 from databall.db.base import Base
 from databall.db.session import Session
+from databall.types import SeasonType
 
 DEFAULT_DELAY = 1.0
 DEFAULT_DROP = False

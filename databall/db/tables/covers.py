@@ -1,5 +1,3 @@
-from enum import Enum
-
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from sqlalchemy import Column, Float
@@ -8,18 +6,7 @@ from databall.covers import GameSpider
 from databall.db.base import Base
 from databall.db.columns import PositiveColumn, ValuesEnum
 from databall.db.tables.game import GameID
-
-
-class SpreadResult(str, Enum):
-    WIN = 'W'
-    LOSS = 'L'
-    PUSH = 'P'
-
-
-class OverUnderResult(str, Enum):
-    OVER = 'O'
-    UNDER = 'U'
-    PUSH = 'P'
+from databall.types import OverUnderResult, SpreadResult
 
 
 class Covers(Base, GameID):
