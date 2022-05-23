@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.orm import declarative_mixin
 
-from databall.data import get_player_stats, get_team_stats
+from databall.api import get_player_stats, get_team_stats
 from databall.db.base import Base
 from databall.db.columns import PositiveColumn
 from databall.db.tables.game import GameID

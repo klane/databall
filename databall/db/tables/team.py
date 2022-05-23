@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_mixin, declared_attr
 
-from databall.data import get_teams
+from databall.api import get_teams
 from databall.db.base import Base
 from databall.db.columns import PriorityColumn
 
