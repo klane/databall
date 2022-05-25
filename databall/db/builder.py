@@ -1,10 +1,9 @@
 import random
 import time
 
-from nba_api.stats.library.parameters import Season
-
 import databall.covers.settings as scrapy_settings
 import databall.db.settings as settings
+from databall.constants import CURRENT_SEASON, MIN_SEASON
 from databall.db import Covers, Games, Players, PlayerStats, Teams, TeamStats
 from databall.db.base import Base
 from databall.db.session import Session
@@ -12,7 +11,6 @@ from databall.types import SeasonType
 
 DEFAULT_DELAY = 1.0
 DEFAULT_DROP = False
-MIN_SEASON = 2006  # earliest season in Covers data
 
 
 def init():
@@ -27,7 +25,7 @@ def init():
     Players.populate()
 
 
-def populate(start_season=MIN_SEASON, stop_season=Season.current_season_year):
+def populate(start_season=MIN_SEASON, stop_season=CURRENT_SEASON):
     duration = getattr(scrapy_settings, 'DOWNLOAD_DELAY', DEFAULT_DELAY)
 
     for season in range(start_season, stop_season + 1):
@@ -43,7 +41,7 @@ def populate(start_season=MIN_SEASON, stop_season=Season.current_season_year):
 
 
 def update():
-    populate(start_season=Season.current_season_year)
+    populate(start_season=CURRENT_SEASON)
 
 
 def wait(duration):
