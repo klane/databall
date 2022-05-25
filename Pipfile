@@ -10,6 +10,7 @@ matplotlib = "*"
 scrapy = "*"
 nba-api = "*"
 sqlalchemy = "*"
+pydantic = "*"
 
 [dev-packages]
 jupyter = "*"
