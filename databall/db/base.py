@@ -4,6 +4,8 @@ import pandas as pd
 from sqlalchemy import inspect, select
 from sqlalchemy.orm import as_declarative, declared_attr
 
+from databall.db import schemas
+from databall.db.schemas import validate_data_frame
 from databall.db.session import Session
 
 
@@ -40,6 +42,9 @@ class Base:
 
         columns_to_drop = set(df_save.columns) - set(cls.__table__.columns.keys())
         df_save = df_save.drop(columns_to_drop, axis=1)
+
+        schema = getattr(schemas, cls.__name__)
+        validate_data_frame(schema, df_save)
 
         with Session() as session:
             engine = session.get_bind()
