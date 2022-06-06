@@ -11,6 +11,7 @@ scrapy = "*"
 nba-api = "*"
 sqlalchemy = "*"
 pydantic = "*"
+psycopg2 = "*"
 
 [dev-packages]
 jupyter = "*"
