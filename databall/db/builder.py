@@ -2,7 +2,7 @@ import random
 import time
 
 import databall.covers.settings as scrapy_settings
-import databall.db.settings as settings
+import databall.db.settings as db_settings
 from databall.constants import CURRENT_SEASON, MIN_SEASON
 from databall.db import Covers, Games, Players, PlayerStats, Teams, TeamStats
 from databall.db.base import Base
@@ -15,7 +15,7 @@ DEFAULT_DROP = False
 
 def init():
     with Session() as session, session.connection() as connection:
-        if getattr(settings, 'DROP', DEFAULT_DROP):
+        if getattr(db_settings, 'DROP', DEFAULT_DROP):
             Base.metadata.drop_all(connection)
             session.execute('VACUUM')
 
