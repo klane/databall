@@ -3,6 +3,6 @@ from sqlalchemy.orm import sessionmaker
 
 import databall.db.settings as settings
 
-database = getattr(settings, 'DATABASE', ':memory:')
-engine = create_engine(f'sqlite:///{database}', future=True)
+url = getattr(settings, 'DATABASE_URL', 'sqlite://')
+engine = create_engine(url, future=True)
 Session = sessionmaker(engine, future=True)
