@@ -6,7 +6,7 @@ import databall.db.settings as db_settings
 from databall.constants import CURRENT_SEASON, MIN_SEASON
 from databall.db import Covers, Games, Players, PlayerStats, Teams, TeamStats
 from databall.db.base import Base
-from databall.db.session import Session
+from databall.db.session import AutocommitSession
 from databall.types import SeasonType
 
 DEFAULT_DELAY = 1.0
@@ -14,7 +14,7 @@ DEFAULT_DROP = False
 
 
 def init():
-    with Session() as session, session.connection() as connection:
+    with AutocommitSession() as session, session.connection() as connection:
         if getattr(db_settings, 'DROP', DEFAULT_DROP):
             Base.metadata.drop_all(connection)
             session.execute('VACUUM')
