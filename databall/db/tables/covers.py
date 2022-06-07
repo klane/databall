@@ -9,7 +9,7 @@ from databall.db.tables.game import GameID
 from databall.types import OverUnderResult, SpreadResult
 
 
-class Covers(Base, GameID):
+class Covers(GameID, Base):
     home_spread = Column(Float(precision=1))
     home_spread_result = Column(ValuesEnum(SpreadResult, create_constraint=True))
     over_under = PositiveColumn(Float(precision=1))

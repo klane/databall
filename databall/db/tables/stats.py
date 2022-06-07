@@ -30,14 +30,14 @@ class Stats:
     plus_minus = Column(Integer)
 
 
-class PlayerStats(Base, PlayerID, TeamID, GameID, Stats):
+class PlayerStats(PlayerID, TeamID, GameID, Stats, Base):
     @classmethod
     def populate(cls, season, season_type, **kwargs):
         stats = get_player_stats(season, season_type, **kwargs)
         cls.save_df(stats)
 
 
-class TeamStats(Base, TeamID, GameID, Stats):
+class TeamStats(TeamID, GameID, Stats, Base):
     @classmethod
     def populate(cls, season, season_type, **kwargs):
         stats = get_team_stats(season, season_type, **kwargs)
