@@ -29,16 +29,15 @@ class Stats:
     pts = PositiveColumn(Integer)
     plus_minus = Column(Integer)
 
-
-class PlayerStats(PlayerID, TeamID, GameID, Stats, Base):
     @classmethod
     def populate(cls, season, season_type, **kwargs):
-        stats = get_player_stats(season, season_type, **kwargs)
+        stats = cls.get_stats(season, season_type, **kwargs)
         cls.save_df(stats)
+
+
+class PlayerStats(PlayerID, TeamID, GameID, Stats, Base):
+    get_stats = get_player_stats
 
 
 class TeamStats(TeamID, GameID, Stats, Base):
-    @classmethod
-    def populate(cls, season, season_type, **kwargs):
-        stats = get_team_stats(season, season_type, **kwargs)
-        cls.save_df(stats)
+    get_stats = get_team_stats
