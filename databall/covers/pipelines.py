@@ -45,11 +45,11 @@ class GamePipeline:
             pts = self.session.execute(query).scalars().one()
 
             if item[score] != pts:
-                raise ValueError(f'Scraped {team} team score does not match database')
+                raise ValueError(f'Different {team} team score for game {game.id}')
 
         # check that scraped result matches database
         if item['result'] != game.home_wl:
-            raise ValueError('Scraped result does not match database')
+            raise ValueError(f'Different result for game {game.id}')
 
         # insert row into database if not present
         if game.id not in Covers.primary_keys.values:
