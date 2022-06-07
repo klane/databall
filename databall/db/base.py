@@ -6,7 +6,7 @@ from sqlalchemy.orm import as_declarative, declared_attr
 
 from databall.db import schemas
 from databall.db.schemas import validate_data_frame
-from databall.db.session import Session
+from databall.db.session import Session, engine
 
 
 @as_declarative()
@@ -46,8 +46,5 @@ class Base:
         schema = getattr(schemas, cls.__name__)
         validate_data_frame(schema, df_save)
 
-        with Session() as session:
-            engine = session.get_bind()
-            df_save.to_sql(cls.__tablename__, engine, if_exists='append', index=False)
-
+        df_save.to_sql(cls.__tablename__, engine, if_exists='append', index=False)
         print(f'Saved {len(df_save)} rows to {cls.__tablename__}')
