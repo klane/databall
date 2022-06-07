@@ -7,7 +7,7 @@ profile = "black"
 [tool.tox]
 legacy_tox_ini = """
 [flake8]
-ignore = B902,F401,F722,W503
+ignore = B902,F722,W503
 max-line-length = 88
 max-complexity = 15
 select = B,C,E,F,W,T4,B9
