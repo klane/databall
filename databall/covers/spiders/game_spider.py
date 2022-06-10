@@ -2,9 +2,9 @@ import re
 from datetime import datetime
 
 import pandas as pd
-from nba_api.stats.static.teams import get_teams
 from scrapy import Request, Spider
 
+from databall.api import get_teams
 from databall.covers.items import Game
 from databall.covers.loaders import GameLoader
 
@@ -20,9 +20,7 @@ class GameSpider(Spider):
         super().__init__(*args, **kwargs)
 
         if teams is None:
-            teams = [
-                team['full_name'].replace(' ', '-').lower() for team in get_teams()
-            ]
+            teams = get_teams()['full_name']
         elif '.json' in teams:
             teams = pd.read_json(teams)
             teams = [
@@ -31,6 +29,8 @@ class GameSpider(Spider):
             ]
         else:
             teams = teams.split(',')
+
+        teams = [team.strip().replace(' ', '-').lower() for team in teams]
 
         if isinstance(season, int):
             season = f'{season}-{season+1}'
