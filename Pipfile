@@ -12,6 +12,7 @@ nba-api = "*"
 sqlalchemy = "*"
 pydantic = "*"
 psycopg2 = "*"
+sqlmodel = "*"
 
 [dev-packages]
 jupyter = "*"
