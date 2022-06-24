@@ -1,37 +1,51 @@
-from sqlalchemy import CheckConstraint, Column, Enum
+from sqlalchemy import CheckConstraint, Enum
+from sqlmodel import Field
 
 
-class PositiveColumn(Column):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._constraints = set()
+def ConstrainedField(name, **kwargs):
+    arg_to_constraint = {
+        'gt': '>',
+        'ge': '>=',
+        'lt': '<',
+        'le': '<=',
+    }
 
-    @property
-    def constraints(self):
-        if self.name is not None and len(self._constraints) == 0:
-            constraint = CheckConstraint(f'{self.name} >= 0')
-            self._constraints.add(constraint)
-            constraint._set_parent(self)
+    constraint_text = [
+        f'{name} {arg_to_constraint[arg_name]} {arg_value}'
+        for arg_name, arg_value in kwargs.items()
+        if arg_name in arg_to_constraint
+    ]
+    constraint_text = ' AND '.join(constraint_text)
 
-        return self._constraints
+    if len(constraint_text) == 0:
+        raise ValueError(
+            f'Field {name} is unconstrained. One of ge, gt, le, lt should be specified.'
+        )
 
-    @constraints.setter
-    def constraints(self, constraints):
-        self._constraints = constraints
-
-
-_priority_order = 1
-
-
-class PriorityColumn(Column):
-    def __init__(self, *args, **kwargs):
-        global _priority_order
-        super().__init__(*args, **kwargs)
-        self._creation_order = _priority_order
-        _priority_order += 1
+    constraint = CheckConstraint(constraint_text)
+    sa_column_args = kwargs.pop('sa_column_args', [])
+    sa_column_args.append(constraint)
+    return Field(sa_column_args=sa_column_args, **kwargs)
 
 
-class ValuesEnum(Enum):
-    def __init__(self, *enums, **kwargs):
-        kwargs['values_callable'] = lambda enum: [e.value for e in enum]
-        super().__init__(*enums, **kwargs)
+def EnumField(enum, create_constraint=True, use_values=False, **kwargs):
+    values_callable = None if not use_values else lambda enum: [e.value for e in enum]
+    column_type = Enum(
+        enum,
+        create_constraint=create_constraint,
+        values_callable=values_callable,
+    )
+
+    sa_column_args = kwargs.pop('sa_column_args', [])
+    sa_column_args.append(column_type)
+    return Field(sa_column_args=sa_column_args, **kwargs)
+
+
+def PositiveField(name, **kwargs):
+    return ConstrainedField(name, ge=0, **kwargs)
+
+
+def UniqueField(**kwargs):
+    sa_column_kwargs = kwargs.pop('sa_column_kwargs', {})
+    sa_column_kwargs['unique'] = True
+    return Field(sa_column_kwargs=sa_column_kwargs, **kwargs)

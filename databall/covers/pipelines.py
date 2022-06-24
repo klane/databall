@@ -1,7 +1,6 @@
 from sqlalchemy import select
 
 from databall.db import Covers, Games, Teams, TeamStats
-from databall.db.schemas import Covers as CoversSchema
 from databall.db.session import Session
 
 
@@ -60,6 +59,6 @@ class GamePipeline:
                 over_under=item['over_under'],
                 over_under_result=item['over_under_result'],
             )
-            CoversSchema.from_orm(row)
+            Covers.from_orm(row)
             self.session.add(row)
             spider.crawler.stats.inc_value('games')

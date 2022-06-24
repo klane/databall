@@ -1,16 +1,15 @@
 import re
 
 import pandas as pd
+from pydantic import BaseModel
 from sqlalchemy import inspect, select
-from sqlalchemy.orm import as_declarative, declared_attr
+from sqlalchemy.orm import declared_attr
+from sqlmodel import SQLModel
 
-from databall.db import schemas
-from databall.db.schemas import validate_data_frame
 from databall.db.session import Session, engine
 
 
-@as_declarative()
-class Base:
+class Base(SQLModel):
     @declared_attr
     def __tablename__(cls):
         return re.sub(r'([a-z\d])([A-Z])', r'\1_\2', cls.__name__).lower()
@@ -42,9 +41,14 @@ class Base:
 
         columns_to_drop = set(df_save.columns) - set(cls.__table__.columns.keys())
         df_save = df_save.drop(columns_to_drop, axis=1)
-
-        schema = getattr(schemas, cls.__name__)
-        validate_data_frame(schema, df_save)
-
+        cls.validate_df(df_save)
         df_save.to_sql(cls.__tablename__, engine, if_exists='append', index=False)
         print(f'Saved {len(df_save)} rows to {cls.__tablename__}')
+
+    @classmethod
+    def validate_df(cls, df):
+        class DataFrameModel(BaseModel):
+            __root__: list[cls]
+
+        df_dict = df.to_dict(orient='records')
+        DataFrameModel.parse_obj(df_dict)

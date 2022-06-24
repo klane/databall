@@ -1,22 +1,34 @@
-from sqlalchemy import Column, Enum, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_mixin, declared_attr
+from pydantic import validator
+from sqlmodel import Field, SQLModel
 
 from databall.api import get_team_stats
+from databall.constants import CURRENT_SEASON, MIN_SEASON
 from databall.db.base import Base
-from databall.db.columns import PriorityColumn, ValuesEnum
+from databall.db.columns import EnumField
 from databall.db.tables.team import Teams
 from databall.types import GameResult, SeasonType
 
+TEAM_ID = Teams.__annotations__['id']
 
-class Games(Base):
-    id = Column(String(10), primary_key=True)
-    home_team_id = Column(ForeignKey(Teams.id), nullable=False)
-    away_team_id = Column(ForeignKey(Teams.id), nullable=False)
-    season = Column(Integer)
-    season_type = Column(Enum(SeasonType, create_constraint=True))
-    game_date = Column(String(10))
-    matchup = Column(String(11))
-    home_wl = Column(ValuesEnum(GameResult, create_constraint=True))
+
+class Games(Base, table=True):
+    id: str = Field(regex=r'^\d{10}$', max_length=10, primary_key=True)
+    home_team_id: TEAM_ID = Field(foreign_key=Teams.id, nullable=False)
+    away_team_id: TEAM_ID = Field(foreign_key=Teams.id, nullable=False)
+    season: int = Field(ge=MIN_SEASON, le=CURRENT_SEASON)
+    season_type: SeasonType = EnumField(SeasonType)
+    game_date: str = Field(regex=r'^\d{4}-\d{2}-\d{2}$', max_length=10)
+    matchup: str = Field(regex=r'^[A-Z]{3} vs. [A-Z]{3}$', max_length=11)
+    home_wl: GameResult = EnumField(GameResult, use_values=True)
+
+    @validator('season_type', pre=True)
+    def check_season_type(cls, name):
+        season_types = SeasonType._member_names_
+
+        if name not in season_types:
+            raise ValueError(f'Season type should be one of: {season_types}')
+
+        return SeasonType[name]
 
     @classmethod
     def populate(cls, season, season_type, **kwargs):
@@ -39,8 +51,5 @@ class Games(Base):
         cls.save_df(games)
 
 
-@declarative_mixin
-class GameID:
-    @declared_attr
-    def game_id(cls):
-        return PriorityColumn(ForeignKey(Games.id), primary_key=True)
+class GameID(SQLModel):
+    game_id: Games.__annotations__['id'] = Field(foreign_key=Games.id, primary_key=True)

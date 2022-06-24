@@ -1,14 +1,15 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_mixin, declared_attr
+from sqlmodel import Field, SQLModel
 
 from databall.api import get_players
 from databall.db.base import Base
-from databall.db.columns import PriorityColumn
+from databall.db.columns import ConstrainedField
+
+NAME_REGEX = r'^[A-Z][A-Za-z,\'\-\.]+( [A-Za-z,\'\-\.]+)*$'
 
 
-class Players(Base):
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
+class Players(Base, table=True):
+    id: int = ConstrainedField(name='id', gt=0, primary_key=True)
+    name: str = Field(regex=NAME_REGEX, max_length=50, nullable=False)
 
     @classmethod
     def populate(cls, **kwargs):
@@ -20,8 +21,7 @@ class Players(Base):
         cls.save_df(players)
 
 
-@declarative_mixin
-class PlayerID:
-    @declared_attr
-    def player_id(cls):
-        return PriorityColumn(ForeignKey(Players.id), primary_key=True)
+class PlayerID(SQLModel):
+    player_id: Players.__annotations__['id'] = Field(
+        foreign_key=Players.id, primary_key=True
+    )

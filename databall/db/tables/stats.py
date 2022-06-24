@@ -1,33 +1,31 @@
-from sqlalchemy import Column, Integer
-from sqlalchemy.orm import declarative_mixin
+from sqlmodel import Field
 
 from databall.api import get_player_stats, get_team_stats
 from databall.db.base import Base
-from databall.db.columns import PositiveColumn
+from databall.db.columns import PositiveField
 from databall.db.tables.game import GameID
 from databall.db.tables.player import PlayerID
 from databall.db.tables.team import TeamID
 
 
-@declarative_mixin
-class Stats:
-    min = PositiveColumn(Integer)
-    fgm = PositiveColumn(Integer)
-    fga = PositiveColumn(Integer)
-    fg3m = PositiveColumn(Integer)
-    fg3a = PositiveColumn(Integer)
-    ftm = PositiveColumn(Integer)
-    fta = PositiveColumn(Integer)
-    oreb = PositiveColumn(Integer)
-    dreb = PositiveColumn(Integer)
-    reb = PositiveColumn(Integer)
-    ast = PositiveColumn(Integer)
-    stl = PositiveColumn(Integer)
-    blk = PositiveColumn(Integer)
-    tov = PositiveColumn(Integer)
-    pf = PositiveColumn(Integer)
-    pts = PositiveColumn(Integer)
-    plus_minus = Column(Integer)
+class Stats(Base):
+    min: int = PositiveField('min')
+    fgm: int = PositiveField('fgm')
+    fga: int = PositiveField('fga')
+    fg3m: int = PositiveField('fg3m')
+    fg3a: int = PositiveField('fg3a')
+    ftm: int = PositiveField('ftm')
+    fta: int = PositiveField('fta')
+    oreb: int = PositiveField('oreb')
+    dreb: int = PositiveField('dreb')
+    reb: int = PositiveField('reb')
+    ast: int = PositiveField('ast')
+    stl: int = PositiveField('stl')
+    blk: int = PositiveField('blk')
+    tov: int = PositiveField('tov')
+    pf: int = PositiveField('pf')
+    pts: int = PositiveField('pts')
+    plus_minus: int = Field(nullable=False)
 
     @classmethod
     def populate(cls, season, season_type, **kwargs):
@@ -35,9 +33,9 @@ class Stats:
         cls.save_df(stats)
 
 
-class PlayerStats(PlayerID, TeamID, GameID, Stats, Base):
+class PlayerStats(Stats, GameID, TeamID, PlayerID, table=True):
     get_stats = get_player_stats
 
 
-class TeamStats(TeamID, GameID, Stats, Base):
+class TeamStats(Stats, GameID, TeamID, table=True):
     get_stats = get_team_stats
