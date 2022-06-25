@@ -78,8 +78,7 @@ class GameSpider(Spider):
                 year = start_year
 
             date = item['date']
-            item['date'] = datetime.strptime(f'{date} {year}', '%b %d %Y')
-            item['date'] = item['date'].strftime('%Y-%m-%d')
+            item['date'] = datetime.strptime(f'{date} {year}', '%b %d %Y').date()
 
             yield item
 

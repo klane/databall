@@ -1,3 +1,5 @@
+from datetime import date
+
 from pydantic import validator
 from sqlmodel import Field, SQLModel
 
@@ -17,7 +19,7 @@ class Games(Base, table=True):
     away_team_id: TEAM_ID = Field(foreign_key=Teams.id, nullable=False)
     season: int = Field(ge=MIN_SEASON, le=CURRENT_SEASON)
     season_type: SeasonType = EnumField(SeasonType)
-    game_date: str = Field(regex=r'^\d{4}-\d{2}-\d{2}$', max_length=10)
+    game_date: date = Field(nullable=False)
     matchup: str = Field(regex=r'^[A-Z]{3} vs. [A-Z]{3}$', max_length=11)
     home_wl: GameResult = EnumField(GameResult, use_values=True)
 
