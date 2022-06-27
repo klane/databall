@@ -12,7 +12,7 @@ nba-api = "*"
 sqlalchemy = "*"
 pydantic = "*"
 psycopg2 = "*"
-sqlmodel = "*"
+sqlmodel = {ref = "pydantic-args", git = "https://github.com/klane/sqlmodel.git"}
 
 [dev-packages]
 jupyter = "*"
