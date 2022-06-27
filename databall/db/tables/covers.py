@@ -16,7 +16,8 @@ class Covers(Base, GameID, table=True):
         ge=-30,
         le=30,
         multiple_of=0.5,
-        schema_extra={'max_digits': 3, 'decimal_places': 1},
+        max_digits=3,
+        decimal_places=1,
     )
     home_spread_result: SpreadResult = EnumField(use_values=True)
     over_under: Decimal = ConstrainedField(
@@ -24,7 +25,8 @@ class Covers(Base, GameID, table=True):
         ge=100,
         le=300,
         multiple_of=0.5,
-        schema_extra={'max_digits': 4, 'decimal_places': 1},
+        max_digits=4,
+        decimal_places=1,
     )
     over_under_result: OverUnderResult = EnumField(use_values=True)
 
