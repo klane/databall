@@ -18,7 +18,7 @@ class Covers(Base, GameID, table=True):
         multiple_of=0.5,
         schema_extra={'max_digits': 3, 'decimal_places': 1},
     )
-    home_spread_result: SpreadResult = EnumField(SpreadResult, use_values=True)
+    home_spread_result: SpreadResult = EnumField(use_values=True)
     over_under: Decimal = ConstrainedField(
         name='over_under',
         ge=100,
@@ -26,7 +26,7 @@ class Covers(Base, GameID, table=True):
         multiple_of=0.5,
         schema_extra={'max_digits': 4, 'decimal_places': 1},
     )
-    over_under_result: OverUnderResult = EnumField(OverUnderResult, use_values=True)
+    over_under_result: OverUnderResult = EnumField(use_values=True)
 
     @classmethod
     def populate(cls, season, *args, **kwargs):

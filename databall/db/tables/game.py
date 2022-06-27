@@ -18,10 +18,10 @@ class Games(Base, table=True):
     home_team_id: TEAM_ID = Field(foreign_key=Teams.id, nullable=False)
     away_team_id: TEAM_ID = Field(foreign_key=Teams.id, nullable=False)
     season: int = Field(ge=MIN_SEASON, le=CURRENT_SEASON)
-    season_type: SeasonType = EnumField(SeasonType)
+    season_type: SeasonType = EnumField()
     game_date: date = Field(nullable=False)
     matchup: str = Field(regex=r'^[A-Z]{3} vs. [A-Z]{3}$', max_length=11)
-    home_wl: GameResult = EnumField(GameResult, use_values=True)
+    home_wl: GameResult = EnumField(use_values=True)
 
     @validator('season_type', pre=True)
     def check_season_type(cls, name):
