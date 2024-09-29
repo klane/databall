@@ -1,3 +1,15 @@
+[project]
+name = "databall"
+version = "0.1.0"
+description = "Betting on the NBA with data"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "nba-api>=1.5.2",
+    "scrapy>=2.11.2",
+    "sqlmodel>=0.0.22",
+]
+
 [tool.black]
 line-length = 88
 
@@ -12,3 +24,9 @@ max-line-length = 88
 max-complexity = 15
 select = B,C,E,F,W,T4,B9
 """
+
+[tool.uv]
+package = false
+dev-dependencies = [
+    "ruff>=0.6.8",
+]
