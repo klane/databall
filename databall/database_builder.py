@@ -211,9 +211,7 @@ def build_database(database, start_season, end_season, if_exists="replace", slee
 
 
 def labels_to_drop(column_names, list_of_strings):
-    return [
-        col for col in column_names if any(x for x in list_of_strings if x in col)
-    ]
+    return [col for col in column_names if any(x for x in list_of_strings if x in col)]
 
 
 def season_str(season):
