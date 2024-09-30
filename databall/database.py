@@ -70,31 +70,31 @@ class Database:
             PLUS_MINUS AS OPP_PLUS_MINUS
         """
 
-        self.__game_query = """
-            SELECT {0}
+        self.__game_query = f"""
+            SELECT {select}
             FROM
-                (SELECT {1}
+                (SELECT {team_stats_str}
                     FROM team_game_stats
                     JOIN games
                     ON TEAM_ID = games.HOME_TEAM_ID AND GAME_ID = games.ID) as home,
-                (SELECT {2}
+                (SELECT {opp_stats_str}
                     FROM team_game_stats
                     JOIN games
                     ON OPP_ID = games.AWAY_TEAM_ID AND GAME_ID = games.ID) as away
             WHERE home.GAME_ID = away.GAME_ID
             UNION
-            SELECT {0}
+            SELECT {select}
             FROM
-                (SELECT {1}
+                (SELECT {team_stats_str}
                     FROM team_game_stats
                     JOIN games
                     ON TEAM_ID = games.AWAY_TEAM_ID AND GAME_ID = games.ID) as home,
-                (SELECT {2}
+                (SELECT {opp_stats_str}
                     FROM team_game_stats
                     JOIN games
                     ON OPP_ID = games.HOME_TEAM_ID AND GAME_ID = games.ID) as away
             WHERE home.GAME_ID = away.GAME_ID
-        """.format(select, team_stats_str, opp_stats_str)
+        """
 
     def betting_stats(self, stat_names=None, window=None):
         data = self.game_stats()
