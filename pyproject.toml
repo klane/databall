@@ -3,7 +3,7 @@ name = "databall"
 version = "0.1.0"
 description = "Betting on the NBA with data"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "nba-api>=1.5.2",
     "scrapy>=2.11.2",
