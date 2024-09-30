@@ -36,7 +36,7 @@ class Covers(Base, GameID, table=True):
         settings = get_project_settings()
         process = CrawlerProcess(settings)
         crawler = process.create_crawler(GameSpider)
-        process.crawl(crawler, season=season, *args, **kwargs)
+        process.crawl(crawler, *args, season=season, **kwargs)
         process.start()
 
         games = crawler.stats.get_value("games", 0)
