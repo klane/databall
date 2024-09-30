@@ -19,7 +19,7 @@ def simulate(model, data, season, predictors, output, build=None, evolve=False, 
         count = 0
 
         for day in test_groups.groups:
-            if count == freq or count == 0:
+            if count in {freq, 0}:
                 build(model, train[predictors], train[output])
                 count = 0
 
