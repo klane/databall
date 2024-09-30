@@ -25,6 +25,15 @@ max-complexity = 15
 select = B,C,E,F,W,T4,B9
 """
 
+[tool.ruff]
+line-length = 88
+exclude = ["*.ipynb"]
+
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"
+skip-magic-trailing-comma = true
+
 [tool.uv]
 package = false
 dev-dependencies = [
