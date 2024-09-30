@@ -11,7 +11,7 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
-DEFAULT_CMAP = plt.get_cmap('Blues')
+DEFAULT_CMAP = plt.get_cmap("Blues")
 
 
 def cross_val_curves(model, x, y, k=10, figsize=(16, 6), legend=True):
@@ -19,12 +19,12 @@ def cross_val_curves(model, x, y, k=10, figsize=(16, 6), legend=True):
 
     # Plot ROC curve
     ax1 = plt.subplot(121)
-    cross_val_roc_curve(model, x, y, ax1, k=k, label='Mean', show_folds=True)
+    cross_val_roc_curve(model, x, y, ax1, k=k, label="Mean", show_folds=True)
 
     # Plot precision/recall curve
     ax2 = plt.subplot(122)
     cross_val_precision_recall_curve(
-        model, x, y, ax2, k=k, label='Mean', show_folds=True
+        model, x, y, ax2, k=k, label="Mean", show_folds=True
     )
 
     if legend:
@@ -41,13 +41,13 @@ def cross_val_precision_recall_curve(
     ax,
     k=10,
     random_state=None,
-    label='Mean',
+    label="Mean",
     show_auc=True,
     show_folds=False,
 ):
     # Compute cross-validated precision/recall curve and area under the curve
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
-    proba = cross_val_predict(model, x, y, cv=kfold, method='predict_proba')
+    proba = cross_val_predict(model, x, y, cv=kfold, method="predict_proba")
     mean_precision, mean_recall, thresholds = precision_recall_curve(y, proba[:, 1])
     mean_auc = average_precision_score(y, proba[:, 1])
 
@@ -64,25 +64,25 @@ def cross_val_precision_recall_curve(
                 recall,
                 precision,
                 lw=1,
-                label='Fold %d (Area = %0.2f)' % (i + 1, pr_auc),
+                label="Fold %d (Area = %0.2f)" % (i + 1, pr_auc),
             )
 
         ax.plot(
             mean_recall,
             mean_precision,
-            'k--',
-            label=f'{label} (Area = {mean_auc:0.2f})',
+            "k--",
+            label=f"{label} (Area = {mean_auc:0.2f})",
             lw=2,
         )
     elif show_auc:
         ax.plot(
-            mean_recall, mean_precision, label=f'{label} (Area = {mean_auc:0.2f})', lw=2
+            mean_recall, mean_precision, label=f"{label} (Area = {mean_auc:0.2f})", lw=2
         )
     else:
         ax.plot(mean_recall, mean_precision, label=label, lw=2)
 
-    ax.set_xlabel('Recall')
-    ax.set_ylabel('Precision')
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
 
 
 def cross_val_roc_curve(
@@ -92,13 +92,13 @@ def cross_val_roc_curve(
     ax,
     k=10,
     random_state=None,
-    label='Mean',
+    label="Mean",
     show_auc=True,
     show_folds=False,
 ):
     # Compute cross-validated ROC curve and area under the curve
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
-    proba = cross_val_predict(model, x, y, cv=kfold, method='predict_proba')
+    proba = cross_val_predict(model, x, y, cv=kfold, method="predict_proba")
     mean_fpr, mean_tpr, thresholds = roc_curve(y, proba[:, 1])
     mean_auc = roc_auc_score(y, proba[:, 1])
 
@@ -111,18 +111,18 @@ def cross_val_roc_curve(
             # Compute ROC curve and area under the curve
             fpr, tpr, thresholds = roc_curve(y[test], proba[:, 1])
             roc_auc = roc_auc_score(y[test], proba[:, 1])
-            ax.plot(fpr, tpr, lw=1, label='Fold %d (Area = %0.2f)' % (i + 1, roc_auc))
+            ax.plot(fpr, tpr, lw=1, label="Fold %d (Area = %0.2f)" % (i + 1, roc_auc))
 
         ax.plot(
-            mean_fpr, mean_tpr, 'k--', label=f'{label} (Area = {mean_auc:0.2f})', lw=2
+            mean_fpr, mean_tpr, "k--", label=f"{label} (Area = {mean_auc:0.2f})", lw=2
         )
     elif show_auc:
-        ax.plot(mean_fpr, mean_tpr, label=f'{label} (Area = {mean_auc:0.2f})', lw=2)
+        ax.plot(mean_fpr, mean_tpr, label=f"{label} (Area = {mean_auc:0.2f})", lw=2)
     else:
         ax.plot(mean_fpr, mean_tpr, label=label, lw=2)
 
-    ax.set_xlabel('False Positive Rate')
-    ax.set_ylabel('True Positive Rate')
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
 
 
 def format_538(
@@ -134,17 +134,17 @@ def format_538(
     title=None,
     subtitle=None,
     bottomtick=0,
-    sig='line',
+    sig="line",
     n=75,
     xoff=(-0.075, 1.01),
     yoff=(-0.1, -0.15),
     toff=(-0.07, 1.15),
     soff=(-0.07, 1.05),
-    prefix='',
-    suffix='',
+    prefix="",
+    suffix="",
     suffix_offset=0,
 ):
-    plt.style.use('fivethirtyeight')
+    plt.style.use("fivethirtyeight")
 
     if ax is None:
         ax = [fig.gca()]
@@ -156,23 +156,23 @@ def format_538(
 
     # Customize axis labels
     if xlabel is None:
-        [a.set_xlabel(a.get_xlabel(), fontsize=20, weight='bold') for a in ax]
+        [a.set_xlabel(a.get_xlabel(), fontsize=20, weight="bold") for a in ax]
     elif type(xlabel) is str:
-        plt.xlabel(xlabel, fontsize=20, weight='bold')
+        plt.xlabel(xlabel, fontsize=20, weight="bold")
     else:
-        [a.set_xlabel(x, fontsize=20, weight='bold') for a, x in zip(ax, xlabel)]
+        [a.set_xlabel(x, fontsize=20, weight="bold") for a, x in zip(ax, xlabel)]
 
     if ylabel is None:
-        [a.set_ylabel(a.get_ylabel(), fontsize=20, weight='bold') for a in ax]
+        [a.set_ylabel(a.get_ylabel(), fontsize=20, weight="bold") for a in ax]
     elif type(ylabel) is str:
-        plt.ylabel(ylabel, fontsize=20, weight='bold')
+        plt.ylabel(ylabel, fontsize=20, weight="bold")
     else:
-        [a.set_ylabel(y, fontsize=20, weight='bold') for a, y in zip(ax, ylabel)]
+        [a.set_ylabel(y, fontsize=20, weight="bold") for a, y in zip(ax, ylabel)]
 
     # Customize ticks
-    [a.tick_params(axis='both', which='major', labelsize=16) for a in ax]
+    [a.tick_params(axis="both", which="major", labelsize=16) for a in ax]
     [
-        a.axhline(y=btick, color='black', linewidth=1.3, alpha=0.7)
+        a.axhline(y=btick, color="black", linewidth=1.3, alpha=0.7)
         for a, btick in zip(ax, bottomtick)
     ]
     fig.canvas.draw()
@@ -188,7 +188,7 @@ def format_538(
     if type(suffix_offset) is not list and type(suffix_offset) is not tuple:
         suffix_offset = [suffix_offset]
 
-    for (a, p, s, so) in zip(ax, prefix, suffix, suffix_offset):
+    for a, p, s, so in zip(ax, prefix, suffix, suffix_offset):
         ticks = a.get_yticklabels()
         index = [i for i in range(len(ticks)) if len(ticks[i].get_text()) == 0]
 
@@ -197,7 +197,7 @@ def format_538(
         else:
             index = len(ticks) - 1
 
-        [t.set_text(t.get_text() + ' ' * so) for t in ticks[:index]]
+        [t.set_text(t.get_text() + " " * so) for t in ticks[:index]]
         ticks[index].set_text(p + ticks[index].get_text() + s)
         a.set_yticklabels(ticks)
 
@@ -207,7 +207,7 @@ def format_538(
         y=toff[1],
         s=title,
         fontsize=26,
-        weight='bold',
+        weight="bold",
         alpha=0.75,
         transform=ax[0].transAxes,
     )
@@ -219,102 +219,102 @@ def format_538(
         alpha=0.85,
         transform=ax[0].transAxes,
     )
-    [a.set_title(a.get_title(), fontsize=20, weight='bold') for a in ax]
+    [a.set_title(a.get_title(), fontsize=20, weight="bold") for a in ax]
 
     # Add signature bar
-    label1 = '©Kevin Lane'
-    label2 = 'Source: ' + source
+    label1 = "©Kevin Lane"
+    label2 = "Source: " + source
 
-    if sig == 'line':
+    if sig == "line":
         ax[0].text(
             x=xoff[0],
             y=yoff[0],
-            s='  ' + '_' * n,
-            color='grey',
+            s="  " + "_" * n,
+            color="grey",
             alpha=0.7,
             transform=ax[0].transAxes,
         )
         ax[0].text(
             x=xoff[1],
             y=yoff[0],
-            s='_' * n + '  ',
-            color='grey',
+            s="_" * n + "  ",
+            color="grey",
             alpha=0.7,
             transform=ax[0].transAxes,
-            horizontalalignment='right',
+            horizontalalignment="right",
         )
         ax[0].text(
             x=xoff[0],
             y=yoff[1],
-            s='  ' + label1,
+            s="  " + label1,
             fontsize=14,
-            color='grey',
+            color="grey",
             transform=ax[0].transAxes,
         )
         ax[0].text(
             x=xoff[1],
             y=yoff[1],
-            s=label2 + '  ',
+            s=label2 + "  ",
             fontsize=14,
-            color='grey',
+            color="grey",
             transform=ax[0].transAxes,
-            horizontalalignment='right',
+            horizontalalignment="right",
         )
-    elif sig == 'bar':
+    elif sig == "bar":
         ax[0].text(
             x=xoff[0],
             y=-0.14,
-            s='  ' + label1 + ' ' * n,
+            s="  " + label1 + " " * n,
             fontsize=14,
-            color='#f0f0f0',
-            backgroundcolor='grey',
+            color="#f0f0f0",
+            backgroundcolor="grey",
             transform=ax[0].transAxes,
         )
         ax[0].text(
             x=xoff[1],
             y=-0.14,
-            s=' ' * n + label2 + '  ',
+            s=" " * n + label2 + "  ",
             fontsize=14,
-            color='#f0f0f0',
-            backgroundcolor='grey',
+            color="#f0f0f0",
+            backgroundcolor="grey",
             transform=ax[0].transAxes,
-            horizontalalignment='right',
+            horizontalalignment="right",
         )
 
 
 def kde(data, stat, label, title, ax):
-    stat = 'TEAM_' + stat
+    stat = "TEAM_" + stat
     sns.kdeplot(
         data[stat],
-        data[stat + '_AWAY'],
-        cmap='Blues',
+        data[stat + "_AWAY"],
+        cmap="Blues",
         shade=True,
         shade_lowest=False,
         ax=ax,
     )
-    ax.plot(0, 0, 'or', markersize=10)
-    ax.set_xlabel('Home Team ' + label)
-    ax.set_ylabel('Away Team ' + label)
+    ax.plot(0, 0, "or", markersize=10)
+    ax.set_xlabel("Home Team " + label)
+    ax.set_ylabel("Away Team " + label)
     ax.set_title(title)
     ax.set_xlim(-13, 12)
     ax.set_ylim(-16, 12)
     ax.annotate(
-        'Average teams',
+        "Average teams",
         xy=(-0.25, -0.25),
         xytext=(-13, -13),
         fontsize=16,
-        arrowprops=dict(facecolor='black'),
+        arrowprops=dict(facecolor="black"),
     )
 
 
 def plot_confusion_matrix(
-    cm, classes, fig=None, title='Confusion Matrix', cmap=DEFAULT_CMAP
+    cm, classes, fig=None, title="Confusion Matrix", cmap=DEFAULT_CMAP
 ):
     # This function prints and plots the confusion matrix.
     if fig is None:
-        fig = plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        fig = plt.imshow(cm, interpolation="nearest", cmap=cmap)
     else:
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        plt.imshow(cm, interpolation="nearest", cmap=cmap)
 
     plt.title(title)
     plt.colorbar()
@@ -323,21 +323,21 @@ def plot_confusion_matrix(
     plt.yticks(tick_marks, classes)
     plt.grid(visible=False)
 
-    cm_norm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    cm_norm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
     thresh = (cm.max() + cm.min()) / 2
 
     for i, j in product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(
             j,
             i,
-            '%d\n%.2f%%' % (cm[i, j], cm_norm[i, j] * 100),
-            horizontalalignment='center',
-            color='white' if cm[i, j] > thresh else 'black',
+            "%d\n%.2f%%" % (cm[i, j], cm_norm[i, j] * 100),
+            horizontalalignment="center",
+            color="white" if cm[i, j] > thresh else "black",
         )
 
     plt.tight_layout()
-    plt.ylabel('True Label')
-    plt.xlabel('Predicted Label')
+    plt.ylabel("True Label")
+    plt.xlabel("Predicted Label")
 
     return fig
 
@@ -365,13 +365,13 @@ def plot_matrix(
         ax += [plt.subplot(rows, cols, i + 1)]
 
         if logx and logy[i]:
-            ax[i].loglog(x, y[:, i], '.', markersize=markersize)
+            ax[i].loglog(x, y[:, i], ".", markersize=markersize)
         elif logx:
-            ax[i].semilogx(x, y[:, i], '.', markersize=markersize)
+            ax[i].semilogx(x, y[:, i], ".", markersize=markersize)
         elif logy[i]:
-            ax[i].semilogy(x, y[:, i], '.', markersize=markersize)
+            ax[i].semilogy(x, y[:, i], ".", markersize=markersize)
         else:
-            ax[i].plot(x, y[:, i], '.', markersize=markersize)
+            ax[i].plot(x, y[:, i], ".", markersize=markersize)
 
         ax[i].set_xlabel(xlabel)
         ax[i].set_ylabel(ylabel[i])
@@ -382,7 +382,7 @@ def plot_matrix(
 def plot_metrics(x, y, xlabel, legend=None, legendsize=14, figsize=(16, 8), log=False):
     rows = 2
     cols = 3
-    ylabel = ['Accuracy', 'Precision', 'Recall', 'ROC Area', 'Precision/Recall Area']
+    ylabel = ["Accuracy", "Precision", "Recall", "ROC Area", "Precision/Recall Area"]
     fig = plt.figure(figsize=figsize)
     ax = []
 

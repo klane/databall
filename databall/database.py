@@ -12,7 +12,7 @@ class Database:
     def __init__(self, database):
         self.__conn = sqlite3.connect(database)
 
-        select = '''
+        select = """
             SEASON,
             home.GAME_ID as GAME_ID,
             TEAM_ID,
@@ -24,9 +24,9 @@ class Database:
             OPP_OREB, OPP_DREB, OPP_REB, OPP_AST, OPP_TOV, OPP_STL, OPP_BLK,
             OPP_PTS, OPP_PLUS_MINUS,
             HOME_WL
-        '''
+        """
 
-        team_stats_str = '''
+        team_stats_str = """
             games.SEASON,
             GAME_ID,
             TEAM_ID,
@@ -47,9 +47,9 @@ class Database:
             PTS AS TEAM_PTS,
             PLUS_MINUS AS TEAM_PLUS_MINUS,
             HOME_WL
-        '''
+        """
 
-        opp_stats_str = '''
+        opp_stats_str = """
             GAME_ID,
             TEAM_ID AS OPP_ID,
             MIN AS OPP_MIN,
@@ -68,9 +68,9 @@ class Database:
             BLK AS OPP_BLK,
             PTS AS OPP_PTS,
             PLUS_MINUS AS OPP_PLUS_MINUS
-        '''
+        """
 
-        self.__game_query = '''
+        self.__game_query = """
             SELECT {0}
             FROM
                 (SELECT {1}
@@ -94,22 +94,20 @@ class Database:
                     JOIN games
                     ON OPP_ID = games.HOME_TEAM_ID AND GAME_ID = games.ID) as away
             WHERE home.GAME_ID = away.GAME_ID
-        '''.format(
-            select, team_stats_str, opp_stats_str
-        )
+        """.format(select, team_stats_str, opp_stats_str)
 
     def betting_stats(self, stat_names=None, window=None):
         data = self.game_stats()
-        data['PACE'] = team_stats.pace(data)
-        data['POSSESSIONS'] = team_stats.possessions(data)
-        data['TEAM_OFF_RTG'] = team_stats.off_rating(data)
-        data['TEAM_DEF_RTG'] = team_stats.def_rating(data)
-        data['TEAM_NET_RTG'] = data['TEAM_OFF_RTG'] - data['TEAM_DEF_RTG']
-        data['TEAM_EFG'] = stats.eff_fg_pct(data, 'TEAM_')
-        data['TEAM_TOV_PCT'] = stats.tov_pct(data, 'TEAM_')
-        data['TEAM_OREB_PCT'] = team_stats.oreb_pct(data)
-        data['TEAM_DREB_PCT'] = team_stats.dreb_pct(data)
-        data['TEAM_FT_PER_FGA'] = stats.ft_per_fga(data, 'TEAM_')
+        data["PACE"] = team_stats.pace(data)
+        data["POSSESSIONS"] = team_stats.possessions(data)
+        data["TEAM_OFF_RTG"] = team_stats.off_rating(data)
+        data["TEAM_DEF_RTG"] = team_stats.def_rating(data)
+        data["TEAM_NET_RTG"] = data["TEAM_OFF_RTG"] - data["TEAM_DEF_RTG"]
+        data["TEAM_EFG"] = stats.eff_fg_pct(data, "TEAM_")
+        data["TEAM_TOV_PCT"] = stats.tov_pct(data, "TEAM_")
+        data["TEAM_OREB_PCT"] = team_stats.oreb_pct(data)
+        data["TEAM_DREB_PCT"] = team_stats.dreb_pct(data)
+        data["TEAM_FT_PER_FGA"] = stats.ft_per_fga(data, "TEAM_")
 
         efg = data.TEAM_EFG
         oreb = data.TEAM_OREB_PCT
@@ -117,63 +115,63 @@ class Database:
         ftr = data.TEAM_FT_PER_FGA
         tov = data.TEAM_TOV_PCT
 
-        data['TEAM_FOUR_FACTORS'] = 0.4 * efg + 0.2 * oreb + 0.15 * ftr - 0.25 * tov
-        data['TEAM_FOUR_FACTORS_REB'] = (
+        data["TEAM_FOUR_FACTORS"] = 0.4 * efg + 0.2 * oreb + 0.15 * ftr - 0.25 * tov
+        data["TEAM_FOUR_FACTORS_REB"] = (
             0.4 * efg + 0.1 * oreb + 0.1 * dreb + 0.15 * ftr - 0.25 * tov
         )
 
         if stat_names is None:
             stat_types = [
-                'FGM',
-                'FGA',
-                'FG3M',
-                'FG3A',
-                'FTM',
-                'FTA',
-                'OREB',
-                'DREB',
-                'REB',
-                'AST',
-                'TOV',
-                'STL',
-                'BLK',
+                "FGM",
+                "FGA",
+                "FG3M",
+                "FG3A",
+                "FTM",
+                "FTA",
+                "OREB",
+                "DREB",
+                "REB",
+                "AST",
+                "TOV",
+                "STL",
+                "BLK",
             ]
-            stat_names = ['TEAM_' + s for s in stat_types]
-            stat_names += ['OPP_' + s for s in stat_types]
+            stat_names = ["TEAM_" + s for s in stat_types]
+            stat_names += ["OPP_" + s for s in stat_types]
             stat_names += [
-                'TEAM_OFF_RTG',
-                'TEAM_DEF_RTG',
-                'TEAM_NET_RTG',
-                'TEAM_EFG',
-                'TEAM_TOV_PCT',
-                'TEAM_OREB_PCT',
-                'TEAM_DREB_PCT',
-                'TEAM_FT_PER_FGA',
-                'TEAM_FOUR_FACTORS',
-                'TEAM_FOUR_FACTORS_REB',
-                'PACE',
-                'POSSESSIONS',
+                "TEAM_OFF_RTG",
+                "TEAM_DEF_RTG",
+                "TEAM_NET_RTG",
+                "TEAM_EFG",
+                "TEAM_TOV_PCT",
+                "TEAM_OREB_PCT",
+                "TEAM_DREB_PCT",
+                "TEAM_FT_PER_FGA",
+                "TEAM_FOUR_FACTORS",
+                "TEAM_FOUR_FACTORS_REB",
+                "PACE",
+                "POSSESSIONS",
             ]
 
-        data = data[['SEASON', 'GAME_ID', 'TEAM_ID'] + stat_names]
+        data = data[["SEASON", "GAME_ID", "TEAM_ID"] + stat_names]
         data = self.windowed_stats(data, stat_names, window=window)
 
         games = pd.read_sql(
-            'SELECT * FROM games JOIN betting ON games.ID is betting.GAME_ID',
+            "SELECT * FROM games JOIN betting ON games.ID is betting.GAME_ID",
             self.__conn,
         )
         games = games.merge(
             data,
-            left_on=['SEASON', 'ID', 'HOME_TEAM_ID'],
-            right_on=['SEASON', 'GAME_ID', 'TEAM_ID'],
+            left_on=["SEASON", "ID", "HOME_TEAM_ID"],
+            right_on=["SEASON", "GAME_ID", "TEAM_ID"],
         )
         games = games.merge(
             data,
-            left_on=['SEASON', 'ID', 'AWAY_TEAM_ID'],
-            right_on=['SEASON', 'GAME_ID', 'TEAM_ID'],
-            suffixes=('', '_AWAY'),
+            left_on=["SEASON", "ID", "AWAY_TEAM_ID"],
+            right_on=["SEASON", "GAME_ID", "TEAM_ID"],
+            suffixes=("", "_AWAY"),
         )
-        games = games[games.HOME_SPREAD_WL != 'P']
+        games = games[games.HOME_SPREAD_WL != "P"]
 
         return games
 
@@ -181,7 +179,7 @@ class Database:
         return pd.read_sql(self.__game_query, self.__conn)
 
     def season_stats(self):
-        query = f'''
+        query = f"""
             SELECT
                 SEASON,
                 TEAM_ID,
@@ -220,19 +218,19 @@ class Database:
             FROM
                 ({self.__game_query})
             GROUP BY SEASON, TEAM_ID
-        '''
+        """
 
         data = pd.read_sql(query, self.__conn)
-        data['PACE'] = team_stats.pace(data)
-        data['POSSESSIONS'] = team_stats.possessions(data)
-        data['TEAM_OFF_RTG'] = team_stats.off_rating(data)
-        data['TEAM_DEF_RTG'] = team_stats.def_rating(data)
-        data['TEAM_NET_RTG'] = data['TEAM_OFF_RTG'] - data['TEAM_DEF_RTG']
-        data['TEAM_EFG'] = stats.eff_fg_pct(data, 'TEAM_')
-        data['TEAM_TOV_PCT'] = stats.tov_pct(data, 'TEAM_')
-        data['TEAM_OREB_PCT'] = team_stats.oreb_pct(data)
-        data['TEAM_DREB_PCT'] = team_stats.dreb_pct(data)
-        data['TEAM_FT_PER_FGA'] = stats.ft_per_fga(data, 'TEAM_')
+        data["PACE"] = team_stats.pace(data)
+        data["POSSESSIONS"] = team_stats.possessions(data)
+        data["TEAM_OFF_RTG"] = team_stats.off_rating(data)
+        data["TEAM_DEF_RTG"] = team_stats.def_rating(data)
+        data["TEAM_NET_RTG"] = data["TEAM_OFF_RTG"] - data["TEAM_DEF_RTG"]
+        data["TEAM_EFG"] = stats.eff_fg_pct(data, "TEAM_")
+        data["TEAM_TOV_PCT"] = stats.tov_pct(data, "TEAM_")
+        data["TEAM_OREB_PCT"] = team_stats.oreb_pct(data)
+        data["TEAM_DREB_PCT"] = team_stats.dreb_pct(data)
+        data["TEAM_FT_PER_FGA"] = stats.ft_per_fga(data, "TEAM_")
 
         efg = data.TEAM_EFG
         oreb = data.TEAM_OREB_PCT
@@ -240,17 +238,17 @@ class Database:
         ftr = data.TEAM_FT_PER_FGA
         tov = data.TEAM_TOV_PCT
 
-        data['TEAM_FOUR_FACTORS'] = 0.4 * efg + 0.2 * oreb + 0.15 * ftr - 0.25 * tov
-        data['TEAM_FOUR_FACTORS_REB'] = (
+        data["TEAM_FOUR_FACTORS"] = 0.4 * efg + 0.2 * oreb + 0.15 * ftr - 0.25 * tov
+        data["TEAM_FOUR_FACTORS_REB"] = (
             0.4 * efg + 0.1 * oreb + 0.1 * dreb + 0.15 * ftr - 0.25 * tov
         )
 
-        query = f'''
+        query = f"""
             SELECT SEASON, TEAM_ID, OPP_ID, COUNT(OPP_ID) AS GAMES_PLAYED
             FROM
                 ({self.__game_query})
             GROUP BY SEASON, TEAM_ID, OPP_ID
-        '''
+        """
 
         opponents = pd.read_sql(query, self.__conn)
 
@@ -271,7 +269,7 @@ class Database:
             for _ in range(10):
                 srs = point_diff + schedule.dot(srs)
 
-            data.loc[data.SEASON == season, 'TEAM_SRS'] = srs
+            data.loc[data.SEASON == season, "TEAM_SRS"] = srs
 
         return data
 
@@ -283,9 +281,9 @@ class Database:
         data = data.copy()
         seasons = data.SEASON.unique()[1:]
         teams = data.TEAM_ID.unique()
-        grouped = data.groupby(['SEASON', 'TEAM_ID'])
+        grouped = data.groupby(["SEASON", "TEAM_ID"])
         keys = grouped.groups.keys()
-        team_season = namedtuple('team_season', ['season', 'team'])
+        team_season = namedtuple("team_season", ["season", "team"])
 
         for group in starmap(
             team_season, [x for x in product(seasons, teams) if x in keys]
