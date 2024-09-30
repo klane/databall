@@ -303,7 +303,7 @@ def kde(data, stat, label, title, ax):
         xy=(-0.25, -0.25),
         xytext=(-13, -13),
         fontsize=16,
-        arrowprops=dict(facecolor="black"),
+        arrowprops={"facecolor": "black"},
     )
 
 
