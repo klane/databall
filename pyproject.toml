@@ -10,21 +10,6 @@ dependencies = [
     "sqlmodel>=0.0.22",
 ]
 
-[tool.black]
-line-length = 88
-
-[tool.isort]
-profile = "black"
-
-[tool.tox]
-legacy_tox_ini = """
-[flake8]
-ignore = B902,W503
-max-line-length = 88
-max-complexity = 15
-select = B,C,E,F,W,T4,B9
-"""
-
 [tool.ruff]
 line-length = 88
 exclude = ["*.ipynb"]
