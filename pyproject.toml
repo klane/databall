@@ -34,6 +34,33 @@ docstring-code-format = true
 quote-style = "double"
 skip-magic-trailing-comma = true
 
+[tool.ruff.lint]
+select = [
+    "A",        # flake8-builtins
+    "B",        # flake8-bugbear
+    "BLE",      # flake8-blind-except
+    "C4",       # flake8-comprehensions
+    "C90",      # mccabe
+    "E",        # pycodestyle (error)
+    "F",        # pyflakes
+    "I",        # isort
+    "PERF",     # perflint
+    "PGH",      # pygrep-hooks
+    "PIE",      # flake8-pie
+    "PL",       # pylint
+    "Q",        # flake8-quotes
+    "W",        # pycodestyle (warning)
+    "UP",       # pyupgrade
+]
+ignore = [
+    "PLR0912",  # too many branches:    https://docs.astral.sh/ruff/rules/too-many-branches/
+    "PLR0913",  # too many arguments:   https://docs.astral.sh/ruff/rules/too-many-arguments/
+    "PLR0915",  # too many statements:  https://docs.astral.sh/ruff/rules/too-many-statements/
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
 [tool.uv]
 package = false
 dev-dependencies = [
