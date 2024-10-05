@@ -246,6 +246,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "nba-api" },
     { name = "pandas" },
+    { name = "pydantic" },
     { name = "scrapy" },
     { name = "sqlalchemy" },
     { name = "sqlmodel" },
@@ -260,6 +261,7 @@ dev = [
 requires-dist = [
     { name = "nba-api", specifier = ">=1.5.2" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pydantic", specifier = ">=2.9.2" },
     { name = "scrapy", specifier = ">=2.11.2" },
     { name = "sqlalchemy", specifier = ">=2.0.35" },
     { name = "sqlmodel", specifier = ">=0.0.22" },

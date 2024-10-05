@@ -7,6 +7,7 @@ requires-python = ">=3.9"
 dependencies = [
     "nba-api>=1.5.2",
     "pandas>=2.2.3",
+    "pydantic>=2.9.2",
     "scrapy>=2.11.2",
     "sqlalchemy>=2.0.35",
     "sqlmodel>=0.0.22",
