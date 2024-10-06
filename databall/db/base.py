@@ -1,10 +1,10 @@
 import re
 
 import pandas as pd
+from sqlmodel import SQLModel
 from pydantic import BaseModel
 from sqlalchemy import inspect, select
 from sqlalchemy.orm import declared_attr
-from sqlmodel import SQLModel
 
 from databall.db.session import Session, engine
 
