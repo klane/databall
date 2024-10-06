@@ -15,9 +15,9 @@ DEFAULT_DROP = False
 
 def init():
     with AutocommitSession() as session, session.connection() as connection:
-        if getattr(db_settings, 'DROP', DEFAULT_DROP):
+        if getattr(db_settings, "DROP", DEFAULT_DROP):
             Base.metadata.drop_all(connection)
-            session.execute('VACUUM')
+            session.execute("VACUUM")
 
         Base.metadata.create_all(connection)
 
@@ -26,7 +26,7 @@ def init():
 
 
 def populate(start_season=MIN_SEASON, stop_season=CURRENT_SEASON):
-    duration = getattr(scrapy_settings, 'DOWNLOAD_DELAY', DEFAULT_DELAY)
+    duration = getattr(scrapy_settings, "DOWNLOAD_DELAY", DEFAULT_DELAY)
 
     for season in range(start_season, stop_season + 1):
         for season_type in SeasonType:

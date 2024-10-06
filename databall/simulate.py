@@ -4,7 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 
 
 def simulate(model, data, season, predictors, output, build=None, evolve=False, freq=1):
-    result = output + '_PRED'
+    result = output + "_PRED"
     data = data.copy()
     encoder = LabelEncoder().fit(data[output])
     data[output] = encoder.transform(data[output])
@@ -15,11 +15,11 @@ def simulate(model, data, season, predictors, output, build=None, evolve=False, 
 
     if evolve:
         test[result] = test[output]
-        test_groups = test.groupby('GAME_DATE')
+        test_groups = test.groupby("GAME_DATE")
         count = 0
 
         for day in test_groups.groups:
-            if count == freq or count == 0:
+            if count in {freq, 0}:
                 build(model, train[predictors], train[output])
                 count = 0
 
@@ -42,7 +42,7 @@ def fit(model, x, y):
 
 class HyperOptFit:
     def __init__(
-        self, space, max_evals=10, n_splits=10, scoring='roc_auc', random_state=None
+        self, space, max_evals=10, n_splits=10, scoring="roc_auc", random_state=None
     ):
         self.space = space
         self.max_evals = max_evals

@@ -89,9 +89,7 @@ def off_rating(data):
     ) / data.TEAM_FGM + (
         ((data.TEAM_AST / data.TEAM_MIN) * data.MIN * 5 - data.AST)
         / ((data.TEAM_FGM / data.TEAM_MIN) * data.MIN * 5 - data.FGM)
-    ) * (
-        1 - data.MIN / (data.TEAM_MIN / 5)
-    )
+    ) * (1 - data.MIN / (data.TEAM_MIN / 5))
     team_oreb_pct = data.TEAM_OREB / (data.TEAM_OREB + data.OPP_REB - data.OPP_OREB)
     team_scoring_poss = (
         data.TEAM_FGM
@@ -162,9 +160,7 @@ def pts_produced(data):
     ) / data.TEAM_FGM + (
         ((data.TEAM_AST / data.TEAM_MIN) * data.MIN * 5 - data.AST)
         / ((data.TEAM_FGM / data.TEAM_MIN) * data.MIN * 5 - data.FGM)
-    ) * (
-        1 - data.MIN / (data.TEAM_MIN / 5)
-    )
+    ) * (1 - data.MIN / (data.TEAM_MIN / 5))
     team_oreb_pct = data.TEAM_OREB / (data.TEAM_OREB + data.OPP_REB - data.OPP_OREB)
     team_scoring_poss = (
         data.TEAM_FGM

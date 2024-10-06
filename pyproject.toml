@@ -1,14 +1,55 @@
-[tool.black]
+[project]
+name = "databall"
+version = "0.1.0"
+description = "Betting on the NBA with data"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "nba-api>=1.5.2",
+    "pandas>=2.2.3",
+    "pydantic>=2.9.2",
+    "scrapy>=2.11.2",
+    "sqlalchemy>=2.0.35",
+    "sqlmodel>=0.0.22",
+]
+
+[tool.ruff]
 line-length = 88
+exclude = ["*.ipynb"]
 
-[tool.isort]
-profile = "black"
+[tool.ruff.format]
+docstring-code-format = true
+quote-style = "double"
 
-[tool.tox]
-legacy_tox_ini = """
-[flake8]
-ignore = B902,W503
-max-line-length = 88
+[tool.ruff.lint]
+select = [
+    "A",        # flake8-builtins
+    "B",        # flake8-bugbear
+    "BLE",      # flake8-blind-except
+    "C4",       # flake8-comprehensions
+    "C90",      # mccabe
+    "E",        # pycodestyle (error)
+    "F",        # pyflakes
+    "I",        # isort
+    "PERF",     # perflint
+    "PGH",      # pygrep-hooks
+    "PIE",      # flake8-pie
+    "PL",       # pylint
+    "Q",        # flake8-quotes
+    "W",        # pycodestyle (warning)
+    "UP",       # pyupgrade
+]
+ignore = [
+    "PLR0912",  # too many branches:    https://docs.astral.sh/ruff/rules/too-many-branches/
+    "PLR0913",  # too many arguments:   https://docs.astral.sh/ruff/rules/too-many-arguments/
+    "PLR0915",  # too many statements:  https://docs.astral.sh/ruff/rules/too-many-statements/
+]
+
+[tool.ruff.lint.mccabe]
 max-complexity = 15
-select = B,C,E,F,W,T4,B9
-"""
+
+[tool.uv]
+package = false
+dev-dependencies = [
+    "ruff>=0.6.8",
+]

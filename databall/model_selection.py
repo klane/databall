@@ -35,7 +35,7 @@ def calculate_metrics(models, x, y, attributes, param_name, param_vec, k=6):
 
 def cross_val_scoring(model, x, y, k=6, random_state=None):
     # Define metrics
-    scoring = ['accuracy', 'precision', 'recall', 'roc_auc', 'average_precision']
+    scoring = ["accuracy", "precision", "recall", "roc_auc", "average_precision"]
 
     # Create cross validator
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
@@ -50,7 +50,7 @@ def cross_val_scoring(model, x, y, k=6, random_state=None):
 def objective(params, model, x, y, attributes, k=6, random_state=None):
     model.set_params(**params)
     kfold = StratifiedKFold(n_splits=k, random_state=random_state)
-    score = cross_val_score(model, x[attributes], y, cv=kfold, scoring='accuracy')
+    score = cross_val_score(model, x[attributes], y, cv=kfold, scoring="accuracy")
     return 1 - score.mean()
 
 
@@ -66,7 +66,7 @@ def optimize_params(
         trials=trials,
     )
 
-    param_values = [t['misc']['vals'] for t in trials.trials]
+    param_values = [t["misc"]["vals"] for t in trials.trials]
     param_values = [
         {key: value for key in params for value in params[key]}
         for params in param_values
@@ -76,7 +76,7 @@ def optimize_params(
         param_values = [space_eval(space, params) for params in param_values]
 
     param_df = pd.DataFrame(param_values)
-    param_df['accuracy'] = [1 - loss for loss in trials.losses()]
+    param_df["accuracy"] = [1 - loss for loss in trials.losses()]
     return space_eval(space, best), param_df
 
 
@@ -86,7 +86,7 @@ def train_test_split(
     end_season,
     test_season_start=None,
     xlabels=None,
-    ylabel='HOME_SPREAD_WL',
+    ylabel="HOME_SPREAD_WL",
 ):
     if test_season_start is None:
         test_season_start = end_season
@@ -94,10 +94,10 @@ def train_test_split(
     if xlabels is None:
         xlabels = stat_names()
 
-    if 'SEASON' in data.columns:
+    if "SEASON" in data.columns:
         data = data[xlabels + [ylabel]].dropna()
     else:
-        data = data[xlabels + ['SEASON', ylabel]].dropna()
+        data = data[xlabels + ["SEASON", ylabel]].dropna()
 
     x, y = data[xlabels], LabelEncoder().fit_transform(data[ylabel])
     x_train = x[

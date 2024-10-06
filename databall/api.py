@@ -9,8 +9,8 @@ from databall.types import SeasonType, StatsType
 
 @cache
 def _get_stats(season, season_type, stats_type, **kwargs):
-    season_str = f'{season} {season_type.value.lower()}'
-    print(f'Downloading {season_str} {stats_type.name.lower()} stats')
+    season_str = f"{season} {season_type.value.lower()}"
+    print(f"Downloading {season_str} {stats_type.name.lower()} stats")
     stats = LeagueGameLog(
         season=season,
         season_type_all_star=season_type.value,
@@ -23,7 +23,7 @@ def _get_stats(season, season_type, stats_type, **kwargs):
 
 
 def get_players(**kwargs):
-    print('Downloading players')
+    print("Downloading players")
     players = CommonAllPlayers(**kwargs).get_data_frames()[0]
     players.columns = players.columns.str.lower()
     return players
@@ -34,7 +34,7 @@ def get_player_stats(season, season_type=SeasonType.REGULAR, **kwargs):
 
 
 def get_teams():
-    print('Downloading teams')
+    print("Downloading teams")
     return pd.DataFrame(get_teams_static())
 
 

@@ -12,7 +12,7 @@ from databall.types import OverUnderResult, SpreadResult
 
 class Covers(Base, GameID, table=True):
     home_spread: Decimal = ConstrainedField(
-        name='home_spread',
+        name="home_spread",
         ge=-30,
         le=30,
         multiple_of=0.5,
@@ -21,7 +21,7 @@ class Covers(Base, GameID, table=True):
     )
     home_spread_result: SpreadResult = EnumField(use_values=True)
     over_under: Decimal = ConstrainedField(
-        name='over_under',
+        name="over_under",
         ge=100,
         le=300,
         multiple_of=0.5,
@@ -32,12 +32,12 @@ class Covers(Base, GameID, table=True):
 
     @classmethod
     def populate(cls, season, *args, **kwargs):
-        print(f'Scraping {season} covers')
+        print(f"Scraping {season} covers")
         settings = get_project_settings()
         process = CrawlerProcess(settings)
         crawler = process.create_crawler(GameSpider)
-        process.crawl(crawler, season=season, *args, **kwargs)
+        process.crawl(crawler, *args, season=season, **kwargs)
         process.start()
 
-        games = crawler.stats.get_value('games', 0)
-        print(f'Saved {games} rows to {cls.__tablename__}')
+        games = crawler.stats.get_value("games", 0)
+        print(f"Saved {games} rows to {cls.__tablename__}")

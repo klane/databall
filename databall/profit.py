@@ -1,8 +1,8 @@
 import numpy as np
 
 
-def profit(data, var_predict='HOME_SPREAD_WL', bet_amount=100):
-    grouped = data.groupby('GAME_DATE')
+def profit(data, var_predict="HOME_SPREAD_WL", bet_amount=100):
+    grouped = data.groupby("GAME_DATE")
     num_games = 0
     days = []
     cumulative_correct = []
@@ -15,7 +15,7 @@ def profit(data, var_predict='HOME_SPREAD_WL', bet_amount=100):
         num = len(games)
         num_games += num
         days += [day]
-        num_correct = sum(games[var_predict] == games[var_predict + '_PRED'])
+        num_correct = sum(games[var_predict] == games[var_predict + "_PRED"])
         daily_profit = bet_amount * num_correct - bet_amount * (num - num_correct)
 
         if len(cumulative_correct) == 0:
