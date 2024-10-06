@@ -17,7 +17,7 @@ class Base(SQLModel):
     @classmethod
     def populate(cls, *args, **kwargs):
         raise NotImplementedError(
-            f"Method populate not implemented for table {cls.__tablename__}"
+            f'Method populate not implemented for table {cls.__tablename__}'
         )
 
     @classmethod
